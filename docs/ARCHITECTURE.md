@@ -103,6 +103,20 @@ Allowed sequence:
 none -> verbal -> focus -> simplified -> reveal
 ```
 
+### Spatial Scene Engine
+
+The Spatial Scene Engine converts caregiver-approved normalized object boxes into a deterministic two-dimensional scene model.
+It derives only image-plane facts such as left of, right of, above, below, and broad horizontal zones.
+It does not claim monocular depth, room dimensions, occluded objects, or a reconstructed three-dimensional environment.
+
+Interface responsibilities:
+
+- Project normalized evidence boxes into a contained responsive image.
+- Expand small projected boxes into accessible touch regions while preserving their centers.
+- Derive unique landmark relationships when object separation crosses the configured threshold.
+- Assign left, center, or right recall zones from verified object centers.
+- Keep every spatial answer tied to the original source image and grounding record.
+
 ### Media Generation Service
 
 The Media Generation Service hides Gemini image and video APIs behind one interface.
@@ -127,6 +141,8 @@ Rejected media never appears in patient mode.
 
 The Session Engine manages question order, selected answers, current cue level, speech replay, and completion.
 It stores no cognitive score and makes no clinical inference.
+For object-tap activities, it accepts only selected approved object identifiers projected over the room image.
+For visual recall, it accepts one broad horizontal zone after the patient explicitly hides the studied room.
 
 ### Storage Adapter
 
@@ -160,6 +176,7 @@ Uploaded room images
     -> object proposals
     -> caregiver approval
     -> approved world-model revision
+    -> deterministic spatial scene
     -> lesson draft
     -> caregiver approval
     -> immutable approved lesson

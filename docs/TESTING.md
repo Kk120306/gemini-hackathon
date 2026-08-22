@@ -67,6 +67,17 @@ Each scenario must produce a visible recovery path.
 - Reject invented locations and missing object identifiers.
 - Reject sequencing content without caregiver verification.
 - Reject duplicate or missing correct choices.
+- Require each object-tap activity to include the target among two or three unique approved hotspot objects.
+- Require the recall activity to use one derived broad spatial zone and no object hotspots.
+- Verify that landmark relations are used only when normalized box geometry supports them.
+
+### Spatial Scene Engine
+
+- Project normalized boxes correctly into contained landscape and portrait images.
+- Preserve box centers when expanding small targets to the accessible minimum.
+- Clamp expanded targets to the rendered scene bounds.
+- Derive stable left, center, and right zones from object centers.
+- Derive only supported left, right, above, and below relations.
 
 ### Cue Engine
 
@@ -128,6 +139,9 @@ Use `pnpm test:live:media` for the Gemini room edit and independent two-image va
 - Verify readable text remains when audio or video fails.
 - Verify the AI-generated guide label remains visible at every patient cue level.
 - Verify the room scene and answers remain visually dominant over the guide.
+- Verify every non-recall answer is an accessible object hotspot on the approved room image.
+- Verify small object hotspots remain at least 64 by 64 CSS pixels.
+- Verify the recall room stays visible until the patient explicitly chooses to hide it.
 
 ## Visual Testing
 
@@ -135,11 +149,14 @@ Use a tablet viewport as the primary patient target.
 Capture screenshots for:
 
 - Initial question.
+- Initial spatial hotspots.
 - Verbal cue.
 - Focus cue.
 - Simplified generated scene.
 - Revealed answer.
 - Correct answer celebration.
+- Recall study and hidden-zone states.
+- Association state with a visible landmark.
 - Video loading and fallback.
 - Completion state.
 

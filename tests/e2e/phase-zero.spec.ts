@@ -27,7 +27,7 @@ test("caregiver and patient route shells render in fixture mode", async ({
   await page.goto("/patient/session");
   await expect(
     page.getByRole("heading", {
-      name: "Which object is described as dark blue reading glasses?",
+      name: "Find the dark blue reading glasses on the bedside table.",
     }),
   ).toBeVisible();
   await expect(
@@ -51,7 +51,7 @@ test("patient shell has no serious accessibility violations", async ({
   ).toEqual([]);
 
   const interactiveSizes = await page
-    .locator(".answer-grid button, .session-controls button")
+    .locator(".spatial-hotspot, .session-controls button")
     .evaluateAll((elements) =>
       elements.map((element) => {
         const rectangle = element.getBoundingClientRect();

@@ -76,8 +76,19 @@ async function answerRemainingQuestions(
   answers: readonly string[],
 ) {
   for (const answer of answers) {
-    await page.getByRole("button", { name: `Answer ${answer}` }).click();
-    await expect(page.getByText(/That matches the room/)).toBeVisible();
+    if (answer === "Right side") {
+      await page
+        .getByRole("button", { name: "I'm ready. Hide the room." })
+        .click();
+      await page
+        .getByRole("button", { name: "Choose right side of the room" })
+        .click();
+    } else {
+      await page
+        .getByRole("button", { name: `Choose ${answer} in the room` })
+        .click();
+    }
+    await expect(page.locator(".session-feedback--correct")).toBeVisible();
     await page
       .getByRole("button", { name: /Next question|Finish activity/ })
       .click();
@@ -90,13 +101,19 @@ test("caregiver correction persists into the complete six-question flow", async 
   await prepareRoom(page, "reading table");
   await prepareGuide(page, false);
 
-  await expect(page.getByText(/^Answer: On the reading table/)).toBeVisible();
+  await expect(
+    page.getByText(
+      /Touch the reading glasses exactly where it appears on the reading table/,
+    ),
+  ).toBeVisible();
   await page.getByRole("button", { name: "Start activity" }).click();
 
-  await page.getByRole("button", { name: "Answer Blue mug" }).click();
-  await expect(page.getByText("Look on the reading table.")).toBeVisible();
+  await page
+    .getByRole("button", { name: "Choose Blue mug in the room" })
+    .click();
+  await expect(page.getByText(/scan the reading table/i)).toBeVisible();
   await page.getByRole("button", { name: "Help me" }).click();
-  await expect(page.getByText("Verified area highlighted")).toBeVisible();
+  await expect(page.getByText("Verified target highlighted")).toBeVisible();
   await page.getByRole("button", { name: "Help me" }).click();
   await expect(
     page.getByText(
@@ -104,16 +121,20 @@ test("caregiver correction persists into the complete six-question flow", async 
     ),
   ).toBeVisible();
   await page.getByRole("button", { name: "Help me" }).click();
-  await expect(page.getByText(/The answer is Reading glasses/)).toBeVisible();
-  await page.getByRole("button", { name: "Answer Reading glasses" }).click();
+  await expect(
+    page.getByText(/verified answer is Reading glasses/i),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Choose Reading glasses in the room" })
+    .click();
   await page.getByRole("button", { name: "Next question" }).click();
 
   await answerRemainingQuestions(page, [
-    "On the reading table",
-    "On the dresser",
-    "Lamp",
     "Reading glasses",
     "Blue mug",
+    "Lamp",
+    "Right side",
+    "Reading glasses",
   ]);
 
   await expect(
@@ -133,11 +154,11 @@ test("neutral guide and deterministic media fallback complete without likeness m
 
   await answerRemainingQuestions(page, [
     "Reading glasses",
-    "On the bedside table",
-    "On the dresser",
-    "Lamp",
     "Reading glasses",
     "Blue mug",
+    "Lamp",
+    "Right side",
+    "Reading glasses",
   ]);
 
   await expect(

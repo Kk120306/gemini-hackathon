@@ -158,13 +158,20 @@ type LessonQuestion = {
   type: QuestionType;
   cognitiveSkill: CognitiveSkill;
   prompt: string;
+  instruction: string;
+  targetObjectId: string;
   objectIds: string[];
+  selectableObjectIds: string[];
+  referenceObjectId?: string;
   sourceImageId: string;
   groundingRecordIds: string[];
   correctAnswer: string;
   choices: string[];
+  interactionMode: "tap_object" | "recall_zone";
+  recallZone?: "left" | "center" | "right";
   verbalCue: string;
   encouragement: string;
+  answerExplanation: string;
   visualCueStrategy: "focus_box" | "simplify_scene" | "object_closeup";
   requiresCaregiverVerifiedSequence: boolean;
 };
@@ -189,8 +196,13 @@ Lesson validation rules:
 - Require every referenced object identifier to exist in the approved world model.
 - Require every grounding record to exist and be caregiver-approved.
 - Require the source image to contain the referenced object.
+- Require object-tap activities to expose two or three unique approved selectable object identifiers including the target.
+- Require recall-zone activities to expose no object hotspots and exactly one left, center, or right answer derived from the target box center.
+- Require an optional reference landmark to be an approved evidence object and not a selectable answer.
 - Require sequencing steps to be explicitly caregiver-confirmed.
-- Keep prompts and cues to one short sentence whenever possible.
+- Compile patient-facing prompts, instructions, answers, explanations, and cues in deterministic application code.
+- Prefer a concrete visible attribute, a verified surface, and a unique image-plane relation whenever the approved evidence supports them.
+- Keep each prompt direct enough to follow in one step even when it includes several grounded details.
 - Avoid childish language, tests, scores, countdowns, and negative feedback.
 
 Example cognitive question:
@@ -200,14 +212,20 @@ Example cognitive question:
   "id": "question-5",
   "type": "visual_recall",
   "cognitiveSkill": "short_term_memory",
-  "prompt": "Which object did you just see beside the bed?",
+  "prompt": "After the room is hidden, choose the side where the dark blue reading glasses appeared.",
+  "instruction": "Study the whole room first. Hide it only when you feel ready.",
+  "targetObjectId": "glasses",
   "objectIds": ["glasses"],
+  "selectableObjectIds": [],
   "sourceImageId": "room-1",
   "groundingRecordIds": ["grounding-glasses-location"],
-  "correctAnswer": "glasses",
-  "choices": ["glasses", "blue mug", "book"],
-  "verbalCue": "It is something you wear.",
+  "correctAnswer": "Right side",
+  "choices": ["Left side", "Middle", "Right side"],
+  "interactionMode": "recall_zone",
+  "recallZone": "right",
+  "verbalCue": "Think about the bedside table on the right side of the bed.",
   "encouragement": "Take your time. We can look together.",
+  "answerExplanation": "Yes. The dark blue reading glasses were on the right side of the room.",
   "visualCueStrategy": "object_closeup",
   "requiresCaregiverVerifiedSequence": false
 }

@@ -56,8 +56,13 @@ export function LessonReview() {
                   <span>{typeLabels[question.type]}</span>
                   <strong>{question.prompt}</strong>
                   <small>
-                    Answer: {question.correctAnswer} • Cue: {question.verbalCue}
+                    {question.interactionMode === "recall_zone"
+                      ? "Spatial recall map"
+                      : question.selectableObjectIds.length +
+                        " room anchors"}{" "}
+                    · Answer: {question.correctAnswer}
                   </small>
+                  <small>{question.answerExplanation}</small>
                 </div>
                 <span className="lesson-list__evidence">
                   <EyeIcon /> Grounded

@@ -89,7 +89,7 @@ function validLessonPlan() {
       {
         type: "visual_search",
         targetObjectId: mug.id,
-        choiceObjectIds: [mug.id, glasses.id],
+        choiceObjectIds: all,
       },
       {
         type: "object_recognition",
@@ -103,7 +103,7 @@ function validLessonPlan() {
       },
       {
         type: "association",
-        targetObjectId: mug.id,
+        targetObjectId: glasses.id,
         choiceObjectIds: all,
       },
     ],

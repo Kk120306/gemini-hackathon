@@ -208,6 +208,19 @@ The core caregiver and patient screens match the selected visual direction witho
 Exit condition:
 The patient receives an immediate cue and can finish the question whether live generation succeeds, arrives late, or fails.
 
+### Core Spatial Interaction Checkpoint
+
+- [x] Make the approved room image the answer surface for five questions.
+- [x] Project large accessible hotspots from the approved normalized object boxes.
+- [x] Compile specific prompts from visible attributes, verified locations, and supported landmark relationships.
+- [x] Replace the generic recall question with a no-timer study, hide, and broad-zone activity.
+- [x] Use a verified landmark and shared location in the association activity.
+- [x] Preserve the deterministic cue sequence and generated-media fallback.
+- [x] Add spatial geometry, lesson compilation, browser interaction, accessibility, and viewport coverage.
+
+Exit condition:
+The patient explores the verified room directly, every answer remains grounded, and all six questions provide a concrete observation or recall task.
+
 ### Phase 4: Trustworthy Family Guide
 
 - [ ] Capture name, relationship, likeness permission, and caregiver confirmation.

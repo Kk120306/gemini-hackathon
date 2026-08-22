@@ -8,8 +8,12 @@ test("validated room media stays hidden until the simplified cue", async ({
   await page.goto("/patient/session");
   const scene = page.locator(".session-scene");
 
-  await page.getByRole("button", { name: "Answer Blue mug" }).click();
-  await expect(page.getByRole("button", { name: "Answer Lamp" })).toBeEnabled();
+  await page
+    .getByRole("button", { name: "Choose Blue mug in the room" })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Choose Lamp in the room" }),
+  ).toBeEnabled();
   await expect(scene).toHaveAttribute("data-cue-level", "verbal");
   await expect(scene).toHaveAttribute("data-media-status", "completed", {
     timeout: 8_000,
@@ -20,7 +24,7 @@ test("validated room media stays hidden until the simplified cue", async ({
   await page.getByRole("button", { name: "Help me" }).click();
   await expect(scene).toHaveAttribute("data-cue-level", "focus");
   await expect(scene).toHaveAttribute("data-scene-source", "verified");
-  await expect(page.getByText("Verified area highlighted")).toBeVisible();
+  await expect(page.getByText("Verified target highlighted")).toBeVisible();
 
   await page.getByRole("button", { name: "Help me" }).click();
   await expect(scene).toHaveAttribute("data-cue-level", "simplified");
@@ -71,7 +75,9 @@ test("disabled room media preserves the verified fallback and answer controls", 
   }, stateKey);
   await page.reload();
 
-  await page.getByRole("button", { name: "Answer Blue mug" }).click();
+  await page
+    .getByRole("button", { name: "Choose Blue mug in the room" })
+    .click();
   await page.getByRole("button", { name: "Help me" }).click();
   await page.getByRole("button", { name: "Help me" }).click();
 
@@ -81,6 +87,6 @@ test("disabled room media preserves the verified fallback and answer controls", 
   await expect(page.getByText("Verified simplified fallback")).toBeVisible();
   await expect(page.locator("img.session-scene__generated")).toHaveCount(0);
   await expect(
-    page.getByRole("button", { name: "Answer Reading glasses" }),
+    page.getByRole("button", { name: "Choose Reading glasses in the room" }),
   ).toBeEnabled();
 });

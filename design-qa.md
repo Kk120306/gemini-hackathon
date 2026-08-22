@@ -5,102 +5,109 @@
 Source visual truth: `/Users/kai/.codex/attachments/3e06e96f-f906-4a8f-959e-6cdb1bd9c01c/UI mockups project setup.zip`, primary patient-activity reference `.thumbnail`.
 Secondary source context: `ANCHOR Prototype.dc.html` and `ANCHOR Prototype v2.dc.html` inside the same archive.
 Implementation: `http://127.0.0.1:3001/patient/session` in the prepared fixture state.
-Implementation screenshot: `/Users/kai/repos/gemini-hackathon/.data/design-qa/patient-session-correct.png`.
-Combined comparison: `/Users/kai/repos/gemini-hackathon/.data/design-qa/comparison-correct.png`.
+Implementation screenshot: `/Users/kai/repos/gemini-hackathon/.data/design-qa/spatial-correct.png`.
+Recall screenshot: `/Users/kai/repos/gemini-hackathon/.data/design-qa/spatial-recall-hidden.png`.
+Association screenshot: `/Users/kai/repos/gemini-hackathon/.data/design-qa/spatial-association.png`.
+Combined comparison: `/Users/kai/repos/gemini-hackathon/.data/design-qa/comparison-spatial.png`.
 
 ## Normalization
 
 The source image is 640 by 449 pixels.
-The implementation was captured in Chromium at a 1194 by 834 CSS-pixel viewport with device scale factor 1.
-The combined comparison presents both at the same 640 by 449 display frame with aspect-preserving containment.
-The source shows question 2 in the correct-answer state, while the implementation shows question 1 in the same correct-answer state because patient copy is deterministically compiled from approved fixture evidence.
+The implementation was captured in the in-app Chromium browser at a 1194 by 834 CSS-pixel viewport with device scale factor 1.
+The combined comparison presents the source and implementation at the same aspect-preserving 644 by 452 frame.
+The source shows a correct multiple-choice answer while the implementation shows a correct spatial answer because the updated product direction intentionally makes the room itself interactive.
 
-## Full-View Comparison Evidence
+## Core Design and Functionality
 
-The implementation matches the source's warm canvas, Figtree typography, sage primary actions, compact progress dots, large rounded room image, two-column activity composition, quiet blue feedback surface, and pill-shaped controls.
-The room image and question begin at 126 CSS pixels from the top in the final implementation, matching the source composition's visual start.
-The generated guide remains visibly labeled but occupies a supporting position above the question rather than competing with the room.
-The implementation has no horizontal or vertical viewport overflow at 1194 by 834 pixels.
+### Layout and Spacing
 
-## Focused Region Evidence
+The implementation preserves the source's warm canvas, compact patient header, centered six-dot progress, large rounded room surface, and supporting panel on the right.
+The room occupies about two thirds of the primary stage and remains the dominant product surface.
+The scene and support panel align cleanly at the top with consistent 36-pixel rounding and generous separation.
+The final tablet document is exactly 1194 by 834 pixels with no horizontal or vertical overflow.
 
-No additional cropped comparison was required because the combined view keeps the logo, progress, room scene, prompt, answer controls, feedback, and continuation action readable.
-Additional implementation captures were inspected for the landing page, room setup, grounding review, and patient start at the same 1194 by 834 viewport.
-Those captures are stored under `/Users/kai/repos/gemini-hackathon/.data/design-qa/`.
+### Typography
 
-## Required Fidelity Surfaces
+The implementation uses the locally bundled Figtree variable font from the reference direction.
+Patient prompts use a compact display scale, a strong 600 weight, and line wrapping that remains readable in the narrow support panel.
+Instructions, grounded explanations, and control labels retain clear hierarchy without truncation.
 
-### Fonts and Typography
+### Colors and Surfaces
 
-The implementation uses the locally bundled Figtree variable font used by the reference.
-Display copy uses restrained 600 weights and compact tracking instead of the previous decorative serif treatment.
-Patient prompts, labels, and controls retain large readable sizes and do not truncate.
+The warm `#fbf4ea` canvas, soft white `#fffdf8` panels, sage `#6f9474` actions, deep green `#2e5d55` grounding markers, and quiet blue feedback preserve the reference palette.
+State colors remain calm and never frame an incorrect response as failure.
+The implementation intentionally omits decorative source elements that would compete with the verified room evidence.
 
-### Spacing and Layout Rhythm
+### Image and Asset Fidelity
 
-The 1120-pixel content frame, compact header, centered progress, two-column stage, 30-to-36-pixel radii, and generous internal gaps follow the reference rhythm.
-The room image and question panel align at the top of the core stage.
-The final tablet capture fits the viewport exactly at 1194 by 834 pixels.
-
-### Colors and Visual Tokens
-
-The palette is centered on warm `#fbf4ea`, soft white `#fffdf8`, sage `#6f9474`, dark green `#2e5d55`, quiet blue `#e3edf6`, and muted gold `#d7b45f`.
-Contrast remains sufficient for patient copy and focus indicators.
-The implementation omits the reference's decorative blue corner blob so the verified room evidence stays visually dominant.
-
-### Image Quality and Asset Fidelity
-
-The supplied bedroom and guide artwork is already represented by equivalent project fixture assets and remains vector-based in the fixture flow.
-The room image keeps its native proportions and uses the real grounding coordinates for the focus cue.
-No placeholder image or newly approximated visual asset was introduced.
+The full approved room image uses aspect-preserving containment, so no evidence object is cropped from arbitrary caregiver uploads.
+All visible scene anchors are projected from approved normalized bounding boxes rather than approximate CSS art.
+The fixture room and guide remain real project assets, and the guide retains its visible AI-generated label.
+No placeholder image, emoji, handcrafted SVG illustration, or fake three-dimensional reconstruction was introduced.
 
 ### Copy and Content
 
-The implementation preserves the reference's short, calm, neutral tone.
-Patient prompts differ intentionally because every prompt, answer, choice, and cue must compile from caregiver-approved evidence.
-The prototype's jump-to developer navigation is intentionally omitted from the patient product surface.
+The product copy intentionally diverges from the weak generic source question.
+Questions now combine verified color, object type, location, shared surface, or image-plane relationship when the evidence supports the combination.
+Each instruction describes the exact action, and each correct state explains the grounded fact that justified the answer.
+The recall activity says there is no timer and hides the room only after explicit readiness.
 
-## Findings
+### Icons
 
-No actionable P0, P1, or P2 visual differences remain.
+The existing application icon set remains consistent in stroke weight and optical size across replay, help, feedback, and continuation actions.
+Hotspots use numbered circular markers because numbers remain legible and avoid ambiguous icon semantics.
 
-## Comparison History
+## States and Interactions
+
+The initial activity exposes three large touch regions directly on the room image and no detached answer-card grid.
+Hover and focus subtly shift scene emphasis toward the explored object without changing the evidence coordinates.
+An incorrect answer advances neutral verbal support and begins non-blocking media preparation.
+The focus state dims irrelevant room areas and highlights the verified target.
+The correct state disables alternative hotspots, retains the verified target label, explains the grounded answer, and exposes continuation.
+The recall state presents the full room without a timer, then a hidden scene with three broad spatial areas.
+The association state distinguishes the named lamp as a landmark while exposing only the two candidate objects as answers.
+All required primary controls, replay, help, spatial selection, recall, continuation, and exit interactions work in the browser.
+
+## Accessibility and Resilience
+
+Every object hotspot has a semantic button and an accessible name that identifies the approved object.
+Small objects receive a minimum 72 by 72 CSS-pixel touch region while remaining centered on their verified location.
+Focus indicators remain visible for keyboard interaction, and pointer selection clears stale explored state.
+The verified room has descriptive alternative text, the landmark has a distinct accessible role, and feedback is announced through a polite live region.
+Reduced motion removes scene movement without changing the interaction or cue meaning.
+The 1194 by 834 tablet viewport has no clipping, overlap, or scroll.
+
+## Browser Evidence
+
+The complete six-question lesson was walked through in the in-app browser.
+The initial, wrong-answer, focus, correct, recall-study, recall-hidden, and association states were inspected.
+Browser metrics reported a 1194-pixel document width, an 834-pixel document height, and no viewport overflow.
+Visible object targets measured at least 72 CSS pixels in each dimension.
+Browser logs contained no warnings or errors.
+
+## Findings and Comparison History
 
 ### Iteration 1
 
-Finding: P2 vertical density drift placed the room image at 186 pixels from the top while the source began near 126 pixels.
-Fix: reduced the patient header and progress heights and aligned the stage content to the top with a 10-pixel inset.
-Post-fix evidence: `/Users/kai/repos/gemini-hackathon/.data/design-qa/patient-session-final.png`.
+Finding: the lamp hotspot initially covered the smaller reading-glasses hotspot because both approved evidence boxes overlap.
+Impact: the primary target looked unavailable even though it remained in the DOM.
+Fix: calculate visual stacking from approved box area so smaller nested objects remain selectable above larger landmarks.
 
 ### Iteration 2
 
-Finding: P2 viewport overflow made the tablet page 849 pixels tall in an 834-pixel viewport.
-Fix: recalculated the stage height around the compact patient header and retained the 28-pixel bottom breathing room.
-Post-fix evidence: the document scroll size is exactly 1194 by 834 pixels in the final capture.
+Finding: a previously clicked wrong object could retain browser focus styling while the cue state changed.
+Impact: the wrong object could look selected after neutral feedback appeared.
+Fix: clear pointer exploration and blur the pressed spatial or recall button after activation while preserving keyboard `:focus-visible` behavior.
 
 ### Iteration 3
 
-Finding: the source and first comparison used different interaction states.
-Fix: captured the implementation after selecting the correct grounded answer so both sides show answer confirmation and continuation.
-Post-fix evidence: `/Users/kai/repos/gemini-hackathon/.data/design-qa/comparison-correct.png`.
+Finding: generic multiple-choice cards kept the room passive and weakened the core product thesis.
+Impact: the patient was matching labels rather than interacting with a familiar space.
+Fix: remove the detached answer grid and project accessible answer regions directly onto the complete contained room image.
 
-## Interaction and Browser Verification
+## Remaining Severity
 
-The patient route loaded in browser-rendered Chromium with no console or page errors.
-The correct grounded answer changed to the confirmed state and exposed the continuation action.
-The existing end-to-end suite exercised caregiver correction, persistence, patient start, progressive help, completion, neutral-guide fallback, accessibility, touch targets, and viewport fit.
-All five tablet Chromium scenarios passed after the visual changes.
-
-## Follow-Up Polish
-
-P3: the header divider could be removed in a later pass if an even closer decorative match is wanted.
-P3: answer height could be increased slightly after live rehearsal if judges view the tablet from farther away.
-
-## Implementation Checklist
-
-- Preserve the compiled grounding copy and deterministic cue behavior.
-- Keep the room image dominant in patient start and patient activity views.
-- Re-run the same tablet capture after any Phase 3 generated-media changes.
-- Do not add dashboard or analytics surfaces before the core flow is hardened.
+No actionable P0, P1, or P2 visual or interaction findings remain for the spatial activity checkpoint.
+The source mockup remains a visual-language reference rather than a behavioral constraint, as requested.
 
 final result: passed

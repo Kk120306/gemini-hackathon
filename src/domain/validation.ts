@@ -33,7 +33,11 @@ export function validateGroundedLesson(
   );
 
   for (const question of lesson.questions) {
-    for (const objectId of question.objectIds) {
+    const referencedObjectIds = [
+      ...question.objectIds,
+      ...(question.referenceObjectId ? [question.referenceObjectId] : []),
+    ];
+    for (const objectId of referencedObjectIds) {
       const object = approvedObjects.get(objectId);
       if (!object || object.sourceImageId !== question.sourceImageId) {
         throw new Error(
@@ -54,7 +58,7 @@ export function validateGroundedLesson(
   const plan = lessonPlanSchema.parse({
     questions: lesson.questions.map((question) => ({
       type: question.type,
-      targetObjectId: question.objectIds[0],
+      targetObjectId: question.targetObjectId,
       choiceObjectIds: question.objectIds,
     })),
   });

@@ -141,3 +141,12 @@ A separate Gemini validation call compares the source and candidate images befor
 The candidate must preserve the target object, target location, and room identity without introducing misleading content.
 Malformed or unsafe validation fails closed to the deterministic verified-room cue.
 An eight-second patient-stage budget may time out the visible job while allowing a late safe result to be staged for the next explicit interaction.
+
+## AD-018: The Approved Room Image Is the Spatial Activity Surface
+
+Status: Accepted
+
+The patient answers five lesson activities by touching large regions projected from caregiver-approved normalized object boxes directly over the room image.
+The remaining visual-recall activity lets the patient study the complete room without a timer, hides it only after explicit readiness, and asks for a broad left, middle, or right area.
+The system derives only honest image-plane relationships and never presents a single photograph as a reconstructed three-dimensional space.
+Gemma selects approved evidence identifiers, while deterministic application code compiles detailed prompts from visible attributes, verified locations, shared surfaces, and supported landmark relations.

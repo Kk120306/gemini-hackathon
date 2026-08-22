@@ -97,20 +97,30 @@ export const cognitiveSkillSchema = z.enum([
   "semantic_association",
 ]);
 
+export const interactionModeSchema = z.enum(["tap_object", "recall_zone"]);
+
+export const horizontalZoneSchema = z.enum(["left", "center", "right"]);
+
 export const lessonQuestionSchema = z
   .object({
     id: z.string().min(1),
     type: questionTypeSchema,
     cognitiveSkill: cognitiveSkillSchema,
     prompt: z.string().min(1),
+    instruction: z.string().min(1),
     targetObjectId: z.string().min(1),
     objectIds: z.array(z.string().min(1)).min(1),
+    selectableObjectIds: z.array(z.string().min(1)).max(3),
+    referenceObjectId: z.string().min(1).optional(),
     sourceImageId: z.string().min(1),
     groundingRecordIds: z.array(z.string().min(1)).min(1),
     correctAnswer: z.string().min(1),
     choices: z.array(z.string().min(1)).min(2).max(3),
+    interactionMode: interactionModeSchema,
+    recallZone: horizontalZoneSchema.optional(),
     verbalCue: z.string().min(1),
     encouragement: z.string().min(1),
+    answerExplanation: z.string().min(1),
     visualCueStrategy: z.enum([
       "focus_box",
       "simplify_scene",
@@ -123,7 +133,64 @@ export const lessonQuestionSchema = z
       question.choices.filter((choice) => choice === question.correctAnswer)
         .length === 1,
     { message: "The correct answer must appear exactly once in the choices." },
-  );
+  )
+  .superRefine((question, context) => {
+    const objectIds = new Set(question.objectIds);
+    const selectableIds = new Set(question.selectableObjectIds);
+
+    if (selectableIds.size !== question.selectableObjectIds.length) {
+      context.addIssue({
+        code: "custom",
+        message: "Selectable object identifiers must be unique.",
+        path: ["selectableObjectIds"],
+      });
+    }
+
+    for (const objectId of selectableIds) {
+      if (!objectIds.has(objectId)) {
+        context.addIssue({
+          code: "custom",
+          message:
+            "Selectable objects must be included in the evidence objects.",
+          path: ["selectableObjectIds"],
+        });
+      }
+    }
+
+    if (question.interactionMode === "tap_object") {
+      if (
+        question.selectableObjectIds.length < 2 ||
+        !selectableIds.has(question.targetObjectId) ||
+        question.recallZone
+      ) {
+        context.addIssue({
+          code: "custom",
+          message:
+            "Object-tap questions require at least two selectable objects, the target, and no recall zone.",
+        });
+      }
+    } else if (
+      question.selectableObjectIds.length !== 0 ||
+      !question.recallZone
+    ) {
+      context.addIssue({
+        code: "custom",
+        message:
+          "Recall-zone questions require one recall zone and no selectable objects.",
+      });
+    }
+
+    if (
+      question.referenceObjectId &&
+      selectableIds.has(question.referenceObjectId)
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "A reference landmark cannot also be a selectable answer.",
+        path: ["referenceObjectId"],
+      });
+    }
+  });
 
 export const lessonSchema = z
   .object({
@@ -279,6 +346,8 @@ export type BoundingBox = z.infer<typeof boundingBoxSchema>;
 export type CueLevel = z.infer<typeof cueLevelSchema>;
 export type GroundingRecord = z.infer<typeof groundingRecordSchema>;
 export type Guide = z.infer<typeof guideSchema>;
+export type HorizontalZone = z.infer<typeof horizontalZoneSchema>;
+export type InteractionMode = z.infer<typeof interactionModeSchema>;
 export type Lesson = z.infer<typeof lessonSchema>;
 export type LessonQuestion = z.infer<typeof lessonQuestionSchema>;
 export type LessonSession = z.infer<typeof lessonSessionSchema>;

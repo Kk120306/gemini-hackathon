@@ -64,6 +64,14 @@ Phase 4: Trustworthy Family Guide
 - Generated room media is stored outside version control and served through a private no-store route.
 - Gemini 3.1 Flash Lite Image is the default interactive edit model after passing the preservation gate with lower observed latency than the full Flash Image model.
 - Live, timeout, rejection, disabled-media, late-result, and private-media browser paths are covered by automated tests.
+- The approved room image now acts as the answer surface for five lesson activities, with accessible hotspots projected from caregiver-approved normalized object boxes.
+- Small evidence regions expand to at least 72 by 72 CSS pixels without moving their verified centers outside the contained room image.
+- The deterministic lesson compiler now combines visible attributes, verified locations, shared surfaces, and supported image-plane landmark relationships into detailed patient prompts.
+- The visual-recall activity now provides an untimed room-study state, explicit hide action, and left, middle, or right spatial recall response.
+- The association activity uses a distinct verified landmark and asks the patient to identify another object sharing its caregiver-approved surface.
+- Runtime contracts now distinguish object-tap and recall-zone interactions and reject missing targets, duplicate hotspots, unsupported references, and inconsistent spatial answers.
+- The caregiver lesson preview now explains each spatial interaction and its grounded answer instead of showing only generic choices.
+- Spatial core design QA passed at 1194 by 834 pixels across initial, incorrect, focus, correct, recall, and association states.
 
 ## Next Actions
 
@@ -84,6 +92,7 @@ Phase 4: Trustworthy Family Guide
 - Excessive caregiver setup could crowd out the patient magic moment during judging.
 - Medical-effectiveness language could undermine credibility despite a polished demo.
 - The newest Vite major currently requests an unpublished transitive dependency, so the test toolchain is pinned to the stable Vite 7 line.
+- A single room photograph supports trustworthy two-dimensional spatial relationships but cannot justify a true three-dimensional reconstruction, so the UI must continue to avoid depth or navigable-room claims.
 
 ## Blockers
 
@@ -131,3 +140,11 @@ Phase 4: Trustworthy Family Guide
 - `pnpm build` produced all 12 routes without warnings on 2026-08-22 after Phase 3.
 - The generated cue crossfade and reduced-motion state were visually inspected at 1194 by 834 pixels with no viewport overflow or browser console errors on 2026-08-22.
 - The Phase 3 production preview returned HTTP 200 through the private Tailscale URL on 2026-08-22.
+- `pnpm format:check` passed on 2026-08-22 after the core spatial interaction checkpoint.
+- `pnpm lint` passed on 2026-08-22 after the core spatial interaction checkpoint.
+- `pnpm typecheck` passed on 2026-08-22 after the core spatial interaction checkpoint.
+- `pnpm test` passed 46 tests across 14 files on 2026-08-22 after the core spatial interaction checkpoint.
+- `pnpm test:e2e` passed all 10 tablet Chromium scenarios against the active local preview on 2026-08-22 after the core spatial interaction checkpoint.
+- `pnpm build` produced all 12 routes without warnings on 2026-08-22 after the core spatial interaction checkpoint.
+- The complete six-question spatial flow was inspected in the in-app browser with no viewport overflow or browser console errors on 2026-08-22.
+- The production patient route returned HTTP 200 locally and through the private Tailscale URL after the core spatial interaction checkpoint on 2026-08-22.
