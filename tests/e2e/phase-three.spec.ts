@@ -2,6 +2,26 @@ import { expect, test } from "@playwright/test";
 
 const stateKey = "anchor.fixture.state.v4";
 
+test("patient entry prepares the spatial room before the activity starts", async ({
+  page,
+}) => {
+  await page.goto("/patient");
+  await expect(
+    page.getByText("Prepared 2.5D spatial interpretation"),
+  ).toBeVisible({ timeout: 8_000 });
+  await expect(
+    page.getByAltText(
+      "AI-generated spatial interpretation of the caregiver-approved bedroom",
+    ),
+  ).toBeVisible();
+
+  await page.getByRole("button", { name: "Start activity" }).click();
+  await expect(page.locator(".session-scene")).toHaveAttribute(
+    "data-spatial-source",
+    "prepared-2.5d",
+  );
+});
+
 test("validated room media becomes the primary spatial scene before the simplified cue", async ({
   page,
 }) => {

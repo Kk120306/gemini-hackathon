@@ -218,6 +218,7 @@ Every media record should contain its source identifiers, generation model, gene
 ## Real-Time Media Strategy
 
 The primary spatial composition is prefetched as soon as the six-question lesson passes runtime validation during caregiver review.
+Direct patient entry also starts the job from the welcome screen when an approved prepared lesson has no existing media job.
 If the candidate passes independent validation before patient mode, it becomes the labeled primary room surface.
 If generation is pending, failed, timed out, disabled, or rejected, the approved source image remains fully interactive.
 After an incorrect answer or help request, the UI immediately shows deterministic verbal and focus cues without waiting on media.

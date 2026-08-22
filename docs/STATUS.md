@@ -82,6 +82,7 @@ Phase 5: Core Demo Hardening
 - The primary scene is a labeled 2.5D spatial interpretation with perspective interaction, realistic visible depth, and hotspots anchored to caregiver-approved coordinates.
 - The deterministic source room remains the complete fallback when generation is disabled, late, failed, rejected, or unsafe.
 - The live prepared-room path generated and validated the new spatial composition in 12.3 seconds and displayed it successfully in patient mode.
+- Direct patient entry now starts the same spatial-composition job on the patient welcome screen, so a fresh Tailscale origin cannot bypass the core feature.
 
 ## Next Actions
 
@@ -173,3 +174,4 @@ Phase 5: Core Demo Hardening
 - Two additional repeated browser runs passed all 20 scenarios, giving the primary and fallback paths three consecutive passes on 2026-08-22.
 - `pnpm build` compiled successfully and produced all application and private-media routes after the Gemini spatial-composition checkpoint on 2026-08-22.
 - Git tracking checks confirmed that `.env.local`, `.data`, uploads, and generated room media remain outside version control on 2026-08-22.
+- `ANCHOR_LIVE_MEDIA_IN_DEMO=false pnpm test:e2e` passed all 11 tablet Chromium scenarios after adding direct patient-entry spatial preparation on 2026-08-22.

@@ -236,6 +236,7 @@ The six activities form a varied evidence-reasoning sequence, no activity can be
 ### Gemini Spatial Composition Checkpoint
 
 - [x] Start one primary room-composition job during caregiver lesson review.
+- [x] Start the same job from direct patient entry when a prepared fixture bypasses caregiver review.
 - [x] Ask Gemini for a realistic perspective-preserving 2.5D interpretation without changing the source viewpoint or inventing unseen geometry.
 - [x] Validate all approved objects, image-plane locations, room identity, and misleading additions against the source image before display.
 - [x] Use the validated composition as the primary patient interaction surface with caregiver-approved hotspots.

@@ -42,6 +42,7 @@ type AnchorContextValue = {
   approveGuide(): void;
   generateLesson(): Promise<void>;
   approveLesson(): void;
+  prepareSpatialScene(): void;
   startSession(): void;
   answer(choice: string): void;
   requestHelp(): void;
@@ -238,6 +239,15 @@ export function AnchorStateProvider({ children }: { children: ReactNode }) {
       },
       approveLesson() {
         dispatch({ type: "approve_lesson" });
+      },
+      prepareSpatialScene() {
+        if (state.lesson) {
+          prefetchSimplifiedRoom({
+            lesson: state.lesson,
+            questionIndex: 0,
+            spatialPreview: true,
+          });
+        }
       },
       startSession() {
         dispatch({ type: "start_session" });
