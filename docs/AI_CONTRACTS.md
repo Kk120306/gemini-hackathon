@@ -289,10 +289,11 @@ incorrect answer or help request
     -> prefetch generated media without blocking
 ```
 
-## Simplified Room Image Contract
+## Spatial Room Image Contract
 
-The image-generation request includes the original room image, the target object's verified description, and its verified location.
-It asks Gemini to reduce irrelevant visual clutter while preserving the room layout, target object, target location, camera angle, lighting, and identity of all important objects.
+The image-generation request includes the original room image, every caregiver-approved visible object, the target object's verified description, and its verified location.
+It asks Gemini for a realistic, perspective-preserving 2.5D composition with visible foreground, middle-ground, and background depth while preserving source aspect ratio, camera framing, object coordinates, room layout, and important room identity.
+It explicitly forbids a rotated viewpoint, unseen walls, inferred dimensions, and invented occluded geometry.
 
 The generated scene must not:
 
@@ -303,8 +304,9 @@ The generated scene must not:
 - Remove safety-relevant room features.
 - Introduce a new object that could be mistaken for an answer.
 
-The `focus` cue should normally use CSS dimming and highlighting.
-The generated scene is reserved for the `simplified` cue.
+The primary generated composition may appear before the first question only after independent validation.
+The `focus` cue still uses deterministic CSS dimming and highlighting so help never waits on a model.
+The `simplified` cue can use a validated generated focus scene or the verified fallback treatment.
 
 ## Generated Media Validation Contract
 

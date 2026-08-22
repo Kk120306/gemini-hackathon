@@ -27,9 +27,9 @@ type RasterRoomImage = RoomImageInput & {
 const validationContract = `Return one JSON object with this exact shape:
 {"targetObjectPresent":true,"targetLocationPreserved":true,"roomIdentityPreserved":true,"misleadingContentIntroduced":false,"safeToDisplay":true,"conciseReason":"short literal reason"}
 Image 1 is the approved source room.
-Image 2 is the candidate simplified room.
+Image 2 is the candidate spatial interpretation.
 Fail closed when uncertain.
-Set safeToDisplay true only when the target object is clearly present in its original location, the room and camera view remain recognizably the same, and no person, text, arrow, label, answer word, or misleading answer-like object was introduced.
+Set safeToDisplay true only when the target and all caregiver-approved visible objects remain clearly present in their original image-plane locations, left-right and vertical relationships are preserved, the room and camera framing remain recognizably the same, visible depth is believable, and no unseen geometry, person, text, arrow, label, answer word, or misleading answer-like object was introduced.
 Return JSON only.`;
 
 function contractSummary(error: unknown) {
@@ -79,12 +79,22 @@ export class GoogleRoomMediaProvider implements RoomMediaProvider {
       mimeType: request.sourceImage.mimeType,
     };
 
+    const approvedObjects = worldModel.objects
+      .map(
+        (object) =>
+          `- ${object.description}; ${object.location}; normalized image-plane box ${JSON.stringify(object.boundingBox)}`,
+      )
+      .join("\n");
+
     const generated = await this.imageTransport.generateImage({
       model: this.imageModel,
-      prompt: `Edit this caregiver-approved image of ${JSON.stringify(worldModel.roomName)} into a calmer, visually simplified version for a gentle object-finding cue.
-Preserve the exact room layout, camera angle, lighting, important furniture, and all safety-relevant features.
+      prompt: `Transform this caregiver-approved image of ${JSON.stringify(worldModel.roomName)} into a realistic, perspective-preserving 2.5D spatial composition for an interactive room activity.
+Make it feel like a high-quality architectural miniature render with convincing foreground, middle-ground, and background depth, soft physically plausible lighting, material texture, and clear separation between surfaces.
+Preserve the exact source aspect ratio, camera framing, room layout, object coordinates, left-right relationships, vertical relationships, colors, important furniture, and every safety-relevant feature so image-plane interaction anchors stay aligned.
 Keep the approved target ${JSON.stringify(target.description)} clearly visible in its original location, ${JSON.stringify(target.location)}.
-Reduce irrelevant visual clutter and contrast without moving, recoloring, replacing, enlarging, or labeling the target.
+Preserve every caregiver-approved visible object:
+${approvedObjects}
+Do not rotate to a new viewpoint, expose an unseen wall, infer room dimensions, or invent occluded geometry.
 Do not add or remove people.
 Do not add text, arrows, labels, answer words, or new objects.
 Do not invent any personal detail, memory, routine, or relationship.`,

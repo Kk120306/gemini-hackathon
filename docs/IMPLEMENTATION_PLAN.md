@@ -233,6 +233,19 @@ The patient explores the verified room directly, every answer remains grounded, 
 Exit condition:
 The six activities form a varied evidence-reasoning sequence, no activity can be solved from a generic one-line prompt alone, and the full tablet session remains calm, grounded, and usable without a score or timer.
 
+### Gemini Spatial Composition Checkpoint
+
+- [x] Start one primary room-composition job during caregiver lesson review.
+- [x] Ask Gemini for a realistic perspective-preserving 2.5D interpretation without changing the source viewpoint or inventing unseen geometry.
+- [x] Validate all approved objects, image-plane locations, room identity, and misleading additions against the source image before display.
+- [x] Use the validated composition as the primary patient interaction surface with caregiver-approved hotspots.
+- [x] Add subtle pointer perspective and object exploration while respecting reduced motion and touch input.
+- [x] Preserve the complete source-room fallback when live media is unavailable or unsafe.
+- [x] Add provider-contract and browser coverage for the primary generated scene.
+
+Exit condition:
+The patient can explore and answer in a labeled Gemini-generated spatial interpretation, while the app remains honest about the single-image limitation and fully usable without generation.
+
 ### Phase 4: Trustworthy Family Guide
 
 - [ ] Capture name, relationship, likeness permission, and caregiver confirmation.
@@ -249,14 +262,14 @@ The guide adds familiarity without impersonation and never blocks the patient fl
 
 ### Phase 5: Demo Hardening and Submission
 
-- [ ] Run the primary and fallback end-to-end tests three consecutive times.
-- [ ] Run lint, type checking, unit tests, end-to-end tests, and production build.
-- [ ] Inspect every patient cue state at the target tablet viewport.
-- [ ] Check keyboard access, touch-target size, contrast, focus, and reduced motion.
+- [x] Run the primary and fallback end-to-end tests three consecutive times.
+- [x] Run lint, type checking, unit tests, end-to-end tests, and production build.
+- [x] Inspect every patient cue state at the target tablet viewport.
+- [x] Check keyboard access, touch-target size, contrast, focus, and reduced motion.
 - [ ] Run the prepared caregiver path with a 90-second timer.
 - [ ] Run the full presentation with a three-minute timer.
 - [ ] Run three live-provider smoke tests using the prepared assets.
-- [ ] Confirm that no secret or personal media is tracked.
+- [x] Confirm that no secret or personal media is tracked.
 - [ ] Freeze features and prepare submission material.
 
 Exit condition:

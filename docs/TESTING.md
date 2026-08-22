@@ -19,18 +19,19 @@ The first automated test should cover this exact seeded flow:
 7. Confirm likeness consent.
 8. Approve the fixture guide.
 9. Generate and approve six fixture questions.
-10. Start patient mode.
-11. Play the first prompt.
-12. Select an incorrect answer.
-13. Observe a verbal cue.
-14. Select another incorrect answer or request help.
-15. Observe dimming and target highlighting.
-16. Advance to the simplified cue.
-17. Observe a generated-media result or deterministic fallback.
-18. Select the correct answer.
-19. Finish the remaining questions.
-20. Reach the completion state without a score.
-21. Open one grounding card and verify its image, model observation, caregiver value, and approval state.
+10. Confirm that a validated generated room becomes the primary scene or that the source fallback remains interactive.
+11. Start patient mode.
+12. Play the first prompt.
+13. Select an incorrect answer.
+14. Observe a verbal cue.
+15. Select another incorrect answer or request help.
+16. Observe dimming and target highlighting.
+17. Advance to the simplified cue.
+18. Observe a generated-media result or deterministic fallback.
+19. Select the correct answer.
+20. Finish the remaining questions.
+21. Reach the completion state without a score.
+22. Open one grounding card and verify its image, model observation, caregiver value, and approval state.
 
 ## End-to-End Failure Scenarios
 
@@ -97,7 +98,8 @@ Each scenario must produce a visible recovery path.
 - Represent pending, completed, failed, rejected, and timed-out states.
 - Display only media that passes validation.
 - Require target presence, target-location preservation, room-identity preservation, and no misleading additions for a safe result.
-- Keep a generated result hidden until the deterministic cue reaches `simplified`.
+- Publish the primary spatial composition only after independent source-and-candidate validation.
+- Keep any later unsafe or unvalidated generated result out of patient mode.
 - Stage a validated late result until the next explicit answer or help transition.
 - Preserve lesson progress after failure.
 
@@ -154,6 +156,7 @@ Capture screenshots for:
 
 - Initial question.
 - Initial spatial hotspots.
+- Validated Gemini 2.5D primary scene and source-room fallback.
 - Verbal cue.
 - Focus cue.
 - Simplified generated scene.

@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 const stateKey = "anchor.fixture.state.v4";
 
-test("validated room media stays hidden until the simplified cue", async ({
+test("validated room media becomes the primary spatial scene before the simplified cue", async ({
   page,
 }) => {
   await page.goto("/patient/session");
@@ -18,7 +18,11 @@ test("validated room media stays hidden until the simplified cue", async ({
   await expect(scene).toHaveAttribute("data-media-status", "completed", {
     timeout: 8_000,
   });
+  await expect(scene).toHaveAttribute("data-spatial-source", "prepared-2.5d");
   await expect(scene).toHaveAttribute("data-scene-source", "verified");
+  await expect(
+    page.getByText("Prepared 2.5D spatial interpretation"),
+  ).toBeVisible();
   await expect(page.locator("img.session-scene__generated")).toHaveCount(1);
 
   await page.getByRole("button", { name: "Help me" }).click();

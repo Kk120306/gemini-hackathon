@@ -147,7 +147,7 @@ An eight-second patient-stage budget may time out the visible job while allowing
 Status: Accepted
 
 The patient answers five lesson activities by touching large regions projected from caregiver-approved normalized object boxes directly over the room image.
-The remaining visual-recall activity lets the patient study the complete room without a timer, hides it only after explicit readiness, and asks for a broad left, middle, or right area.
+The remaining visual-recall activity lets the patient study the complete room without a timer, hides it only after explicit readiness, and asks for one exact upper or lower and left, middle, or right region.
 The system derives only honest image-plane relationships and never presents a single photograph as a reconstructed three-dimensional space.
 Gemma selects approved evidence identifiers, while deterministic application code compiles detailed prompts from visible attributes, verified locations, shared surfaces, and supported landmark relations.
 
@@ -160,3 +160,12 @@ The compiler combines appearance, verified place, visible landmark, and image-re
 Visual recall uses an untimed six-region row-and-column map rather than a broad left, middle, or right guess.
 The plan must distribute targets across at least three approved objects, and no object may be the target more than twice.
 The patient still receives neutral encouragement, progressive help, no timer, no score, and no clinical interpretation.
+
+## AD-020: Use a Validated 2.5D Interpretation Instead of Claiming True 3D
+
+Status: Accepted
+
+Gemini may transform the approved source room into a realistic, perspective-preserving 2.5D composition during caregiver lesson review.
+The composition can become the primary patient interaction surface only after an independent multimodal comparison confirms that every approved visible object, its image-plane location, the camera framing, and the room identity remain intact without misleading additions.
+All answer hotspots continue to use caregiver-approved source coordinates, and the approved source image remains the deterministic fallback.
+Subtle pointer perspective is a presentation effect, not a claim of measured depth, a room mesh, unseen geometry, or free-camera navigation from one photograph.

@@ -108,9 +108,10 @@ none -> verbal -> focus -> simplified -> reveal
 
 ### Spatial Scene Engine
 
-The Spatial Scene Engine converts caregiver-approved normalized object boxes into a deterministic two-dimensional scene model.
+The Spatial Scene Engine converts caregiver-approved normalized object boxes into a deterministic image-plane scene model.
+It can place those verified coordinates over either the approved source image or an independently validated Gemini 2.5D interpretation of that image.
 It derives only image-plane facts such as left of, right of, above, below, and six-region row-and-column positions.
-It does not claim monocular depth, room dimensions, occluded objects, or a reconstructed three-dimensional environment.
+Perspective motion is a presentation effect and does not claim monocular depth measurements, room dimensions, occluded objects, or a reconstructed three-dimensional environment.
 
 Interface responsibilities:
 
@@ -130,6 +131,7 @@ Interface responsibilities:
 - Generate a guide portrait from approved reference photos.
 - Generate guide expression variants.
 - Generate a simplified room scene from an original image.
+- Generate a perspective-preserving 2.5D room composition from an approved source image.
 - Generate one short guide or cue video.
 - Record pending, completed, failed, timed-out, and rejected states.
 - Return deterministic fallback instructions with every request.
@@ -179,7 +181,9 @@ Uploaded room images
     -> object proposals
     -> caregiver approval
     -> approved world-model revision
-    -> deterministic spatial scene
+    -> Gemini spatial composition candidate
+    -> independent source-and-candidate validation
+    -> generated spatial scene or deterministic source fallback
     -> lesson draft
     -> caregiver approval
     -> immutable approved lesson
@@ -213,11 +217,11 @@ Every media record should contain its source identifiers, generation model, gene
 
 ## Real-Time Media Strategy
 
-Real-time image generation is prefetched after the first incorrect answer or help request.
-The UI immediately shows a deterministic focus overlay and a non-blocking generation state.
-The generated scene remains hidden until the session reaches the `simplified` cue level and validation has passed.
-If a validated generated scene is ready, the UI crossfades to it.
-If generation fails, times out, or is rejected, the deterministic overlay remains and the lesson continues.
+The primary spatial composition is prefetched as soon as the six-question lesson passes runtime validation during caregiver review.
+If the candidate passes independent validation before patient mode, it becomes the labeled primary room surface.
+If generation is pending, failed, timed out, disabled, or rejected, the approved source image remains fully interactive.
+After an incorrect answer or help request, the UI immediately shows deterministic verbal and focus cues without waiting on media.
+At the `simplified` cue level, a safe generated focus scene may crossfade in while unsafe or unavailable media preserves the deterministic overlay.
 
 Guide video generation begins asynchronously after the caregiver approves the static guide.
 It runs in parallel with lesson generation so that patient mode never waits for it.

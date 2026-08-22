@@ -89,10 +89,19 @@ export function AnchorStateProvider({ children }: { children: ReactNode }) {
   }, [state, storage]);
 
   const value = useMemo<AnchorContextValue>(() => {
-    function prefetchSimplifiedRoom() {
-      const lesson = state.lesson;
-      const question = lesson?.questions[state.session.questionIndex];
-      if (!lesson || !question || lesson.approval !== "approved") {
+    function prefetchSimplifiedRoom(input?: {
+      lesson: NonNullable<AnchorState["lesson"]>;
+      questionIndex: number;
+      spatialPreview?: boolean;
+    }) {
+      const lesson = input?.lesson ?? state.lesson;
+      const question =
+        lesson?.questions[input?.questionIndex ?? state.session.questionIndex];
+      if (
+        !lesson ||
+        !question ||
+        (!input?.spatialPreview && lesson.approval !== "approved")
+      ) {
         return;
       }
       const pendingJob = createPendingSimplifiedRoomJob({
@@ -111,6 +120,7 @@ export function AnchorStateProvider({ children }: { children: ReactNode }) {
       dispatch({ type: "media_job_updated", job: pendingJob });
       void runSimplifiedRoomJob({
         pendingJob,
+        ...(input?.spatialPreview ? { budgetMs: 45_000 } : {}),
         onLateResult(job) {
           lateMediaJobs.current.set(job.id, job);
         },
@@ -211,13 +221,19 @@ export function AnchorStateProvider({ children }: { children: ReactNode }) {
           state.worldModel,
           state.groundingRecords,
         );
+        const validatedLesson = validateGroundedLesson(
+          lesson,
+          state.worldModel,
+          state.groundingRecords,
+        );
         dispatch({
           type: "lesson_generated",
-          lesson: validateGroundedLesson(
-            lesson,
-            state.worldModel,
-            state.groundingRecords,
-          ),
+          lesson: validatedLesson,
+        });
+        prefetchSimplifiedRoom({
+          lesson: validatedLesson,
+          questionIndex: 0,
+          spatialPreview: true,
         });
       },
       approveLesson() {

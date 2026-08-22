@@ -16,7 +16,9 @@ Gemma proposes a small personal world model containing visible objects and their
 The caregiver confirms or edits every object before it can be used.
 
 ANCHOR then generates a caregiver-approved family guide and a six-question lesson based on the verified objects.
-The approved room image becomes the interaction surface, with large touch targets projected over verified object regions rather than detached answer cards.
+Gemini transforms the approved room image into a realistic, perspective-preserving 2.5D spatial interpretation during caregiver review.
+A candidate becomes the primary interaction surface only after it preserves every approved visible object and its image-plane location under independent validation.
+Large touch targets remain projected from verified object regions rather than generated guesses, and the approved source image remains the complete fallback.
 The patient completes the lesson through this calm spatial interface.
 When the patient struggles, ANCHOR gives the minimum next cue and progressively simplifies the visual scene.
 
@@ -32,6 +34,7 @@ Deterministic overlays, static expressions, and text remain available whenever g
 - Make every question require a three-part evidence path assembled from visible attributes, verified locations, landmarks, or image-plane spatial rules.
 - Distribute the six targets across at least three approved objects so the lesson cannot repeat one easy answer.
 - Let the patient answer directly in the familiar room image.
+- Let the patient explore a validated Gemini spatial interpretation with subtle perspective motion while retaining source-image grounding.
 - Demonstrate progressive cueing after an incorrect answer.
 - Demonstrate live image generation without making it a single point of failure.
 - Demonstrate one short generated guide or cue video.
@@ -107,17 +110,19 @@ The stage promise is:
 8. The caregiver approves the guide.
 9. Gemma generates six questions from the approved world model.
 10. The caregiver previews and approves the lesson.
-11. The patient starts the lesson.
-12. The patient answers by touching one of the large verified object regions projected over the room image.
-13. The patient answers at least one question incorrectly.
-14. ANCHOR gives a verbal cue and immediately applies a deterministic visual focus effect.
-15. Gemini generates a simplified version of the scene in the background.
-16. ANCHOR displays the generated scene only if it preserves the verified object and location.
-17. The patient receives a stronger highlight or close-up after another incorrect answer.
-18. The patient selects the correct object in the room.
-19. The guide celebrates and moves to the next question.
-20. One controlled lesson moment uses a short generated video.
-21. The lesson ends with a calm completion message and no score.
+11. Gemini composes a perspective-preserving 2.5D room interpretation while the caregiver reviews the lesson.
+12. Independent validation compares the source and candidate before the candidate can become the patient scene.
+13. The patient starts the lesson.
+14. The patient answers by touching one of the large verified object regions projected over the spatial room scene or source fallback.
+15. The patient answers at least one question incorrectly.
+16. ANCHOR gives a verbal cue and immediately applies a deterministic visual focus effect.
+17. ANCHOR prepares a generated focus scene without blocking the answer controls.
+18. ANCHOR displays generated media only if it preserves the verified object and location.
+19. The patient receives a stronger highlight or close-up after another incorrect answer.
+20. The patient selects the correct object in the room.
+21. The guide celebrates and moves to the next question.
+22. One controlled lesson moment may use a short generated video after the core product is stable.
+23. The lesson ends with a calm completion message and no score.
 
 ## Lesson Composition
 
@@ -160,7 +165,7 @@ A question cannot enter an approved lesson when any required grounding record is
 
 Each question can move through these cue levels:
 
-1. `none`: Show the original image and the initial prompt.
+1. `none`: Show the validated spatial interpretation or the approved source fallback and the initial prompt.
 2. `verbal`: Give one short location or feature hint.
 3. `focus`: Dim irrelevant areas and highlight the verified target region.
 4. `simplified`: Display a validated Gemini-generated simplified scene when available.
@@ -185,6 +190,8 @@ The model may recommend the next cue, but application code enforces the allowed 
 - The guide must be described as an AI-generated guide based on the trusted person.
 - The guide must remain a supporting element and must not obscure the room image or answer controls.
 - The approved room image must be the answer surface for every non-recall activity.
+- A validated 2.5D spatial interpretation may replace the approved source pixels, but every hotspot and claim must remain tied to source-image grounding.
+- The interface must label the generated spatial interpretation and must not describe it as a metric 3D reconstruction.
 - Object hotspots must derive from approved normalized bounding boxes and stay aligned when the image is contained responsively.
 - Small detected objects must receive at least a 64 by 64 CSS pixel touch region without changing the evidence location.
 - Spatial claims must describe only relationships visible in the image plane or caregiver-confirmed facts.
@@ -214,6 +221,7 @@ The model may recommend the next cue, but application code enforces the allowed 
 - The lesson targets at least three approved objects and never targets the same object more than twice.
 - An incorrect answer visibly advances the cue sequence.
 - A generated simplified scene can replace the deterministic overlay after validation.
+- A validated Gemini spatial interpretation can serve as the primary scene without changing verified hotspot coordinates.
 - One short generated video appears without blocking the remainder of the lesson.
 - The patient can finish the lesson entirely through visible controls.
 - No generated copy invents memories, quotes, routines, or relationships.

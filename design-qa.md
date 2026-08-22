@@ -43,7 +43,8 @@ The implementation intentionally omits decorative source elements that would com
 The full approved room image uses aspect-preserving containment, so no evidence object is cropped from arbitrary caregiver uploads.
 All visible scene anchors are projected from approved normalized bounding boxes rather than approximate CSS art.
 The fixture room and guide remain real project assets, and the guide retains its visible AI-generated label.
-No placeholder image, emoji, handcrafted SVG illustration, or fake three-dimensional reconstruction was introduced.
+No placeholder image, emoji, handcrafted SVG illustration, or false metric three-dimensional reconstruction was introduced.
+The live room is a clearly labeled Gemini 2.5D interpretation that preserves the source viewpoint and verified image-plane anchors.
 
 ### Copy and Content
 
@@ -62,6 +63,7 @@ Hotspots use numbered circular markers because numbers remain legible and avoid 
 
 The initial activity exposes three large touch regions directly on the room image and no detached answer-card grid.
 Hover and focus subtly shift scene emphasis toward the explored object without changing the evidence coordinates.
+Pointer movement adds a restrained perspective tilt to the validated spatial composition, while touch and reduced-motion modes keep the scene stable.
 An incorrect answer advances neutral verbal support and begins non-blocking media preparation.
 The focus state dims irrelevant room areas and highlights the verified target.
 The correct state disables alternative hotspots, retains the verified target label, explains the grounded answer, and exposes continuation.
@@ -81,6 +83,7 @@ The 1194 by 834 tablet viewport has no clipping, overlap, or scroll.
 ## Browser Evidence
 
 The strengthened six-question lesson was walked through in the in-app browser.
+The live Gemini room-composition action completed in 12.3 seconds, passed the source-and-candidate preservation gate, and appeared as the primary patient scene.
 The initial three-evidence challenge, wrong-answer, focus, correct, six-region recall-study, recall-hidden, and multi-evidence association states were inspected.
 Browser metrics reported a 1194-pixel document width, an 834-pixel document height, and no viewport overflow.
 Visible object targets measured at least 72 CSS pixels in each dimension.

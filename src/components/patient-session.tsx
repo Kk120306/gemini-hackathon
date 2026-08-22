@@ -36,6 +36,7 @@ export function PatientSession() {
     string | null
   >(null);
   const [exploredObjectId, setExploredObjectId] = useState<string | null>(null);
+  const [sceneTilt, setSceneTilt] = useState({ x: 0, y: 0 });
   const question = state.lesson?.questions[state.session.questionIndex];
   const target = useMemo(
     () =>
@@ -76,6 +77,19 @@ export function PatientSession() {
           job.questionId === question?.id,
       ),
     [question?.id, state.lesson?.id, state.mediaJobs],
+  );
+  const spatialSceneJob = useMemo(
+    () =>
+      state.mediaJobs.find(
+        (job) =>
+          job.kind === "simplified_room" &&
+          job.lessonId === state.lesson?.id &&
+          job.status === "completed" &&
+          job.validationPassed &&
+          job.validation?.safeToDisplay &&
+          job.outputSrc,
+      ),
+    [state.lesson?.id, state.mediaJobs],
   );
 
   useEffect(() => {
@@ -136,6 +150,15 @@ export function PatientSession() {
     mediaJob.validation?.safeToDisplay &&
     mediaJob.outputSrc,
   );
+  const spatialSceneReady = Boolean(spatialSceneJob?.outputSrc);
+  const spatialSceneSource =
+    spatialSceneJob?.generationModel === "fixture-simplifier-v1"
+      ? "prepared-2.5d"
+      : "gemini-2.5d";
+  const spatialSceneLabel =
+    spatialSceneSource === "prepared-2.5d"
+      ? "Prepared 2.5D spatial interpretation"
+      : "Gemini 2.5D spatial interpretation";
   const generatedSceneLabel =
     mediaJob?.generationModel === "fixture-simplifier-v1"
       ? "Prepared simplified view"
@@ -208,6 +231,20 @@ export function PatientSession() {
           data-media-status={mediaJob?.status ?? "idle"}
           data-scene-source={generatedSceneReady ? "generated" : "verified"}
           data-interaction-mode={activeQuestion.interactionMode}
+          data-spatial-source={
+            spatialSceneReady ? spatialSceneSource : "source"
+          }
+          onPointerMove={(event) => {
+            if (event.pointerType === "touch") {
+              return;
+            }
+            const bounds = event.currentTarget.getBoundingClientRect();
+            setSceneTilt({
+              x: ((event.clientX - bounds.left) / bounds.width - 0.5) * 3.6,
+              y: ((event.clientY - bounds.top) / bounds.height - 0.5) * -2.8,
+            });
+          }}
+          onPointerLeave={() => setSceneTilt({ x: 0, y: 0 })}
         >
           <div
             className="session-scene__world"
@@ -216,12 +253,17 @@ export function PatientSession() {
               transformOrigin: cameraCenter
                 ? `${cameraCenter.x * 100}% ${cameraCenter.y * 100}%`
                 : "50% 50%",
+              transform: `perspective(1200px) rotateX(${sceneTilt.y}deg) rotateY(${sceneTilt.x}deg) scale(${cameraCenter ? 1.045 : 1.018})`,
             }}
           >
             <Image
               className="session-scene__base"
-              src={state.room.imageSrc}
-              alt={`Approved ${state.room.name.toLowerCase()} view`}
+              src={spatialSceneJob?.outputSrc ?? state.room.imageSrc}
+              alt={
+                spatialSceneReady
+                  ? `AI-generated spatial interpretation of the approved ${state.room.name.toLowerCase()}`
+                  : `Approved ${state.room.name.toLowerCase()} view`
+              }
               fill
               priority
               sizes="(max-width: 900px) 100vw, 68vw"
@@ -233,6 +275,7 @@ export function PatientSession() {
                 src={mediaJob.outputSrc}
                 alt={`${generatedSceneLabel} of the approved ${state.room.name.toLowerCase()}`}
                 fill
+                loading="eager"
                 sizes="(max-width: 900px) 100vw, 68vw"
                 unoptimized
               />
@@ -301,11 +344,18 @@ export function PatientSession() {
                       ? recallReady
                         ? "Six-region recall map"
                         : "Study object, surface, row, and column"
-                      : "Touch a numbered object area"}
+                      : spatialSceneReady
+                        ? spatialSceneLabel
+                        : "Touch a numbered object area"}
           </span>
-          {mediaJob?.status === "pending" && !showSimplified ? (
+          {state.mediaJobs.some(
+            (job) =>
+              job.kind === "simplified_room" &&
+              job.lessonId === state.lesson?.id &&
+              job.status === "pending",
+          ) && !showSimplified ? (
             <span className="scene-media-status" role="status">
-              Preparing next visual cue
+              Gemini is composing the spatial room
             </span>
           ) : null}
         </div>

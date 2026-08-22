@@ -37,6 +37,7 @@ export const serverEnvSchema = z
     ANCHOR_STORAGE_MODE: z.enum(["local"]).default("local"),
     ANCHOR_DATA_DIR: z.string().trim().min(1).default(".data"),
     ANCHOR_DEMO_MODE: booleanFlag(true),
+    ANCHOR_LIVE_MEDIA_IN_DEMO: booleanFlag(false),
     ANCHOR_ENABLE_IMAGE_GENERATION: booleanFlag(true),
     ANCHOR_ENABLE_VIDEO_GENERATION: booleanFlag(true),
     ANCHOR_AI_TIMEOUT_MS: positiveInteger(45_000),

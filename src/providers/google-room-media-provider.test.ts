@@ -92,6 +92,12 @@ describe("Google simplified-room media contracts", () => {
       "Dark blue reading glasses",
     );
     expect(imageTransport.requests[0]?.prompt).toContain("bedside table");
+    expect(imageTransport.requests[0]?.prompt).toContain(
+      "realistic, perspective-preserving 2.5D spatial composition",
+    );
+    expect(imageTransport.requests[0]?.prompt).toContain(
+      "Preserve every caregiver-approved visible object",
+    );
     expect(validationTransport.requests[0]?.images).toHaveLength(2);
   });
 

@@ -46,6 +46,7 @@ The demo must keep its static fallback if access is unavailable.
 | `ANCHOR_STORAGE_MODE`                   | Yes                   | Selects `local` or a future storage adapter             |
 | `ANCHOR_DATA_DIR`                       | Yes in local mode     | Private JSON and media root                             |
 | `ANCHOR_DEMO_MODE`                      | Yes                   | Enables deterministic demo fixtures and fallback assets |
+| `ANCHOR_LIVE_MEDIA_IN_DEMO`             | Yes                   | Uses live Gemini room media with deterministic demo text |
 | `ANCHOR_ENABLE_IMAGE_GENERATION`        | Yes                   | Enables live image-generation jobs                      |
 | `ANCHOR_ENABLE_VIDEO_GENERATION`        | Yes                   | Enables the single video-generation moment              |
 | `NEXT_PUBLIC_ENABLE_SPEECH_RECOGNITION` | Yes                   | Enables the optional browser speech UI                  |
@@ -64,6 +65,7 @@ The demo must keep its static fallback if access is unavailable.
 ## Feature Flags
 
 Image generation remains enabled because it is part of the required demonstration.
+`ANCHOR_LIVE_MEDIA_IN_DEMO` may be enabled locally to keep the six-question fixture deterministic while exercising the real spatial-room generation and validation path.
 Video generation remains enabled because it is part of the requested demonstration, but the app must degrade to a static guide.
 Speech recognition remains disabled by default because it is a nice-to-have feature.
 

@@ -1816,6 +1816,7 @@ a {
   border: 1px solid rgb(37 65 59 / 16%);
   background: #d8dfd7;
   box-shadow: var(--shadow-soft);
+  perspective: 1200px;
 }
 
 .session-scene__world {
@@ -1825,6 +1826,8 @@ a {
     filter 320ms ease,
     opacity 320ms ease,
     transform 420ms ease;
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 
 .session-scene__world[data-camera-active="true"] {
@@ -1842,6 +1845,20 @@ a {
 
 .session-scene__base {
   opacity: 1;
+  filter: saturate(1.03) contrast(1.02);
+}
+
+.session-scene[data-spatial-source="gemini-2.5d"],
+.session-scene[data-spatial-source="prepared-2.5d"] {
+  border-color: rgb(245 196 93 / 48%);
+  box-shadow:
+    0 24px 70px rgb(14 42 37 / 22%),
+    0 0 0 5px rgb(245 196 93 / 14%);
+}
+
+.session-scene[data-spatial-source="gemini-2.5d"] .session-scene__base,
+.session-scene[data-spatial-source="prepared-2.5d"] .session-scene__base {
+  filter: saturate(1.08) contrast(1.035) brightness(1.015);
 }
 
 .session-scene__generated {
@@ -2784,5 +2801,9 @@ a {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+
+  .session-scene__world {
+    transform: none !important;
   }
 }

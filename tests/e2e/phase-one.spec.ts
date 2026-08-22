@@ -105,6 +105,18 @@ test("caregiver correction persists into the complete six-question flow", async 
 
   await expect(page.getByText("On the reading table").first()).toBeVisible();
   await page.getByRole("button", { name: "Start activity" }).click();
+  const scene = page.locator(".session-scene");
+  await expect(scene).toHaveAttribute("data-spatial-source", "prepared-2.5d", {
+    timeout: 8_000,
+  });
+  await expect(
+    page.getByAltText(
+      "AI-generated spatial interpretation of the approved bedroom",
+    ),
+  ).toBeVisible();
+  await expect(
+    page.getByText("Prepared 2.5D spatial interpretation"),
+  ).toBeVisible();
 
   await page
     .getByRole("button", { name: "Choose Blue mug in the room" })
@@ -149,6 +161,11 @@ test("neutral guide and deterministic media fallback complete without likeness m
   await expect(page.getByText("AI-generated neutral guide")).toBeVisible();
   await page.getByRole("button", { name: "Start activity" }).click();
   await expect(page.getByText("AI-generated neutral guide")).toBeVisible();
+  await expect(page.locator(".session-scene")).toHaveAttribute(
+    "data-spatial-source",
+    "prepared-2.5d",
+    { timeout: 8_000 },
+  );
 
   await answerRemainingQuestions(page, [
     "Reading glasses",

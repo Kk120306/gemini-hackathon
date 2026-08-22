@@ -52,7 +52,7 @@ function createRoomMediaProvider(): RoomMediaProvider | null {
   if (!serverEnv.ANCHOR_ENABLE_IMAGE_GENERATION) {
     return null;
   }
-  if (serverEnv.ANCHOR_DEMO_MODE) {
+  if (serverEnv.ANCHOR_DEMO_MODE && !serverEnv.ANCHOR_LIVE_MEDIA_IN_DEMO) {
     return new FakeRoomMediaProvider();
   }
   if (!serverEnv.GEMINI_API_KEY) {

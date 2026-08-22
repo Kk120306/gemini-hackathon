@@ -4,7 +4,7 @@ Last updated: 2026-08-22
 
 ## Current Phase
 
-Phase 4: Trustworthy Family Guide
+Phase 5: Core Demo Hardening
 
 ## Completed
 
@@ -77,19 +77,23 @@ Phase 4: Trustworthy Family Guide
 - The lesson plan must target at least three approved objects and cannot target any object more than twice.
 - Visual recall now binds the target to its verified surface, one row, and one column before exposing six exact answer regions.
 - Strong spatial reasoning design QA passed at 1194 by 834 pixels for the detailed first activity, hidden six-region recall, and multi-evidence association with no viewport overflow.
+- Lesson generation now starts a Gemini room-composition job during caregiver review so patient mode does not wait on the network.
+- A completed candidate becomes the primary room surface only after independent two-image validation confirms approved object preservation, image-plane alignment, room identity, and no misleading additions.
+- The primary scene is a labeled 2.5D spatial interpretation with perspective interaction, realistic visible depth, and hotspots anchored to caregiver-approved coordinates.
+- The deterministic source room remains the complete fallback when generation is disabled, late, failed, rejected, or unsafe.
+- The live prepared-room path generated and validated the new spatial composition in 12.3 seconds and displayed it successfully in patient mode.
 
 ## Next Actions
 
-1. Implement consent-gated trusted-person reference upload and server-private storage.
-2. Generate and independently validate one lightly stylized guide portrait without voice cloning or live-call framing.
-3. Add explicit caregiver approval and rejection before any generated likeness enters patient mode.
-4. Start the optional guide video after portrait approval while preserving the static guide and lesson behavior.
-5. Confirm the exact repository or environment scope of the GitHub `GEMINI_API_KEY` secret before relying on the live CI workflow.
+1. Run the full deterministic and fallback suites against the six-question demo.
+2. Build and restore the production Tailscale preview for remote recording.
+3. Rehearse the core room-to-question-to-cue path before returning to optional guide or video work.
+4. Confirm the exact repository or environment scope of the GitHub `GEMINI_API_KEY` secret before relying on the live CI workflow.
 
 ## Open Risks
 
 - The Gemini Omni Flash preview requires paid-tier access and may not be available to the chosen API key.
-- Live simplified-room generation and validation took 11.4 seconds in the latest smoke test, so the eight-second fallback and safe late-publication path remain essential.
+- Live spatial-room generation and validation took 12.3 seconds in the latest prepared-flow check, so caregiver-time prefetch and safe late-publication remain essential.
 - Generative preservation is nondeterministic, so every candidate must continue to pass the two-image validation gate.
 - Browser speech-recognition support varies and must remain optional.
 - Local filesystem persistence will need replacement if the demo is deployed to an ephemeral host.
@@ -97,7 +101,7 @@ Phase 4: Trustworthy Family Guide
 - Excessive caregiver setup could crowd out the patient magic moment during judging.
 - Medical-effectiveness language could undermine credibility despite a polished demo.
 - The newest Vite major currently requests an unpublished transitive dependency, so the test toolchain is pinned to the stable Vite 7 line.
-- A single room photograph supports trustworthy two-dimensional spatial relationships but cannot justify a true three-dimensional reconstruction, so the UI must continue to avoid depth or navigable-room claims.
+- A single room photograph can support a perspective-preserving 2.5D interpretation, but it cannot justify a metric mesh, unseen geometry, or free-camera reconstruction.
 - Stronger evidence tasks increase reading and reasoning demand, so caregiver review, spoken replay, progressive help, neutral feedback, and the no-score boundary must remain mandatory.
 
 ## Blockers
@@ -161,3 +165,11 @@ Phase 4: Trustworthy Family Guide
 - `pnpm test:e2e` passed all 11 tablet Chromium scenarios after the strong spatial reasoning checkpoint on 2026-08-22.
 - `pnpm build` produced all 15 application and private-media routes after the strong spatial reasoning checkpoint on 2026-08-22.
 - The detailed first activity, hidden six-region recall, and shared-surface association were inspected in the in-app browser at 1194 by 834 pixels with no viewport overflow on 2026-08-22.
+- The prepared raster-room flow generated and independently validated the primary Gemini 2.5D spatial interpretation in 12.3 seconds on 2026-08-22.
+- The live generated scene, three caregiver-approved hotspots, and detailed three-clue first activity were visually inspected in the in-app browser at 1280 by 720 pixels on 2026-08-22.
+- `pnpm format:check`, `pnpm lint`, and `pnpm typecheck` passed after the Gemini spatial-composition checkpoint on 2026-08-22.
+- `pnpm test` passed 47 tests across 14 files after the Gemini spatial-composition checkpoint on 2026-08-22.
+- `ANCHOR_LIVE_MEDIA_IN_DEMO=false pnpm test:e2e` passed all 10 tablet Chromium scenarios after the Gemini spatial-composition checkpoint on 2026-08-22.
+- Two additional repeated browser runs passed all 20 scenarios, giving the primary and fallback paths three consecutive passes on 2026-08-22.
+- `pnpm build` compiled successfully and produced all application and private-media routes after the Gemini spatial-composition checkpoint on 2026-08-22.
+- Git tracking checks confirmed that `.env.local`, `.data`, uploads, and generated room media remain outside version control on 2026-08-22.

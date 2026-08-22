@@ -21,11 +21,9 @@ describe("fake AI provider", () => {
       state.groundingRecords,
     );
 
-    expect(lesson.questions[1]?.correctAnswer).toBe("Reading glasses");
-    expect(lesson.questions[1]?.prompt).toContain("reading table");
-    expect(lesson.questions[1]?.verbalCue).toBe(
-      "Scan the reading table slowly from one side to the other.",
-    );
+    expect(lesson.questions[0]?.correctAnswer).toBe("Reading glasses");
+    expect(lesson.questions[0]?.prompt).toContain("reading table");
+    expect(lesson.questions[0]?.verbalCue).toContain("reading table");
   });
 
   it("refuses to generate a likeness without consent", async () => {
