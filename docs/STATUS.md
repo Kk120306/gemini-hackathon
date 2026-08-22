@@ -4,7 +4,7 @@ Last updated: 2026-08-22
 
 ## Current Phase
 
-Design alignment checkpoint before Phase 3
+Phase 3: Progressive Cue Magic Moment
 
 ## Completed
 
@@ -47,12 +47,18 @@ Design alignment checkpoint before Phase 3
 - Structured model output receives at most one repair attempt and fails closed on malformed, unsupported, over-inferred, or ungrounded content.
 - A manually triggered live-provider GitHub Actions workflow and an opt-in local Playwright smoke path are included.
 - The complete prepared-room live Gemma flow passed locally with the configured key and model.
+- The updated quiet sage mockup now anchors the landing, caregiver, patient start, and patient activity visual language.
+- Figtree typography, warm neutral surfaces, rounded cards, pill actions, compact progress dots, and the two-column activity stage are implemented.
+- The approved room image now dominates patient start while the generated guide remains labeled and secondary.
+- Patient activity copy was shortened without weakening the deterministic grounding compiler.
+- Design QA passed against the source patient-activity reference at the 1194 by 834 tablet viewport.
+- The final patient activity capture has zero horizontal or vertical viewport overflow and no browser console errors.
 
 ## Next Actions
 
-1. Align the landing, caregiver evidence, and patient activity screens with the updated mockup's quieter visual direction.
-2. Preserve the verified room-to-cue proof chain and large patient controls during the visual alignment.
-3. Begin Phase 3 simplified-room media generation only after the design checkpoint is verified and committed.
+1. Add the non-blocking simplified-room generation job behind the existing media state model.
+2. Validate generated room identity, target presence, location, and misleading additions before display.
+3. Preserve immediate deterministic focus cues and continue after the eight-second stage budget.
 4. Confirm the exact repository or environment scope of the GitHub `GEMINI_API_KEY` secret before relying on the live CI workflow.
 
 ## Open Risks
@@ -97,3 +103,9 @@ Design alignment checkpoint before Phase 3
 - `pnpm test` passed 29 tests across 10 files on 2026-08-22 after Phase 2.
 - `pnpm test:e2e` passed 5 tablet Chromium scenarios on 2026-08-22 after Phase 2.
 - `pnpm build` produced all 10 public application routes and the private room-media route successfully on 2026-08-22 after Phase 2.
+- `pnpm lint` and `pnpm typecheck` passed during the design alignment checkpoint on 2026-08-22.
+- `pnpm format:check` passed during the design alignment checkpoint on 2026-08-22.
+- `pnpm test` passed 29 tests across 10 files during the design alignment checkpoint on 2026-08-22.
+- `pnpm test:e2e` passed all 5 tablet Chromium scenarios after the design alignment checkpoint on 2026-08-22.
+- `pnpm build` produced all 10 public application routes and the private room-media route after the design alignment checkpoint on 2026-08-22.
+- Browser-rendered design QA passed with exact 1194 by 834 viewport fit and no console errors on 2026-08-22.

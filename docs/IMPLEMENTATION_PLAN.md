@@ -184,6 +184,16 @@ The complete stage flow works offline, shows the grounding proof chain, and pass
 Exit condition:
 The prepared room image produces an approved world model and six grounded questions through live Gemma.
 
+### Design Alignment Checkpoint
+
+- [x] Center the visual language on the updated quiet sage mockup.
+- [x] Keep the verified room image dominant on patient start and activity screens.
+- [x] Preserve large patient controls, deterministic grounding copy, and visible guide labeling.
+- [x] Visually compare the tablet activity against the source and eliminate viewport overflow.
+
+Exit condition:
+The core caregiver and patient screens match the selected visual direction without weakening the verified room-to-cue flow.
+
 ### Phase 3: Progressive Cue Magic Moment
 
 - [ ] Implement deterministic dimming, highlighting, and cropping from normalized bounding boxes.

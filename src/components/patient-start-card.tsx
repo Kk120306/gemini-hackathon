@@ -49,34 +49,56 @@ export function PatientStartCard() {
 
   return (
     <section className="patient-start__card">
-      <div className="patient-start__guide">
+      <div className="patient-start__room">
         <Image
-          src={state.guide.imageSrc}
-          alt={state.guide.label}
+          src={state.room.imageSrc}
+          alt="Caregiver-approved familiar bedroom"
           fill
-          sizes="260px"
+          priority
+          sizes="(max-width: 760px) 100vw, 760px"
           unoptimized
         />
-        <span>{state.guide.label}</span>
+        <span>Caregiver-approved room</span>
       </div>
       <div className="patient-start__copy">
-        <p className="eyebrow">A familiar-room activity</p>
-        <h1>Hello, {state.patient.firstName}.</h1>
-        <p>
-          We will look around a familiar bedroom together. Take your time. You
-          can ask for help whenever you like.
-        </p>
-        <button className="patient-start-button" type="button" onClick={begin}>
-          <PlayIcon />
-          Start activity
-        </button>
-        <div className="patient-start__support">
-          <span>
-            <VolumeIcon /> Prompts can be read aloud
-          </span>
-          <span>
-            <ShieldIcon /> No score or timer
-          </span>
+        <div>
+          <p className="eyebrow">Your activity is ready</p>
+          <h1>Hello, {state.patient.firstName}.</h1>
+          <p>
+            Six gentle questions about this familiar room. Take your time and
+            ask for help whenever you like.
+          </p>
+          <div className="patient-start__guide-label">
+            <Image
+              src={state.guide.imageSrc}
+              alt=""
+              width={52}
+              height={58}
+              unoptimized
+            />
+            <span>
+              ANCHOR will guide the activity
+              <small>{state.guide.label}</small>
+            </span>
+          </div>
+        </div>
+        <div className="patient-start__actions">
+          <button
+            className="patient-start-button"
+            type="button"
+            onClick={begin}
+          >
+            <PlayIcon />
+            Start activity
+          </button>
+          <div className="patient-start__support">
+            <span>
+              <VolumeIcon /> Prompts can be read aloud
+            </span>
+            <span>
+              <ShieldIcon /> No score or timer
+            </span>
+          </div>
         </div>
       </div>
     </section>

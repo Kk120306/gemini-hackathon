@@ -1,10 +1,10 @@
-# ANCHOR Phase 2 Handover
+# ANCHOR Design Alignment Handover
 
 ## Handover Summary
 
-Phase 2 is complete in the current worktree and is ready for its dedicated commit.
-This phase connects the approved caregiver flow to live hosted Gemma without exposing the API key or trusting model-authored patient copy.
-The next checkpoint aligns the core screens with the updated UI reference before Phase 3 cue-generation work begins.
+Phase 2 live grounding is committed in `c287089`.
+The updated mockup alignment checkpoint is complete in the current worktree and is ready for its dedicated commit.
+The next implementation phase is the progressive cue magic moment with non-blocking validated simplified-room media.
 
 ## What Is Ready
 
@@ -29,6 +29,10 @@ The next checkpoint aligns the core screens with the updated UI reference before
 - Malformed, unsupported, over-inferred, MIME-spoofed, and ungrounded responses fail closed with at most one structured repair attempt.
 - The complete prepared-room live flow passed locally against the configured Gemma model on 2026-08-22.
 - A manually triggered GitHub Actions live smoke workflow is included.
+- The updated mockup now anchors the product's warm neutral canvas, Figtree typography, sage actions, rounded cards, progress dots, and two-column patient stage.
+- The patient start screen makes the approved room the primary visual and keeps the generated guide visibly labeled but secondary.
+- The patient activity screen fits the 1194 by 834 tablet viewport without scrolling.
+- The source and implementation were compared in a normalized combined capture and `design-qa.md` records a passing result.
 
 ## What Is Not Ready
 
@@ -174,6 +178,6 @@ The supported Next.js production-server options are documented in the [official 
 
 ## Resume Development
 
-Phase 3 should preserve the deterministic cue engine while adding validated simplified-room media as a non-blocking enhancement.
+Phase 3 should preserve the aligned core screens and deterministic cue engine while adding validated simplified-room media as a non-blocking enhancement.
 Read `docs/STATUS.md` and `docs/IMPLEMENTATION_PLAN.md` before resuming.
 Complete, verify, document, commit, push, and hand over each future phase separately.

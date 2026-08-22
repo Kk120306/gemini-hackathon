@@ -61,7 +61,7 @@ function answerFor(type: LessonQuestion["type"], object: WorldObject) {
 function promptFor(type: LessonQuestion["type"], object: WorldObject) {
   switch (type) {
     case "object_recognition":
-      return `Which visible object matches this description: ${object.description.toLowerCase()}?`;
+      return `Which object is described as ${object.description.toLowerCase()}?`;
     case "location_matching":
       return `Where are the ${object.name.toLowerCase()}?`;
     case "visual_search":

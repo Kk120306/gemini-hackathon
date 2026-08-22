@@ -1,5 +1,4 @@
-import "@fontsource-variable/fraunces/wght.css";
-import "@fontsource-variable/nunito-sans/wght.css";
+import "@fontsource-variable/figtree/wght.css";
 import type { Metadata } from "next";
 
 import { AnchorStateProvider } from "@/components/anchor-state-provider";

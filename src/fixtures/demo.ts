@@ -56,8 +56,7 @@ const preparedLesson: Lesson = {
       id: "question-1",
       type: "object_recognition",
       cognitiveSkill: "recognition",
-      prompt:
-        "Which visible object matches this description: dark blue reading glasses?",
+      prompt: "Which object is described as dark blue reading glasses?",
       correctAnswer: "Reading glasses",
       choices: ["Reading glasses", "Lamp", "Blue mug"],
       objectIds: ["object-glasses", "object-lamp", "object-mug"],
@@ -106,8 +105,7 @@ const preparedLesson: Lesson = {
       id: "question-4",
       type: "object_recognition",
       cognitiveSkill: "recognition",
-      prompt:
-        "Which visible object matches this description: cream lamp with a green base?",
+      prompt: "Which object is described as cream lamp with a green base?",
       correctAnswer: "Lamp",
       choices: ["Lamp", "Reading glasses", "Blue mug"],
       objectIds: ["object-lamp", "object-glasses", "object-mug"],

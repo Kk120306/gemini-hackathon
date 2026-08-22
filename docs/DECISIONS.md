@@ -119,3 +119,12 @@ The browser sends a selected room image to a server action as validated base64 d
 The server checks its declared MIME type, byte signature, and decoded size before a live model call.
 Accepted media is stored under the ignored local data directory and served by a private no-store route.
 No Gemini credential or personal upload path is exposed to client code.
+
+## AD-016: Quiet Reference UI With the Room as the Hero
+
+Status: Accepted
+
+The updated mockup supplies the warm canvas, Figtree typography, sage actions, rounded controls, progress treatment, and two-column patient composition.
+The implementation does not copy prototype-only navigation or decorative elements that compete with the verified room evidence.
+The room remains dominant on patient start and patient activity screens.
+The generated guide stays visibly labeled but remains a supporting element.

@@ -80,7 +80,6 @@ export function PatientSession() {
   const showSimplified = cueIncludes(state.session.cueLevel, "simplified");
   const showReveal = cueIncludes(state.session.cueLevel, "reveal");
   const correct = state.session.feedback === "correct";
-  const progress = ((state.session.questionIndex + 1) / 6) * 100;
   const objectPositionX = target
     ? chooseHorizontalObjectPosition(target.boundingBox)
     : 0.5;
@@ -119,10 +118,21 @@ export function PatientSession() {
         className="session-progress"
         aria-label={`Question ${state.session.questionIndex + 1} of 6`}
       >
-        <span>Question {state.session.questionIndex + 1} of 6</span>
-        <div aria-hidden="true">
-          <i style={{ width: `${progress}%` }} />
+        <div className="session-progress__dots" aria-hidden="true">
+          {Array.from({ length: 6 }, (_, index) => (
+            <i
+              key={index}
+              className={
+                index < state.session.questionIndex
+                  ? "session-progress__dot--complete"
+                  : index === state.session.questionIndex
+                    ? "session-progress__dot--current"
+                    : undefined
+              }
+            />
+          ))}
         </div>
+        <span>Question {state.session.questionIndex + 1} of 6</span>
         <Link href="/">Leave activity</Link>
       </div>
 
@@ -182,6 +192,30 @@ export function PatientSession() {
             <h1 id="question-prompt">{question.prompt}</h1>
           </div>
 
+          <div className="answer-grid" aria-label="Answer choices">
+            {question.choices.map((choice, index) => (
+              <button
+                type="button"
+                key={choice}
+                onClick={() => answer(choice)}
+                disabled={correct}
+                aria-label={`Answer ${choice}`}
+                className={
+                  choice === question.correctAnswer
+                    ? correct
+                      ? "answer-grid__correct"
+                      : showReveal
+                        ? "answer-grid__revealed"
+                        : undefined
+                    : undefined
+                }
+              >
+                <span>{String.fromCharCode(65 + index)}</span>
+                {choice}
+              </button>
+            ))}
+          </div>
+
           <div className="session-feedback" aria-live="polite">
             {correct ? (
               <p className="session-feedback--correct">
@@ -201,26 +235,6 @@ export function PatientSession() {
             )}
           </div>
 
-          <div className="answer-grid" aria-label="Answer choices">
-            {question.choices.map((choice, index) => (
-              <button
-                type="button"
-                key={choice}
-                onClick={() => answer(choice)}
-                disabled={correct}
-                aria-label={`Answer ${choice}`}
-                className={
-                  showReveal && choice === question.correctAnswer
-                    ? "answer-grid__revealed"
-                    : undefined
-                }
-              >
-                <span>{String.fromCharCode(65 + index)}</span>
-                {choice}
-              </button>
-            ))}
-          </div>
-
           {correct ? (
             <button
               className="session-continue"
@@ -238,9 +252,9 @@ export function PatientSession() {
                 <ReplayIcon />
                 Hear again
               </button>
-              <button type="button" onClick={requestHelp}>
+              <button type="button" onClick={requestHelp} aria-label="Help me">
                 <HelpIcon />
-                Help me
+                Need a hint?
               </button>
             </div>
           )}
