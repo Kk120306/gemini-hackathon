@@ -1,0 +1,232 @@
+# ANCHOR Architecture
+
+## Architecture Goal
+
+The system should deliver one reliable vertical slice while isolating model behavior, deterministic lesson logic, and persistence.
+Network-dependent media generation must enhance the experience without controlling whether the patient can continue.
+
+## System Context
+
+```text
+Caregiver browser
+    -> Next.js caregiver routes
+    -> Server actions and route handlers
+    -> Gemma and Gemini provider adapters
+    -> Local storage adapter
+
+Patient browser
+    -> Next.js patient routes
+    -> Deterministic lesson session
+    -> Browser speech and visual presentation
+    -> Optional generated image or video assets
+```
+
+## Application Areas
+
+### Caregiver Experience
+
+The caregiver experience owns profile setup, room uploads, object verification, guide approval, lesson preview, and lesson approval.
+No patient-facing route may use unapproved world-model or guide data.
+
+### Patient Experience
+
+The patient experience owns the six-question session, speech playback, answer selection, help requests, cue progression, and completion state.
+The patient experience does not call an unrestricted conversational model.
+
+### Server Boundary
+
+All AI calls, file writes, and secret access happen on the server.
+The client receives validated domain objects and opaque media URLs.
+
+## Deep Modules
+
+### World Model Service
+
+The World Model Service accepts room images and returns object proposals.
+It normalizes and validates model output, assigns stable identifiers, and separates proposals from caregiver-approved objects.
+
+Interface responsibilities:
+
+- Analyze room images.
+- Validate object names, locations, descriptions, and bounding boxes.
+- Reject unsupported or malformed proposals.
+- Create an immutable approved world-model revision.
+
+### Grounding Ledger
+
+The Grounding Ledger stores the proof chain between source media, literal model observations, caregiver corrections, approved lesson claims, and visual cue regions.
+It is append-only for each approved world-model revision so that a later edit cannot silently change an already approved lesson.
+
+Interface responsibilities:
+
+- Record the source image and crop for each observation.
+- Record Gemma's literal observation separately from caregiver-edited values.
+- Record caregiver confirmation time and approval state.
+- Resolve every question, answer, and cue to approved evidence.
+- Produce one concise caregiver-facing evidence card for the stage demonstration.
+
+### Guide Service
+
+The Guide Service accepts consent metadata and trusted-person reference images.
+It creates a portrait, optional expression variants, and one optional short video.
+It never generates speech in the trusted person's cloned voice.
+
+Interface responsibilities:
+
+- Verify consent state before generation.
+- Generate and store guide candidates.
+- Track caregiver approval.
+- Expose static fallback media for every animated state.
+
+### Lesson Engine
+
+The Lesson Engine accepts only an approved world model.
+It asks Gemma for candidate content, validates grounding, enforces the six-question composition, and returns a draft for caregiver approval.
+
+Interface responsibilities:
+
+- Generate six questions.
+- Enforce exactly two cognitive activities.
+- Ensure every object and location reference exists in the approved world model.
+- Ensure sequencing content has explicit caregiver verification.
+- Produce deterministic answer choices and cue metadata.
+
+### Cue Engine
+
+The Cue Engine is a pure deterministic state machine.
+It accepts the current cue level and an incorrect-answer or help event and returns the next allowed cue level.
+It may use a model recommendation only as advisory metadata.
+
+Allowed sequence:
+
+```text
+none -> verbal -> focus -> simplified -> reveal
+```
+
+### Media Generation Service
+
+The Media Generation Service hides Gemini image and video APIs behind one interface.
+It stores job status and returns generated assets only after validation.
+
+Interface responsibilities:
+
+- Generate a guide portrait from approved reference photos.
+- Generate guide expression variants.
+- Generate a simplified room scene from an original image.
+- Generate one short guide or cue video.
+- Record pending, completed, failed, timed-out, and rejected states.
+- Return deterministic fallback instructions with every request.
+
+### Media Validation Service
+
+The Media Validation Service compares a generated scene with the approved world model and source image.
+It checks that the target object remains present, the target location remains consistent, and no misleading person or object has been introduced.
+Rejected media never appears in patient mode.
+
+### Session Engine
+
+The Session Engine manages question order, selected answers, current cue level, speech replay, and completion.
+It stores no cognitive score and makes no clinical inference.
+
+### Storage Adapter
+
+The Storage Adapter hides persistence behind a small interface.
+The hackathon implementation uses local JSON and media files under `.data`.
+A later cloud adapter can replace it without changing domain services.
+
+## Route Shape
+
+The planned routes are:
+
+```text
+/                         Project landing and mode selection
+/caregiver                Setup progress
+/caregiver/profile        Patient and trusted-person metadata
+/caregiver/room           Room upload and analysis
+/caregiver/world-model    Object confirmation
+/caregiver/guide          Guide generation and approval
+/caregiver/lesson         Lesson generation and preview
+/patient                  Approved lesson start
+/patient/session          Six-question experience
+/patient/complete         Calm completion state
+```
+
+Route handlers or server actions should expose task-oriented operations rather than generic CRUD endpoints.
+
+## Data Lifecycle
+
+```text
+Uploaded room images
+    -> object proposals
+    -> caregiver approval
+    -> approved world-model revision
+    -> lesson draft
+    -> caregiver approval
+    -> immutable approved lesson
+    -> patient session events
+
+Uploaded family images + consent
+    -> guide candidates
+    -> caregiver approval
+    -> approved guide assets
+    -> patient presentation
+```
+
+## Persistence Layout
+
+The local adapter should keep data outside the source tree's tracked files:
+
+```text
+.data/
+  anchor.json
+  uploads/
+    room/
+    guide-references/
+  generated/
+    guide/
+    room-cues/
+    video/
+  fixtures/
+```
+
+Every media record should contain its source identifiers, generation model, generation status, creation time, and approval status.
+
+## Real-Time Media Strategy
+
+Real-time image generation is prefetched after the first incorrect answer or help request.
+The UI immediately shows a deterministic focus overlay and a non-blocking generation state.
+The generated scene remains hidden until the session reaches the `simplified` cue level and validation has passed.
+If a validated generated scene is ready, the UI crossfades to it.
+If generation fails, times out, or is rejected, the deterministic overlay remains and the lesson continues.
+
+Guide video generation begins asynchronously after the caregiver approves the static guide.
+It runs in parallel with lesson generation so that patient mode never waits for it.
+The static guide remains visible when the video is pending, failed, rejected, or disabled by reduced-motion preferences.
+
+The stage script should wait no more than eight seconds for generated media before continuing with the fallback.
+Late media may be shown only at a later safe transition and must never replace an image while the patient is choosing an answer.
+
+## Failure Boundaries
+
+- Invalid object analysis returns the caregiver to a retryable analysis state.
+- Invalid lesson output is repaired or regenerated before caregiver preview.
+- Image-generation failure preserves the deterministic cue.
+- Video-generation failure preserves the static guide.
+- Speech-synthesis failure preserves readable text.
+- Speech-recognition failure preserves large answer buttons.
+- Storage failure produces a visible retry state and never silently discards caregiver approval.
+- Missing grounding evidence blocks lesson approval rather than guessing or repairing the personal fact.
+- An unsuitable or confusing avatar falls back to a neutral guide image.
+
+## Security Boundary
+
+The API key remains server-side.
+Uploads are accepted only after MIME type, size, and decode validation.
+Media paths are generated by the storage adapter rather than accepted from user input.
+Logs must not contain image bytes, API keys, or full personal profiles.
+
+## Deployment Boundary
+
+Local filesystem persistence is the default hackathon mode.
+If deployed to a serverless host, persistent object storage must be added before relying on cross-request files.
+This infrastructure change is deferred until the local vertical slice works.

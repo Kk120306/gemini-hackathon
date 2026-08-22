@@ -1,0 +1,12 @@
+.data
+.next
+.omx
+AGENTS.md
+coverage
+docs
+node_modules
+out
+playwright-report
+pnpm-lock.yaml
+README.md
+test-results

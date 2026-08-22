@@ -1,0 +1,289 @@
+# ANCHOR Final Hackathon Implementation Plan
+
+## Winning Outcome
+
+The finished demo must prove one thing exceptionally well:
+
+> Gemma understands a familiar room, a caregiver verifies the evidence, and Gemini provides the minimum visual cue that helps the patient complete an activity.
+
+The generated family guide supports the interaction.
+It is not allowed to replace, obscure, or delay the verified room-to-cue experience.
+
+## Priority Tiers
+
+### P0: Required to Submit
+
+- One prepared bedroom image with three clearly visible objects.
+- Gemma object and location proposals.
+- A caregiver-editable grounding ledger with one visible evidence card.
+- One caregiver-approved, lightly stylized generated family guide with a neutral fallback.
+- Six grounded questions with exactly two cognitive activities.
+- One complete patient question with incorrect-answer progression.
+- Immediate verbal, focus, simplified, and reveal cue states.
+- Live Gemini room-image generation with deterministic fallback.
+- A polished tablet patient interface.
+- One seeded end-to-end test and one fallback-mode end-to-end test.
+
+### P1: Valuable After P0 Is Stable
+
+- One asynchronous three-to-five-second guide video.
+- Two additional guide expressions.
+- Real-provider smoke tests for the prepared assets.
+
+### P2: Nice to Have
+
+- Push-to-talk speech recognition for visible answers, repeat, and help.
+- More than one room image.
+- Regeneration and editing conveniences beyond the minimum caregiver controls.
+
+P2 work must not begin during the hackathon unless every P0 acceptance criterion passes and the full demo has succeeded three consecutive times.
+
+## Weakness Coverage
+
+### Weakness 1: The Avatar Could Feel Like a Gimmick or Deepfake
+
+Mitigation:
+
+- Use a warm, lightly stylized guide rather than seamless photorealism.
+- Show `AI-generated guide based on [name]` beside the guide.
+- Require explicit likeness consent and caregiver approval.
+- Use a generic system voice and prohibit voice cloning.
+- Keep a neutral non-likeness fallback.
+- Give the avatar less visual area than the room scene.
+
+Acceptance criteria:
+
+- The generated label remains visible throughout patient mode.
+- The room image and answer controls remain the dominant visual elements.
+- The complete lesson works with the neutral fallback guide.
+- No guide line contains an invented memory, quote, routine, or live-call implication.
+
+### Weakness 2: Live Image or Video Generation Could Be Slow
+
+Mitigation:
+
+- Render deterministic answer feedback within 200 milliseconds.
+- Prefetch the simplified room image after the first incorrect answer.
+- Display it only at the `simplified` level after validation.
+- Begin guide-video generation during caregiver setup rather than patient interaction.
+- Continue the stage script after eight seconds without waiting.
+- Cache approved assets for replay and keep an explicit fixture mode.
+
+Acceptance criteria:
+
+- Answer buttons remain usable during every media job.
+- An image or video timeout does not reset or block lesson progress.
+- The fallback path is visually complete rather than an error screen.
+- The demo reaches completion with all live media features disabled.
+
+### Weakness 3: Gemma Could Detect an Object or Location Incorrectly
+
+Mitigation:
+
+- Treat every model result as a proposal.
+- Show the source image crop beside the proposed name and location.
+- Require caregiver confirmation before approval.
+- Store the original observation and caregiver correction in the grounding ledger.
+- Resolve every question, answer, and cue to approved grounding records.
+- Block lesson approval when evidence is missing.
+
+Acceptance criteria:
+
+- A caregiver can correct a proposal without editing JSON.
+- The corrected value appears in the lesson while the original proposal remains auditable.
+- An unapproved or missing grounding record cannot enter patient mode.
+- The stage demo shows one complete image-to-question-to-cue proof chain.
+
+### Weakness 4: Judges Could Challenge Medical Credibility
+
+Mitigation:
+
+- Describe ANCHOR as a familiarity-based engagement prototype.
+- Do not claim treatment, improvement, diagnosis, assessment, or slowed decline.
+- Do not score the patient or interpret incorrect answers.
+- Distinguish intended experience from clinical evidence.
+- Use synthetic or explicitly consented demonstration data.
+
+Acceptance criteria:
+
+- No patient screen contains a score, streak, timer, severity label, or clinical language.
+- The pitch includes the non-medical boundary in one sentence.
+- All cognitive activities are described as gentle activities rather than tests.
+
+### Weakness 5: Caregiver Setup Could Consume the Entire Demo
+
+Mitigation:
+
+- Optimize the stage path for one room image and three object proposals.
+- Preselect prepared files through a visible demo fixture without bypassing approvals.
+- Keep profile, object verification, guide approval, and lesson approval to concise screens.
+- Present only one grounding card and one lesson preview card on stage.
+- Generate all six questions but demonstrate only two.
+
+Acceptance criteria:
+
+- The prepared caregiver portion completes within 90 seconds.
+- No caregiver screen requires raw JSON, scrolling through six full questions, or repeated model retries.
+- The patient magic moment receives at least 60 seconds of a three-minute presentation.
+
+### Weakness 6: Too Many AI Features Could Look Loosely Connected
+
+Mitigation:
+
+- Make the grounding ledger the shared input to lesson generation, cueing, and media validation.
+- Explain every model call as part of one proof chain.
+- Treat video as one supporting moment and speech recognition as optional.
+- Remove any feature that cannot be explained as improving the verified room-to-cue interaction.
+
+Acceptance criteria:
+
+- The presenter can explain Gemma, Gemini image generation, and the family guide in one connected sentence.
+- The demo remains coherent when video and speech recognition are disabled.
+- No dashboard, analytics panel, reminder, medication, or whole-home feature appears.
+
+## Implementation Sequence
+
+### Phase 0: Scaffold and Quality Gates
+
+- [x] Scaffold the Next.js TypeScript application with strict compiler settings.
+- [x] Configure formatting, linting, type checking, Vitest, and Playwright.
+- [x] Add server-only environment validation.
+- [x] Add the synthetic bedroom, trusted-person, and six-question fixtures.
+- [x] Add responsive route shells for caregiver and patient modes.
+
+Exit condition:
+The app starts locally, the production build succeeds, and fixture mode needs no external credential.
+
+### Phase 1: Seeded Winning Flow
+
+- [ ] Implement patient, world-model, grounding, guide, lesson, media-job, and session types.
+- [ ] Implement the deterministic cue state machine.
+- [ ] Implement fake AI and local storage adapters.
+- [ ] Build the minimum caregiver path.
+- [ ] Build object verification with source crop, original proposal, correction, and approval.
+- [ ] Build the six-question lesson preview with two cognitive activities.
+- [ ] Build the tablet patient experience.
+- [ ] Add generic text-to-speech and visible replay and help controls.
+- [ ] Add the primary and fallback end-to-end tests.
+
+Exit condition:
+The complete stage flow works offline, shows the grounding proof chain, and passes both end-to-end tests.
+
+### Phase 2: Real Gemma Grounding
+
+- [ ] Add the Google Gen AI SDK behind a server-only provider.
+- [ ] Implement Gemma room analysis for three to five proposals.
+- [ ] Validate structured output with Zod.
+- [ ] Create grounding records from proposals and caregiver corrections.
+- [ ] Implement Gemma six-question lesson generation.
+- [ ] Enforce exactly one visual-recall activity and one sequencing or association activity.
+- [ ] Block ungrounded prompts, answers, choices, and cues.
+- [ ] Add one structured-output repair attempt.
+- [ ] Add contract tests for malformed, ungrounded, and over-inferred output.
+
+Exit condition:
+The prepared room image produces an approved world model and six grounded questions through live Gemma.
+
+### Phase 3: Progressive Cue Magic Moment
+
+- [ ] Implement deterministic dimming, highlighting, and cropping from normalized bounding boxes.
+- [ ] Prefetch a simplified Gemini room image after the first incorrect answer.
+- [ ] Add pending, completed, failed, rejected, and timed-out media states.
+- [ ] Validate object presence, location, room identity, and misleading additions.
+- [ ] Crossfade to the generated scene only at the `simplified` cue level.
+- [ ] Continue with the deterministic visual after an eight-second stage budget.
+- [ ] Add reduced-motion behavior.
+- [ ] Test live, timeout, rejection, and disabled-media paths.
+
+Exit condition:
+The patient receives an immediate cue and can finish the question whether live generation succeeds, arrives late, or fails.
+
+### Phase 4: Trustworthy Family Guide
+
+- [ ] Capture name, relationship, likeness permission, and caregiver confirmation.
+- [ ] Generate one lightly stylized guide portrait from two or three reference images.
+- [ ] Add caregiver approval and rejection.
+- [ ] Keep the AI-generated label visible in patient mode.
+- [ ] Add the neutral non-likeness fallback.
+- [ ] Start one short video job after static-guide approval.
+- [ ] Keep the static guide visible until the video passes validation.
+- [ ] Confirm that disabling video changes no lesson behavior.
+
+Exit condition:
+The guide adds familiarity without impersonation and never blocks the patient flow.
+
+### Phase 5: Demo Hardening and Submission
+
+- [ ] Run the primary and fallback end-to-end tests three consecutive times.
+- [ ] Run lint, type checking, unit tests, end-to-end tests, and production build.
+- [ ] Inspect every patient cue state at the target tablet viewport.
+- [ ] Check keyboard access, touch-target size, contrast, focus, and reduced motion.
+- [ ] Run the prepared caregiver path with a 90-second timer.
+- [ ] Run the full presentation with a three-minute timer.
+- [ ] Run three live-provider smoke tests using the prepared assets.
+- [ ] Confirm that no secret or personal media is tracked.
+- [ ] Freeze features and prepare submission material.
+
+Exit condition:
+The presentation succeeds three times in both normal and fallback rehearsals and the submission is ready before the deadline.
+
+### Optional Phase 6: Speech Recognition
+
+- [ ] Implement push-to-talk only after the Phase 5 exit condition passes.
+- [ ] Map speech only to visible answers, repeat, and help.
+- [ ] Preserve large-button input as the primary path.
+- [ ] Avoid persisting transcripts.
+
+Exit condition:
+Speech adds convenience without changing or destabilizing the approved lesson flow.
+
+## Hackathon-Day Schedule
+
+### 9:00 to 10:00
+
+Complete Phase 0 and the patient shell.
+If scaffolding is not complete by 10:00, use the simplest supported styling and stop adding infrastructure.
+
+### 10:00 to 11:15
+
+Complete the seeded Phase 1 flow and primary end-to-end test.
+Do not begin live provider work until the offline flow reaches completion.
+
+### 11:15 to 12:15
+
+Complete live Gemma analysis, grounding, and lesson generation.
+Use lunch time only for provider debugging or visual cleanup, not new scope.
+
+### 12:30 to 1:30
+
+Complete progressive visual cueing and live image generation.
+This is the highest-value technical block.
+
+### 1:30 to 2:00
+
+Complete the generated guide and start asynchronous video generation if P0 is stable.
+Skip video immediately if it threatens the core interaction.
+
+### 2:00 to 2:30
+
+Run tests, inspect the UI, and fix only submission-blocking defects.
+
+### 2:30
+
+Freeze features.
+Begin rehearsals, fallback verification, recording, screenshots, and submission packaging.
+
+### 3:15
+
+Submit the final project with fifteen minutes of deadline margin.
+
+## Absolute Stop Rules
+
+- Do not build speech recognition before the core demo passes three consecutive times.
+- Do not add multiple rooms, patients, caregivers, dashboards, analytics, reminders, or health tracking.
+- Do not debug video for more than twenty minutes.
+- Do not wait on stage for generated media beyond eight seconds.
+- Do not show unvalidated generated room media.
+- Do not show an unapproved or unlabeled family guide.
+- Do not make a medical-effectiveness claim.
+- Do not add a feature after the 2:30 feature freeze.

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 620" role="img" aria-labelledby="title description">
+  <title id="title">Synthetic reference portrait one</title>
+  <desc id="description">A warm illustrated portrait of Elena on a pale green background.</desc>
+  <rect width="520" height="620" rx="42" fill="#d9e6de"/>
+  <circle cx="260" cy="246" r="141" fill="#563d32"/>
+  <ellipse cx="260" cy="262" rx="112" ry="137" fill="#bf7e5d"/>
+  <path d="M149 224c0-112 57-161 120-161 105 0 135 81 125 184-40-23-66-61-74-104-24 53-87 77-171 81z" fill="#4a342e"/>
+  <path d="M205 263c18-12 34-12 50 0M282 263c18-12 34-12 50 0" fill="none" stroke="#442f2b" stroke-width="8" stroke-linecap="round"/>
+  <path d="M229 333c20 23 54 23 70 0" fill="none" stroke="#8b4c42" stroke-width="8" stroke-linecap="round"/>
+  <path d="M86 620c9-130 73-199 174-199s166 69 174 199" fill="#2f675d"/>
+  <path d="M208 412c17 31 86 31 104 0v50c-26 34-78 34-104 0z" fill="#b87254"/>
+  <circle cx="202" cy="276" r="7" fill="#302827"/>
+  <circle cx="318" cy="276" r="7" fill="#302827"/>
+</svg>

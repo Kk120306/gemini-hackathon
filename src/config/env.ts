@@ -1,0 +1,19 @@
+import "server-only";
+
+import { serverEnvSchema } from "@/config/env.schema";
+
+export const serverEnv = serverEnvSchema.parse({
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY || undefined,
+  GEMMA_MODEL: process.env.GEMMA_MODEL,
+  GEMINI_VALIDATION_MODEL: process.env.GEMINI_VALIDATION_MODEL,
+  GEMINI_IMAGE_MODEL: process.env.GEMINI_IMAGE_MODEL,
+  GEMINI_VIDEO_MODEL: process.env.GEMINI_VIDEO_MODEL,
+  ANCHOR_STORAGE_MODE: process.env.ANCHOR_STORAGE_MODE,
+  ANCHOR_DATA_DIR: process.env.ANCHOR_DATA_DIR,
+  ANCHOR_DEMO_MODE: process.env.ANCHOR_DEMO_MODE,
+  ANCHOR_ENABLE_IMAGE_GENERATION: process.env.ANCHOR_ENABLE_IMAGE_GENERATION,
+  ANCHOR_ENABLE_VIDEO_GENERATION: process.env.ANCHOR_ENABLE_VIDEO_GENERATION,
+  ANCHOR_AI_TIMEOUT_MS: process.env.ANCHOR_AI_TIMEOUT_MS,
+  ANCHOR_VIDEO_TIMEOUT_MS: process.env.ANCHOR_VIDEO_TIMEOUT_MS,
+  ANCHOR_MAX_UPLOAD_MB: process.env.ANCHOR_MAX_UPLOAD_MB,
+});

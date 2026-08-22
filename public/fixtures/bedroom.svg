@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 780" role="img" aria-labelledby="title description">
+  <title id="title">Synthetic bedroom fixture</title>
+  <desc id="description">A calm bedroom with a blue mug on a dresser, reading glasses and a lamp on a bedside table.</desc>
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f2e9d8"/>
+      <stop offset="1" stop-color="#dce7df"/>
+    </linearGradient>
+    <linearGradient id="duvet" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f7f1e5"/>
+      <stop offset="1" stop-color="#d8cdbd"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="12" stdDeviation="13" flood-color="#193f3a" flood-opacity=".16"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="780" fill="url(#wall)"/>
+  <path d="M0 610h1200v170H0z" fill="#b9946c"/>
+  <path d="M0 637h1200" stroke="#9c7651" stroke-width="5" opacity=".35"/>
+  <path d="M0 698h1200" stroke="#9c7651" stroke-width="5" opacity=".28"/>
+  <rect x="70" y="95" width="300" height="262" rx="18" fill="#f9f5e9" stroke="#335b55" stroke-width="12"/>
+  <circle cx="220" cy="205" r="72" fill="#e5a743" opacity=".8"/>
+  <path d="M145 296c46-82 100-82 150 0" fill="#719287"/>
+  <rect x="86" y="435" width="290" height="190" rx="17" fill="#845e47" filter="url(#shadow)"/>
+  <path d="M86 493h290M86 557h290" stroke="#cbaa86" stroke-width="5"/>
+  <circle cx="351" cy="464" r="6" fill="#f1d99d"/>
+  <circle cx="351" cy="525" r="6" fill="#f1d99d"/>
+  <circle cx="351" cy="588" r="6" fill="#f1d99d"/>
+  <path d="M212 401h74v90c0 30-18 47-37 47s-37-17-37-47z" fill="#2f6f85"/>
+  <path d="M283 428c37 0 42 57 2 59" fill="none" stroke="#2f6f85" stroke-width="16"/>
+  <path d="M420 367h485v274H420z" fill="#52756f" filter="url(#shadow)"/>
+  <path d="M455 340h414c26 0 47 20 47 46v240H408V386c0-26 21-46 47-46z" fill="#d5b78f"/>
+  <path d="M460 405c96-45 312-46 409 0v219H460z" fill="url(#duvet)"/>
+  <path d="M489 403h160v85H489c-24 0-39-18-39-42s15-43 39-43z" fill="#fbf8ee"/>
+  <path d="M671 403h160c24 0 39 19 39 43s-15 42-39 42H671z" fill="#ebe2d1"/>
+  <path d="M459 531c126-38 273-39 409 0" fill="none" stroke="#b29c7d" stroke-width="7" opacity=".5"/>
+  <rect x="908" y="421" width="226" height="203" rx="16" fill="#795942" filter="url(#shadow)"/>
+  <path d="M908 483h226" stroke="#b69270" stroke-width="5"/>
+  <circle cx="1105" cy="453" r="6" fill="#f1d99d"/>
+  <circle cx="1105" cy="522" r="6" fill="#f1d99d"/>
+  <ellipse cx="1009" cy="193" rx="83" ry="34" fill="#f6ebce" stroke="#d9c399" stroke-width="7"/>
+  <path d="M954 195l20 181h72l20-181z" fill="#f1dfb9"/>
+  <rect x="997" y="376" width="25" height="65" rx="11" fill="#3d6e60"/>
+  <ellipse cx="1009" cy="427" rx="52" ry="14" fill="#315c52"/>
+  <g fill="none" stroke="#193f51" stroke-width="10" stroke-linecap="round">
+    <ellipse cx="967" cy="470" rx="33" ry="23"/>
+    <ellipse cx="1044" cy="470" rx="33" ry="23"/>
+    <path d="M1000 468h11M934 461l-22-7M1077 461l22-7"/>
+  </g>
+  <path d="M111 139h218" stroke="#335b55" stroke-width="4" opacity=".18"/>
+  <path d="M1090 89c-35 58-28 123 22 182" fill="none" stroke="#52756f" stroke-width="11" opacity=".6"/>
+  <circle cx="1082" cy="92" r="28" fill="#739487" opacity=".6"/>
+</svg>
