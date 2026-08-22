@@ -121,7 +121,7 @@ export function AnchorStateProvider({ children }: { children: ReactNode }) {
       dispatch({ type: "media_job_updated", job: pendingJob });
       void runSimplifiedRoomJob({
         pendingJob,
-        ...(input?.spatialPreview ? { budgetMs: 45_000 } : {}),
+        ...(input?.spatialPreview ? { budgetMs: 90_000 } : {}),
         onLateResult(job) {
           lateMediaJobs.current.set(job.id, job);
         },

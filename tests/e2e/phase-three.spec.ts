@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const stateKey = "anchor.fixture.state.v4";
+const stateKey = "anchor.fixture.state.v5";
 
 test("patient entry prepares the spatial room before the activity starts", async ({
   page,

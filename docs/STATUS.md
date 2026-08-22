@@ -83,6 +83,7 @@ Phase 5: Core Demo Hardening
 - The deterministic source room remains the complete fallback when generation is disabled, late, failed, rejected, or unsafe.
 - The live prepared-room path generated and validated the new spatial composition in 12.3 seconds and displayed it successfully in patient mode.
 - Direct patient entry now starts the same spatial-composition job on the patient welcome screen, so a fresh Tailscale origin cannot bypass the core feature.
+- The non-blocking spatial-preview budget is 90 seconds so a safe generation can finish across both image creation and independent validation without delaying the Start activity control.
 
 ## Next Actions
 

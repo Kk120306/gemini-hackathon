@@ -1,7 +1,7 @@
 import { anchorStateSchema, type AnchorState } from "@/domain/anchor";
 import type { StorageAdapter } from "@/storage/storage-adapter";
 
-export const anchorStorageKey = "anchor.fixture.state.v4";
+export const anchorStorageKey = "anchor.fixture.state.v5";
 
 export class BrowserAnchorStorage implements StorageAdapter<AnchorState> {
   constructor(private readonly providedStorage?: Storage) {}
