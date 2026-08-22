@@ -12,4 +12,6 @@ The Pexels room represents a licensed presentation input example and is not pres
 
 The ANCHOR product screenshots were captured from the locally running hackathon build on August 22, 2026.
 
+The office photo is the caregiver-provided demo room supplied for this project and is used to ground the monitor and keyboard examples.
+
 The product proof uses the repository's synthetic source-room fixture and shows labeled generated media derived from that fixture.

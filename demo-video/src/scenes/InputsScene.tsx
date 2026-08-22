@@ -26,7 +26,7 @@ export const InputsScene: React.FC<{ durationInFrames: number }> = ({
       </div>
       <div style={{ left: 110, position: "absolute", top: 155 }}>
         <div style={enter(frame, 6)}>
-          <Eyebrow light>Demo inputs</Eyebrow>
+          <Eyebrow light>Caregiver-verified context</Eyebrow>
         </div>
         <h2
           style={{
@@ -37,14 +37,14 @@ export const InputsScene: React.FC<{ durationInFrames: number }> = ({
             ...enter(frame, 18),
           }}
         >
-          Familiar context starts with evidence.
+          Use a room the person with dementia knows.
         </h2>
       </div>
       <MediaCard
-        alt="Licensed stock bedroom reference"
-        imageStyle={{ objectPosition: "center 55%" }}
-        label="Licensed stock room reference"
-        src="assets/pexels-curtis-adams-6035359.jpg"
+        alt="Caregiver-provided familiar office"
+        imageStyle={{ objectPosition: "center 52%" }}
+        label="Caregiver-provided demo room"
+        src="assets/office-room.jpg"
         style={{
           height: 580,
           left: 110,
@@ -57,7 +57,7 @@ export const InputsScene: React.FC<{ durationInFrames: number }> = ({
       <MediaCard
         alt="Licensed stock portrait reference"
         imageStyle={{ objectPosition: "center 30%" }}
-        label="Licensed stock portrait"
+        label="Optional consented guide portrait"
         src="assets/pexels-luriko-yamaguchi-36838816.jpg"
         style={{
           height: 580,
@@ -82,10 +82,9 @@ export const InputsScene: React.FC<{ durationInFrames: number }> = ({
           position: "absolute",
         }}
       >
-        Caregiver confirmation required for facts • consent required before
-        likeness generation
+        Gemini detects what is visible • caregiver approves every detail
       </div>
-      <Footnote light>Pexels photo credits included with the project</Footnote>
+      <Footnote light>No guessed routines, relationships, or memories</Footnote>
     </SceneShell>
   );
 };

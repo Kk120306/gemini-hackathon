@@ -9,9 +9,9 @@ import {
 import { colors, enter } from "../theme";
 
 const clues = [
-  ["01", "Visible signature", "Dark blue reading glasses"],
-  ["02", "Verified place", "On the bedside table"],
-  ["03", "Image region", "Lower right of the room"],
+  ["01", "Study", "See the object's approved position"],
+  ["02", "Hide", "The room gently fades from view"],
+  ["03", "Remember", "Recall where the object appeared"],
 ] as const;
 
 export const ChallengeScene: React.FC<{ durationInFrames: number }> = ({
@@ -43,8 +43,8 @@ export const ChallengeScene: React.FC<{ durationInFrames: number }> = ({
         }}
       >
         <Img
-          alt="Three-clue identification question"
-          src={staticFile("product/product-spatial.png")}
+          alt="Caregiver-provided office used for visual recall"
+          src={staticFile("assets/office-room.jpg")}
           style={{
             height: "100%",
             objectFit: "cover",
@@ -56,7 +56,7 @@ export const ChallengeScene: React.FC<{ durationInFrames: number }> = ({
       </div>
       <div style={{ position: "absolute", right: 70, top: 155, width: 520 }}>
         <div style={enter(frame, 8)}>
-          <Eyebrow light>Question 1 of 6</Eyebrow>
+          <Eyebrow light>Remember where the object was</Eyebrow>
         </div>
         <h2
           style={{
@@ -68,7 +68,7 @@ export const ChallengeScene: React.FC<{ durationInFrames: number }> = ({
             ...enter(frame, 18),
           }}
         >
-          This is not a one-clue color quiz.
+          Study the room. Hide it. Remember the place.
         </h2>
         <div style={{ display: "grid", gap: 14 }}>
           {clues.map(([number, title, value], index) => (
@@ -122,12 +122,12 @@ export const ChallengeScene: React.FC<{ durationInFrames: number }> = ({
             ...enter(frame, 112, 18),
           }}
         >
-          The answer must satisfy all three caregiver-approved constraints at
-          once.
+          This is calm familiar-room practice for dementia, not a test or a
+          score.
         </p>
       </div>
       <Footnote light>
-        Exactly six questions • exactly two cognitive activities
+        Room-specific recall • visible association • gentle support
       </Footnote>
     </SceneShell>
   );

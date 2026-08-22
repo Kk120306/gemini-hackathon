@@ -100,11 +100,12 @@ Core Correction Complete: Familiar-Room Memory Practice and Gemini Guide Speech
 - The live prepared-room path generated and validated the new spatial composition in 12.3 seconds and displayed it successfully in patient mode.
 - Direct patient entry now starts the same spatial-composition job on the patient welcome screen, so a fresh Tailscale origin cannot bypass the core feature.
 - The non-blocking spatial-preview budget is 90 seconds so a safe generation can finish across both image creation and independent validation without delaying the Start activity control.
-- A 2-minute 36-second Remotion product film now presents the complete core proof from licensed demo inputs through grounded spatial challenge and progressive support.
-- The film uses a truthfully paired synthetic source room and validated product scene for the before-and-after transformation proof.
-- The separate Pexels room and portrait are clearly labeled as licensed presentation references, with source-page credits stored beside the film project.
-- The film uses neutral system text-to-speech rather than a cloned family voice and repeats the generated-media, consent, fallback, no-score, and non-diagnostic boundaries.
-- Eight representative film states were visually inspected at 1920 by 1080 pixels before the final H.264 and AAC render.
+- A 2-minute 40-second Remotion product film now explains ANCHOR in plain language as familiar-room memory and orientation practice for people with dementia.
+- The film uses the caregiver-provided office photo for the monitor, keyboard, object-location, landmark, and visual-recall examples.
+- Current product captures show caregiver review, lesson generation, patient questions, and completion, while the consented guide scene remains clearly labeled as a presentation mock.
+- The Pexels portrait is clearly labeled as a presentation reference, with source-page credits stored beside the film project.
+- The film uses neutral system text-to-speech rather than a cloned family voice and repeats the consent, fallback, no-score, and non-diagnostic boundaries.
+- Opening, office-question, guide, and closing film states were visually inspected at 1920 by 1080 pixels before the final H.264 and AAC render.
 
 ## Next Actions
 
@@ -214,8 +215,8 @@ Core Correction Complete: Familiar-Room Memory Practice and Gemini Guide Speech
 - A fresh Tailscale patient origin started live spatial preparation, published a validated Gemini 2.5D room within the 90-second non-blocking budget, and opened Question 1 with all three evidence clues on 2026-08-22.
 - `npm run lint` passed ESLint and TypeScript checks for the Remotion project on 2026-08-22.
 - `npm audit --audit-level=high` reported zero vulnerabilities for the Remotion project on 2026-08-22.
-- The film's licensed-input, grounding, spatial-room, detailed-challenge, four progressive-support, and closing frames were visually inspected at 1920 by 1080 pixels on 2026-08-22.
-- `npm run render` produced a 156-second, 1920 by 1080 H.264 video with stereo AAC narration on 2026-08-22.
+- The film's opening, caregiver-input, office-question, guide, and closing frames were visually inspected at 1920 by 1080 pixels on 2026-08-22.
+- `npm run render` produced a 160-second, 1920 by 1080 H.264 video with AAC narration on 2026-08-22.
 - Final repository `pnpm format:check`, `pnpm lint`, and `pnpm typecheck` checks passed after adding the submission film on 2026-08-22.
 - Final `pnpm test` passed 47 tests across 14 files after adding the submission film on 2026-08-22.
 - Final `pnpm build` produced all application and private-media routes after adding the submission film on 2026-08-22.

@@ -27,8 +27,8 @@ export const SpatialScene: React.FC<{ durationInFrames: number }> = ({
     >
       <Audio src={staticFile("audio/05-spatial.m4a")} volume={0.95} />
       <Img
-        alt="Interactive 2.5D room in ANCHOR"
-        src={staticFile("product/product-spatial.png")}
+        alt="Caregiver-provided office with a monitor and keyboard"
+        src={staticFile("assets/office-room.jpg")}
         style={{
           height: "100%",
           objectFit: "cover",
@@ -47,7 +47,7 @@ export const SpatialScene: React.FC<{ durationInFrames: number }> = ({
       </div>
       <div style={{ left: 110, maxWidth: 720, position: "absolute", top: 250 }}>
         <div style={enter(frame, 8)}>
-          <Eyebrow light>The room is the interface</Eyebrow>
+          <Eyebrow light>Remember an object from a landmark</Eyebrow>
         </div>
         <h2
           style={{
@@ -59,7 +59,7 @@ export const SpatialScene: React.FC<{ durationInFrames: number }> = ({
             ...enter(frame, 22),
           }}
         >
-          Real depth cues. Grounded object anchors.
+          Where is the keyboard? Start at the monitor.
         </h2>
         <p
           style={{
@@ -70,9 +70,8 @@ export const SpatialScene: React.FC<{ durationInFrames: number }> = ({
             ...enter(frame, 38),
           }}
         >
-          Gemini preserves the approved camera view, strengthens visible
-          foreground-to-background depth, and keeps every hotspot tied to the
-          original image plane.
+          Look directly below the monitor. Both objects came from this approved
+          room photo.
         </p>
       </div>
       <div
@@ -89,7 +88,7 @@ export const SpatialScene: React.FC<{ durationInFrames: number }> = ({
           ...enter(frame, 70, 18),
         }}
       >
-        Perspective-responsive 2.5D composition • reduced-motion safe
+        Large image • high contrast • hear it again • no timer
       </div>
     </AbsoluteFill>
   );

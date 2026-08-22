@@ -298,7 +298,7 @@ Every question rehearses the verified familiar room, the approved guide asks the
 - [x] Inspect every patient cue state at the target tablet viewport.
 - [x] Check keyboard access, touch-target size, contrast, focus, and reduced motion.
 - [ ] Run the prepared caregiver path with a 90-second timer.
-- [x] Run the complete 2-minute 36-second rendered presentation inside the three-minute limit.
+- [x] Run the complete 2-minute 40-second rendered presentation inside the three-minute limit.
 - [ ] Run three live-provider smoke tests using the prepared assets.
 - [x] Confirm that no secret or personal media is tracked.
 - [x] Freeze features and prepare the core submission film.
@@ -315,7 +315,7 @@ The presentation succeeds three times in both normal and fallback rehearsals and
 - [x] Build eight separate Remotion scenes around the core room-to-question-to-cue narrative.
 - [x] Add a neutral non-cloned narration track and retain the written voiceover script.
 - [x] Inspect representative 1920 by 1080 frames for cropping, legibility, truthfulness, and source labeling.
-- [x] Render the final 2-minute 36-second H.264 and AAC film.
+- [x] Render the final 2-minute 40-second H.264 and AAC film.
 
 Exit condition:
 The final film stays under three minutes, demonstrates only verified core states, credits all stock inputs, and avoids clinical, impersonation, and metric-3D claims.

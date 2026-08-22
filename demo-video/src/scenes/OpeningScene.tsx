@@ -49,7 +49,7 @@ export const OpeningScene: React.FC<{ durationInFrames: number }> = ({
         style={{ left: 130, maxWidth: 1120, position: "absolute", top: 260 }}
       >
         <div style={enter(frame, 8)}>
-          <Eyebrow light>Gemini-powered spatial learning</Eyebrow>
+          <Eyebrow light>Track 2 • Best Elderly Hack</Eyebrow>
         </div>
         <h1
           style={{
@@ -62,7 +62,7 @@ export const OpeningScene: React.FC<{ durationInFrames: number }> = ({
             ...enter(frame, 20),
           }}
         >
-          A familiar room becomes the activity.
+          Help people with dementia remember their room.
         </h1>
         <p
           style={{
@@ -74,7 +74,7 @@ export const OpeningScene: React.FC<{ durationInFrames: number }> = ({
             ...enter(frame, 36),
           }}
         >
-          Strong spatial reasoning, grounded in facts a caregiver approved.
+          Simple memory and orientation practice using a familiar room photo.
         </p>
       </div>
       <div
@@ -86,7 +86,18 @@ export const OpeningScene: React.FC<{ durationInFrames: number }> = ({
           right: 70,
         }}
       >
-        Hackathon demo • 2.5D composition, not metric 3D reconstruction
+        ANCHOR • Gemini-powered familiar-room practice
+      </div>
+      <div
+        style={{
+          bottom: 54,
+          color: "rgba(255,255,255,0.64)",
+          fontSize: 18,
+          left: 70,
+          position: "absolute",
+        }}
+      >
+        Source: World Health Organization, Ageing and health
       </div>
     </AbsoluteFill>
   );

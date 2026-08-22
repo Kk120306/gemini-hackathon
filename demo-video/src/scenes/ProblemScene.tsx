@@ -37,7 +37,7 @@ export const ProblemScene: React.FC<{ durationInFrames: number }> = ({
             ...enter(frame, 18),
           }}
         >
-          Generic questions throw away the richest context.
+          Random brain games do not teach a person’s own room.
         </h2>
         <div
           style={{
@@ -49,8 +49,8 @@ export const ProblemScene: React.FC<{ durationInFrames: number }> = ({
             ...enter(frame, 34),
           }}
         >
-          “What color is the cup?” is easy to generate, but it does not prove
-          grounded understanding of a real space.
+          ANCHOR uses a real room photo to help a person with dementia practise
+          where everyday objects are.
         </div>
       </div>
       <div
@@ -68,8 +68,8 @@ export const ProblemScene: React.FC<{ durationInFrames: number }> = ({
         }}
       >
         <Img
-          alt="Detailed spatial question in ANCHOR"
-          src={staticFile("product/product-spatial.png")}
+          alt="Caregiver-provided familiar office"
+          src={staticFile("assets/office-room.jpg")}
           style={{ height: "100%", objectFit: "cover", width: "100%" }}
         />
       </div>
@@ -87,9 +87,9 @@ export const ProblemScene: React.FC<{ durationInFrames: number }> = ({
           ...enter(frame, 80, 24),
         }}
       >
-        ANCHOR keeps the room in the question.
+        ANCHOR keeps the familiar room in every question.
       </div>
-      <Footnote>Core product proof • no dashboard detour</Footnote>
+      <Footnote>One familiar photo • one calm next action</Footnote>
     </SceneShell>
   );
 };

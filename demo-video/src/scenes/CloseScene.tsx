@@ -20,7 +20,7 @@ export const CloseScene: React.FC<{ durationInFrames: number }> = ({
       <Audio src={staticFile("audio/08-close.m4a")} volume={0.95} />
       <Img
         alt="ANCHOR patient welcome screen"
-        src={staticFile("product/product-welcome.png")}
+        src={staticFile("product/patient-complete.png")}
         style={{
           filter: "brightness(0.42)",
           height: "100%",
@@ -34,7 +34,7 @@ export const CloseScene: React.FC<{ durationInFrames: number }> = ({
       </div>
       <div style={{ left: 160, position: "absolute", top: 225, width: 1160 }}>
         <div style={enter(frame, 8)}>
-          <Eyebrow light>The core loop is ready</Eyebrow>
+          <Eyebrow light>Practice complete</Eyebrow>
         </div>
         <h2
           style={{
@@ -46,11 +46,9 @@ export const CloseScene: React.FC<{ durationInFrames: number }> = ({
             ...enter(frame, 20),
           }}
         >
-          Familiar room.
+          Familiar-room practice
           <br />
-          Strong reasoning.
-          <br />
-          Gentle support.
+          for people with dementia.
         </h2>
         <div
           style={{
@@ -60,7 +58,7 @@ export const CloseScene: React.FC<{ durationInFrames: number }> = ({
             ...enter(frame, 38),
           }}
         >
-          Six grounded questions • two cognitive activities • no score or timer
+          Voice-first • caregiver-verified • one clear action at a time
         </div>
       </div>
       <div
@@ -77,7 +75,7 @@ export const CloseScene: React.FC<{ durationInFrames: number }> = ({
           ...enter(frame, 70, 18),
         }}
       >
-        ANCHOR • Gemini hackathon demo
+        ANCHOR • simple dementia-friendly room practice
       </div>
       <div
         style={{
@@ -88,8 +86,7 @@ export const CloseScene: React.FC<{ durationInFrames: number }> = ({
           position: "absolute",
         }}
       >
-        Generated media is labeled • safe fallback is always available • no
-        diagnostic claims
+        No diagnosis • no score • no treatment or prevention claim
       </div>
     </AbsoluteFill>
   );

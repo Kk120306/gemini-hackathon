@@ -10,10 +10,10 @@ import {
 import { colors, enter } from "../theme";
 
 const steps = [
-  ["01", "Observe", "Only visible room objects and positions"],
-  ["02", "Confirm", "Caregiver approves every grounded fact"],
-  ["03", "Compose", "Gemini builds a perspective-preserving 2.5D scene"],
-  ["04", "Validate", "A second pass rejects drift or invented content"],
+  ["01", "Detect", "Gemini finds visible objects and positions"],
+  ["02", "Approve", "The caregiver confirms every safe detail"],
+  ["03", "Generate", "Six activities use this exact approved image"],
+  ["04", "Practice", "One large image and one clear action at a time"],
 ] as const;
 
 export const GroundingScene: React.FC<{ durationInFrames: number }> = ({
@@ -29,7 +29,7 @@ export const GroundingScene: React.FC<{ durationInFrames: number }> = ({
       </div>
       <div style={{ left: 110, position: "absolute", top: 150 }}>
         <div style={enter(frame, 6)}>
-          <Eyebrow>The grounding contract</Eyebrow>
+          <Eyebrow>Six dementia-friendly questions</Eyebrow>
         </div>
         <h2
           style={{
@@ -40,7 +40,7 @@ export const GroundingScene: React.FC<{ durationInFrames: number }> = ({
             ...enter(frame, 18),
           }}
         >
-          Generation is useful only when it stays true.
+          Practise recognising objects and remembering where they are.
         </h2>
       </div>
       <div
@@ -93,9 +93,9 @@ export const GroundingScene: React.FC<{ durationInFrames: number }> = ({
         ))}
       </div>
       <MediaCard
-        alt="Synthetic approved source room used for the product run"
-        label="Synthetic approved source"
-        src="product/source-room.png"
+        alt="Caregiver-provided familiar office"
+        label="Caregiver-approved source"
+        src="assets/office-room.jpg"
         style={{
           bottom: 90,
           height: 330,
@@ -119,9 +119,9 @@ export const GroundingScene: React.FC<{ durationInFrames: number }> = ({
         →
       </div>
       <MediaCard
-        alt="Validated ANCHOR spatial room"
-        label="Validated 2.5D activity surface"
-        src="product/product-spatial.png"
+        alt="The same caregiver-provided familiar office"
+        label="Six activities stay grounded in this room"
+        src="assets/office-room.jpg"
         style={{
           bottom: 90,
           height: 330,
@@ -132,7 +132,7 @@ export const GroundingScene: React.FC<{ durationInFrames: number }> = ({
         }}
       />
       <Footnote>
-        Deterministic fallback replaces any rejected or delayed model output
+        Not generic trivia • no invented memories • caregiver remains in control
       </Footnote>
     </SceneShell>
   );
