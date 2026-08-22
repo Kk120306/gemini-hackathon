@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const stateKey = "anchor.fixture.state.v1";
+const stateKey = "anchor.fixture.state.v4";
 
 test("validated room media stays hidden until the simplified cue", async ({
   page,

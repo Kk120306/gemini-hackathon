@@ -94,23 +94,23 @@ const compiledPreparedLesson = compileGroundedLesson(
       },
       {
         type: "location_matching",
-        targetObjectId: "object-glasses",
-        choiceObjectIds: ["object-glasses", "object-mug"],
+        targetObjectId: "object-mug",
+        choiceObjectIds: ["object-mug", "object-glasses"],
       },
       {
         type: "visual_search",
-        targetObjectId: "object-mug",
-        choiceObjectIds: ["object-mug", "object-glasses", "object-lamp"],
-      },
-      {
-        type: "object_recognition",
         targetObjectId: "object-lamp",
         choiceObjectIds: ["object-lamp", "object-glasses", "object-mug"],
       },
       {
+        type: "object_recognition",
+        targetObjectId: "object-mug",
+        choiceObjectIds: ["object-mug", "object-glasses", "object-lamp"],
+      },
+      {
         type: "visual_recall",
-        targetObjectId: "object-glasses",
-        choiceObjectIds: ["object-glasses", "object-lamp", "object-mug"],
+        targetObjectId: "object-lamp",
+        choiceObjectIds: ["object-lamp", "object-glasses", "object-mug"],
       },
       {
         type: "association",

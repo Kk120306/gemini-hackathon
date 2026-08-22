@@ -83,22 +83,22 @@ function validLessonPlan() {
       },
       {
         type: "location_matching",
-        targetObjectId: glasses.id,
-        choiceObjectIds: [glasses.id, mug.id],
+        targetObjectId: mug.id,
+        choiceObjectIds: [mug.id, glasses.id],
       },
       {
         type: "visual_search",
-        targetObjectId: mug.id,
-        choiceObjectIds: all,
-      },
-      {
-        type: "object_recognition",
         targetObjectId: lamp.id,
         choiceObjectIds: all,
       },
       {
+        type: "object_recognition",
+        targetObjectId: mug.id,
+        choiceObjectIds: all,
+      },
+      {
         type: "visual_recall",
-        targetObjectId: glasses.id,
+        targetObjectId: lamp.id,
         choiceObjectIds: all,
       },
       {
@@ -225,6 +225,33 @@ describe("GoogleGenAiProvider contracts", () => {
       provider.generateLesson(state.worldModel, state.groundingRecords),
     ).rejects.toBeInstanceOf(ModelContractError);
     expect(transport.requests).toHaveLength(2);
+  });
+
+  it("rejects a repetitive plan that overuses one target", async () => {
+    const state = createPreparedAnchorState();
+    const repetitive = validLessonPlan();
+    const glassesId = state.worldModel.objects[0]?.id;
+    if (!glassesId) {
+      throw new Error("Prepared glasses are unavailable.");
+    }
+    repetitive.questions = repetitive.questions.map((question) => ({
+      ...question,
+      targetObjectId: glassesId,
+      choiceObjectIds: [
+        glassesId,
+        ...question.choiceObjectIds.filter((id) => id !== glassesId),
+      ].slice(0, 3),
+    }));
+    const response = JSON.stringify(repetitive);
+    const transport = new CapturedTransport([response, response]);
+    const provider = new GoogleGenAiProvider(transport, "gemma-test");
+
+    await expect(
+      provider.generateLesson(state.worldModel, state.groundingRecords),
+    ).rejects.toBeInstanceOf(ModelContractError);
+    expect(transport.requests[1]?.prompt).toContain(
+      "No object may be the target more than twice",
+    );
   });
 
   it("rejects unapproved evidence before making a model call", async () => {

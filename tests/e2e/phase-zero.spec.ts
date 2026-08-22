@@ -27,7 +27,7 @@ test("caregiver and patient route shells render in fixture mode", async ({
   await page.goto("/patient/session");
   await expect(
     page.getByRole("heading", {
-      name: "Find the dark blue reading glasses on the bedside table.",
+      name: /dark blue reading glasses.*bedside table.*lower right/i,
     }),
   ).toBeVisible();
   await expect(

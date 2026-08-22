@@ -13,23 +13,23 @@ function strongPlan() {
       },
       {
         type: "location_matching" as const,
-        targetObjectId: "object-glasses",
-        choiceObjectIds: ["object-glasses", "object-mug"],
+        targetObjectId: "object-mug",
+        choiceObjectIds: ["object-mug", "object-glasses"],
       },
       {
         type: "visual_search" as const,
-        targetObjectId: "object-mug",
-        choiceObjectIds: ["object-mug", "object-glasses", "object-lamp"],
-      },
-      {
-        type: "object_recognition" as const,
         targetObjectId: "object-lamp",
         choiceObjectIds: ["object-lamp", "object-glasses", "object-mug"],
       },
       {
+        type: "object_recognition" as const,
+        targetObjectId: "object-mug",
+        choiceObjectIds: ["object-mug", "object-glasses", "object-lamp"],
+      },
+      {
         type: "visual_recall" as const,
-        targetObjectId: "object-glasses",
-        choiceObjectIds: ["object-glasses", "object-lamp", "object-mug"],
+        targetObjectId: "object-lamp",
+        choiceObjectIds: ["object-lamp", "object-glasses", "object-mug"],
       },
       {
         type: "association" as const,
@@ -58,6 +58,14 @@ describe("grounded spatial lesson compiler", () => {
       expect(question.selectableObjectIds).toContain(question.targetObjectId);
       expect(question.correctAnswer).not.toMatch(/^On the /);
       expect(question.answerExplanation).toMatch(/verified/i);
+      expect(question.evidenceClues).toHaveLength(3);
+      expect(new Set(question.evidenceClues.map(({ kind }) => kind)).size).toBe(
+        3,
+      );
+      expect(question.prompt.length).toBeGreaterThan(45);
+      expect(
+        question.evidenceClues.map(({ detail }) => detail).join(" ").length,
+      ).toBeGreaterThan(70);
     }
   });
 
@@ -72,15 +80,31 @@ describe("grounded spatial lesson compiler", () => {
     const recall = lesson.questions[4];
     const association = lesson.questions[5];
 
-    expect(search?.prompt).toContain("left of the reading glasses");
+    expect(
+      new Set(lesson.questions.map(({ challengeTitle }) => challengeTitle))
+        .size,
+    ).toBe(6);
+    expect(lesson.questions[3]?.challengeTitle).toBe(
+      "Constraint-elimination challenge",
+    );
+
+    expect(search?.evidenceClues).toContainEqual(
+      expect.objectContaining({ detail: "Above the landmark" }),
+    );
     expect(search?.referenceObjectId).toBe("object-glasses");
     expect(recall).toMatchObject({
       interactionMode: "recall_zone",
-      recallZone: "right",
-      correctAnswer: "Right side",
+      recallZone: "upper_right",
+      correctAnswer: "Upper right",
       selectableObjectIds: [],
     });
-    expect(association?.prompt).toContain("shares the bedside table");
+    expect(recall?.choices).toHaveLength(6);
+    expect(recall?.evidenceClues).toHaveLength(3);
+    expect(association?.evidenceClues).toContainEqual(
+      expect.objectContaining({
+        detail: "Choose a different object on the same bedside table",
+      }),
+    );
     expect(association?.referenceObjectId).toBe("object-lamp");
     expect(association?.selectableObjectIds).toEqual([
       "object-glasses",

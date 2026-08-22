@@ -16,9 +16,16 @@ import {
 } from "@/components/icons";
 import { SpatialChoiceLayer } from "@/components/spatial-choice-layer";
 import { cueIncludes } from "@/domain/cue-engine";
-import { zoneLabel } from "@/domain/spatial-scene";
+import { recallZoneLabel } from "@/domain/spatial-scene";
 
-const recallZones = ["left", "center", "right"] as const;
+const recallZones = [
+  "upper_left",
+  "upper_center",
+  "upper_right",
+  "lower_left",
+  "lower_center",
+  "lower_right",
+] as const;
 
 export function PatientSession() {
   const router = useRouter();
@@ -140,10 +147,7 @@ export function PatientSession() {
         y: cameraObject.boundingBox.y + cameraObject.boundingBox.height / 2,
       }
     : null;
-  const displayPrompt =
-    isRecall && !recallReady && !correct
-      ? "Take a moment to study the whole room."
-      : activeQuestion.prompt;
+  const displayPrompt = activeQuestion.prompt;
 
   function speakPrompt() {
     const speech = window.speechSynthesis;
@@ -261,7 +265,7 @@ export function PatientSession() {
               aria-label="Choose the remembered area of the room"
             >
               {recallZones.map((zone) => {
-                const label = zoneLabel(zone);
+                const label = recallZoneLabel(zone);
                 return (
                   <button
                     type="button"
@@ -271,7 +275,7 @@ export function PatientSession() {
                         ? "recall-zone-layer__revealed"
                         : undefined
                     }
-                    aria-label={`Choose ${label.toLowerCase()} of the room`}
+                    aria-label={`Choose ${label.toLowerCase()} region of the room`}
                     onClick={(event) => {
                       event.currentTarget.blur();
                       answer(label);
@@ -294,7 +298,9 @@ export function PatientSession() {
                   : showFocus
                     ? "Verified target highlighted"
                     : isRecall
-                      ? "Study the familiar room"
+                      ? recallReady
+                        ? "Six-region recall map"
+                        : "Study object, surface, row, and column"
                       : "Touch a numbered object area"}
           </span>
           {mediaJob?.status === "pending" && !showSimplified ? (
@@ -304,7 +310,9 @@ export function PatientSession() {
           ) : null}
         </div>
 
-        <div className="session-panel">
+        <div
+          className={`session-panel session-panel--dense${isRecall ? " session-panel--recall" : ""}`}
+        >
           <div className="session-guide">
             <Image
               src={state.guide.imageSrc}
@@ -324,15 +332,31 @@ export function PatientSession() {
           <div className="session-question">
             <div className="session-question__label">
               <VolumeIcon />
-              {isRecall ? "Remember the room" : "Explore the room"}
+              {activeQuestion.challengeTitle}
             </div>
             <h1 id="question-prompt">{displayPrompt}</h1>
             <p className="session-question__instruction">
-              {isRecall && !recallReady && !correct
-                ? "Look from left to right. There is no timer."
-                : activeQuestion.instruction}
+              {activeQuestion.instruction}
             </p>
           </div>
+
+          <section
+            className="reasoning-path"
+            aria-label="Three-part evidence path"
+          >
+            <span>Evidence path</span>
+            <ol>
+              {activeQuestion.evidenceClues.map((clue, index) => (
+                <li key={`${activeQuestion.id}-${clue.kind}`}>
+                  <i aria-hidden="true">{index + 1}</i>
+                  <p>
+                    <strong>{clue.label}</strong>
+                    <small>{clue.detail}</small>
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </section>
 
           <div className="session-feedback" aria-live="polite">
             {correct ? (
@@ -349,12 +373,15 @@ export function PatientSession() {
                 {question.encouragement} <strong>{question.verbalCue}</strong>
               </p>
             ) : isRecall && !recallReady ? (
-              <p>Take as long as you need before hiding the room.</p>
+              <p>
+                Take your time. Hide the room when both row and column feel
+                clear.
+              </p>
             ) : (
               <p>
                 {isRecall
-                  ? "Choose one broad area of the room."
-                  : "The numbered areas in the room are your answers."}
+                  ? "Choose one exact region using both row and column."
+                  : "Use the full evidence path, then choose one numbered area."}
               </p>
             )}
           </div>

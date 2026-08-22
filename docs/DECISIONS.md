@@ -150,3 +150,13 @@ The patient answers five lesson activities by touching large regions projected f
 The remaining visual-recall activity lets the patient study the complete room without a timer, hides it only after explicit readiness, and asks for a broad left, middle, or right area.
 The system derives only honest image-plane relationships and never presents a single photograph as a reconstructed three-dimensional space.
 Gemma selects approved evidence identifiers, while deterministic application code compiles detailed prompts from visible attributes, verified locations, shared surfaces, and supported landmark relations.
+
+## AD-019: Every Activity Requires a Three-Part Evidence Path
+
+Status: Accepted
+
+Every lesson activity has a named reasoning task and exactly three caregiver-approved evidence clues.
+The compiler combines appearance, verified place, visible landmark, and image-region rules so an activity cannot collapse into generic object recognition.
+Visual recall uses an untimed six-region row-and-column map rather than a broad left, middle, or right guess.
+The plan must distribute targets across at least three approved objects, and no object may be the target more than twice.
+The patient still receives neutral encouragement, progressive help, no timer, no score, and no clinical interpretation.

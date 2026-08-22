@@ -153,6 +153,12 @@ type CognitiveSkill =
   | "sequencing"
   | "semantic_association";
 
+type QuestionEvidenceClue = {
+  kind: "appearance" | "place" | "landmark" | "spatial_rule";
+  label: string;
+  detail: string;
+};
+
 type LessonQuestion = {
   id: string;
   type: QuestionType;
@@ -168,7 +174,19 @@ type LessonQuestion = {
   correctAnswer: string;
   choices: string[];
   interactionMode: "tap_object" | "recall_zone";
-  recallZone?: "left" | "center" | "right";
+  recallZone?:
+    | "upper_left"
+    | "upper_center"
+    | "upper_right"
+    | "lower_left"
+    | "lower_center"
+    | "lower_right";
+  challengeTitle: string;
+  evidenceClues: [
+    QuestionEvidenceClue,
+    QuestionEvidenceClue,
+    QuestionEvidenceClue,
+  ];
   verbalCue: string;
   encouragement: string;
   answerExplanation: string;
@@ -191,13 +209,15 @@ Lesson validation rules:
 - Require exactly one `visual_recall` question.
 - Require exactly one `sequencing` or `association` question.
 - Require four other questions from recognition, location matching, and visual search.
-- Require two or three distinct answer choices.
+- Require the plan to target at least three approved objects and no object more than twice.
+- Require every compiled activity to contain a named challenge and exactly three grounded evidence clues.
+- Require two or three distinct answer choices for object-tap activities.
 - Require the correct answer to appear exactly once in `choices`.
 - Require every referenced object identifier to exist in the approved world model.
 - Require every grounding record to exist and be caregiver-approved.
 - Require the source image to contain the referenced object.
 - Require object-tap activities to expose two or three unique approved selectable object identifiers including the target.
-- Require recall-zone activities to expose no object hotspots and exactly one left, center, or right answer derived from the target box center.
+- Require recall-zone activities to expose no object hotspots and exactly six choices derived from the target box center's upper or lower row and left, middle, or right column.
 - Require an optional reference landmark to be an approved evidence object and not a selectable answer.
 - Require sequencing steps to be explicitly caregiver-confirmed.
 - Compile patient-facing prompts, instructions, answers, explanations, and cues in deterministic application code.
@@ -212,17 +232,35 @@ Example cognitive question:
   "id": "question-5",
   "type": "visual_recall",
   "cognitiveSkill": "short_term_memory",
-  "prompt": "After the room is hidden, choose the side where the dark blue reading glasses appeared.",
-  "instruction": "Study the whole room first. Hide it only when you feel ready.",
+  "prompt": "Study the reading glasses' exact six-region position before the room is hidden.",
+  "instruction": "Remember the target, its surface, one row, and one column. Hide the room when you feel ready.",
   "targetObjectId": "glasses",
   "objectIds": ["glasses"],
   "selectableObjectIds": [],
   "sourceImageId": "room-1",
   "groundingRecordIds": ["grounding-glasses-location"],
-  "correctAnswer": "Right side",
-  "choices": ["Left side", "Middle", "Right side"],
+  "correctAnswer": "Upper right",
+  "choices": ["Upper left", "Upper middle", "Upper right", "Lower left", "Lower middle", "Lower right"],
   "interactionMode": "recall_zone",
-  "recallZone": "right",
+  "recallZone": "upper_right",
+  "challengeTitle": "Six-region object-place recall",
+  "evidenceClues": [
+    {
+      "kind": "appearance",
+      "label": "Visible signature",
+      "detail": "Dark blue reading glasses"
+    },
+    {
+      "kind": "place",
+      "label": "Verified place",
+      "detail": "On the right bedside table"
+    },
+    {
+      "kind": "spatial_rule",
+      "label": "Memory rule",
+      "detail": "Store one row and one column"
+    }
+  ],
   "verbalCue": "Think about the bedside table on the right side of the bed.",
   "encouragement": "Take your time. We can look together.",
   "answerExplanation": "Yes. The dark blue reading glasses were on the right side of the room.",

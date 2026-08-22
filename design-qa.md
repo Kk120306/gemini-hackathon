@@ -5,14 +5,14 @@
 Source visual truth: `/Users/kai/.codex/attachments/3e06e96f-f906-4a8f-959e-6cdb1bd9c01c/UI mockups project setup.zip`, primary patient-activity reference `.thumbnail`.
 Secondary source context: `ANCHOR Prototype.dc.html` and `ANCHOR Prototype v2.dc.html` inside the same archive.
 Implementation: `http://127.0.0.1:3001/patient/session` in the prepared fixture state.
-Implementation screenshot: `/Users/kai/repos/gemini-hackathon/.data/design-qa/spatial-correct.png`.
-Recall screenshot: `/Users/kai/repos/gemini-hackathon/.data/design-qa/spatial-recall-hidden.png`.
-Association screenshot: `/Users/kai/repos/gemini-hackathon/.data/design-qa/spatial-association.png`.
-Combined comparison: `/Users/kai/repos/gemini-hackathon/.data/design-qa/comparison-spatial.png`.
+Implementation screenshot: `/Users/kai/repos/gemini-hackathon/.data/design-qa/strong-initial.png`.
+Recall screenshot: `/Users/kai/repos/gemini-hackathon/.data/design-qa/strong-recall-hidden.png`.
+Association screenshot: `/Users/kai/repos/gemini-hackathon/.data/design-qa/strong-association.png`.
+Combined comparison: `/Users/kai/repos/gemini-hackathon/.data/design-qa/comparison-strong.png`.
 
 ## Normalization
 
-The source image is 640 by 449 pixels.
+The source image is 640 by 457 pixels.
 The implementation was captured in the in-app Chromium browser at a 1194 by 834 CSS-pixel viewport with device scale factor 1.
 The combined comparison presents the source and implementation at the same aspect-preserving 644 by 452 frame.
 The source shows a correct multiple-choice answer while the implementation shows a correct spatial answer because the updated product direction intentionally makes the room itself interactive.
@@ -48,9 +48,10 @@ No placeholder image, emoji, handcrafted SVG illustration, or fake three-dimensi
 ### Copy and Content
 
 The product copy intentionally diverges from the weak generic source question.
-Questions now combine verified color, object type, location, shared surface, or image-plane relationship when the evidence supports the combination.
-Each instruction describes the exact action, and each correct state explains the grounded fact that justified the answer.
-The recall activity says there is no timer and hides the room only after explicit readiness.
+Every activity now combines exactly three verified clues selected from visible appearance, verified place, landmark, and image-region rules.
+The six activities have distinct reasoning tasks, including constraint elimination, landmark-guided search, six-region object-place recall, and shared-surface association.
+Each detailed prompt names the complete grounded claim, each instruction explains the reasoning operation, and each correct state explains why all evidence agrees.
+The recall activity says there is no timer, hides the room only after explicit readiness, and requires both a row and a column.
 
 ### Icons
 
@@ -64,8 +65,8 @@ Hover and focus subtly shift scene emphasis toward the explored object without c
 An incorrect answer advances neutral verbal support and begins non-blocking media preparation.
 The focus state dims irrelevant room areas and highlights the verified target.
 The correct state disables alternative hotspots, retains the verified target label, explains the grounded answer, and exposes continuation.
-The recall state presents the full room without a timer, then a hidden scene with three broad spatial areas.
-The association state distinguishes the named lamp as a landmark while exposing only the two candidate objects as answers.
+The recall state presents the full room without a timer, then a hidden scene with six large upper or lower and left, middle, or right regions.
+The association state distinguishes the named lamp as a landmark, requires a shared-surface rule and visible signature, and exposes only the two grounded candidates as answers.
 All required primary controls, replay, help, spatial selection, recall, continuation, and exit interactions work in the browser.
 
 ## Accessibility and Resilience
@@ -79,8 +80,8 @@ The 1194 by 834 tablet viewport has no clipping, overlap, or scroll.
 
 ## Browser Evidence
 
-The complete six-question lesson was walked through in the in-app browser.
-The initial, wrong-answer, focus, correct, recall-study, recall-hidden, and association states were inspected.
+The strengthened six-question lesson was walked through in the in-app browser.
+The initial three-evidence challenge, wrong-answer, focus, correct, six-region recall-study, recall-hidden, and multi-evidence association states were inspected.
 Browser metrics reported a 1194-pixel document width, an 834-pixel document height, and no viewport overflow.
 Visible object targets measured at least 72 CSS pixels in each dimension.
 Browser logs contained no warnings or errors.
@@ -105,9 +106,21 @@ Finding: generic multiple-choice cards kept the room passive and weakened the co
 Impact: the patient was matching labels rather than interacting with a familiar space.
 Fix: remove the detached answer grid and project accessible answer regions directly onto the complete contained room image.
 
+### Iteration 4
+
+Finding: generic prompt text and three broad recall columns made the activity look easier than the evidence model actually was.
+Impact: the core lesson could be mistaken for a lightweight object-recognition quiz.
+Fix: expose exactly three evidence cards for every activity, make the full grounded claim visible in the prompt, add six distinct reasoning-task titles, enforce target diversity, and replace three-column recall with a six-region row-and-column map.
+
+### Iteration 5
+
+Finding: the detailed prompt and evidence path initially extended the first and final activity below the tablet viewport.
+Impact: replay and help controls were partially clipped despite the stronger content.
+Fix: apply one dense but readable tablet panel treatment across all activities while preserving the 64-pixel touch targets and room dominance.
+
 ## Remaining Severity
 
-No actionable P0, P1, or P2 visual or interaction findings remain for the spatial activity checkpoint.
+No actionable P0, P1, or P2 visual or interaction findings remain for the strong spatial reasoning checkpoint.
 The source mockup remains a visual-language reference rather than a behavioral constraint, as requested.
 
 final result: passed

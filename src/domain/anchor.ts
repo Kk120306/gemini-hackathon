@@ -101,6 +101,21 @@ export const interactionModeSchema = z.enum(["tap_object", "recall_zone"]);
 
 export const horizontalZoneSchema = z.enum(["left", "center", "right"]);
 
+export const recallZoneSchema = z.enum([
+  "upper_left",
+  "upper_center",
+  "upper_right",
+  "lower_left",
+  "lower_center",
+  "lower_right",
+]);
+
+export const questionEvidenceClueSchema = z.object({
+  kind: z.enum(["appearance", "place", "landmark", "spatial_rule"]),
+  label: z.string().trim().min(1).max(40),
+  detail: z.string().trim().min(1).max(180),
+});
+
 export const lessonQuestionSchema = z
   .object({
     id: z.string().min(1),
@@ -115,9 +130,11 @@ export const lessonQuestionSchema = z
     sourceImageId: z.string().min(1),
     groundingRecordIds: z.array(z.string().min(1)).min(1),
     correctAnswer: z.string().min(1),
-    choices: z.array(z.string().min(1)).min(2).max(3),
+    choices: z.array(z.string().min(1)).min(2).max(6),
     interactionMode: interactionModeSchema,
-    recallZone: horizontalZoneSchema.optional(),
+    recallZone: recallZoneSchema.optional(),
+    challengeTitle: z.string().trim().min(1).max(80),
+    evidenceClues: z.array(questionEvidenceClueSchema).length(3),
     verbalCue: z.string().min(1),
     encouragement: z.string().min(1),
     answerExplanation: z.string().min(1),
@@ -160,6 +177,7 @@ export const lessonQuestionSchema = z
     if (question.interactionMode === "tap_object") {
       if (
         question.selectableObjectIds.length < 2 ||
+        question.choices.length > 3 ||
         !selectableIds.has(question.targetObjectId) ||
         question.recallZone
       ) {
@@ -171,6 +189,7 @@ export const lessonQuestionSchema = z
       }
     } else if (
       question.selectableObjectIds.length !== 0 ||
+      question.choices.length !== 6 ||
       !question.recallZone
     ) {
       context.addIssue({
@@ -347,6 +366,7 @@ export type CueLevel = z.infer<typeof cueLevelSchema>;
 export type GroundingRecord = z.infer<typeof groundingRecordSchema>;
 export type Guide = z.infer<typeof guideSchema>;
 export type HorizontalZone = z.infer<typeof horizontalZoneSchema>;
+export type RecallZone = z.infer<typeof recallZoneSchema>;
 export type InteractionMode = z.infer<typeof interactionModeSchema>;
 export type Lesson = z.infer<typeof lessonSchema>;
 export type LessonQuestion = z.infer<typeof lessonQuestionSchema>;

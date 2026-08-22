@@ -72,6 +72,11 @@ Phase 4: Trustworthy Family Guide
 - Runtime contracts now distinguish object-tap and recall-zone interactions and reject missing targets, duplicate hotspots, unsupported references, and inconsistent spatial answers.
 - The caregiver lesson preview now explains each spatial interaction and its grounded answer instead of showing only generic choices.
 - Spatial core design QA passed at 1194 by 834 pixels across initial, incorrect, focus, correct, recall, and association states.
+- Every lesson activity now has a distinct reasoning-task title and exactly three grounded evidence clues selected from appearance, verified place, landmark, and image-region rules.
+- Patient prompts now state the complete verified claim, while instructions require evidence matching, constraint elimination, landmark-guided search, row-and-column recall, or shared-surface association.
+- The lesson plan must target at least three approved objects and cannot target any object more than twice.
+- Visual recall now binds the target to its verified surface, one row, and one column before exposing six exact answer regions.
+- Strong spatial reasoning design QA passed at 1194 by 834 pixels for the detailed first activity, hidden six-region recall, and multi-evidence association with no viewport overflow.
 
 ## Next Actions
 
@@ -93,6 +98,7 @@ Phase 4: Trustworthy Family Guide
 - Medical-effectiveness language could undermine credibility despite a polished demo.
 - The newest Vite major currently requests an unpublished transitive dependency, so the test toolchain is pinned to the stable Vite 7 line.
 - A single room photograph supports trustworthy two-dimensional spatial relationships but cannot justify a true three-dimensional reconstruction, so the UI must continue to avoid depth or navigable-room claims.
+- Stronger evidence tasks increase reading and reasoning demand, so caregiver review, spoken replay, progressive help, neutral feedback, and the no-score boundary must remain mandatory.
 
 ## Blockers
 
@@ -148,3 +154,10 @@ Phase 4: Trustworthy Family Guide
 - `pnpm build` produced all 12 routes without warnings on 2026-08-22 after the core spatial interaction checkpoint.
 - The complete six-question spatial flow was inspected in the in-app browser with no viewport overflow or browser console errors on 2026-08-22.
 - The production patient route returned HTTP 200 locally and through the private Tailscale URL after the core spatial interaction checkpoint on 2026-08-22.
+- `pnpm format:check` passed on 2026-08-22 after the strong spatial reasoning checkpoint.
+- `pnpm lint` passed on 2026-08-22 after the strong spatial reasoning checkpoint.
+- `pnpm typecheck` passed on 2026-08-22 after the strong spatial reasoning checkpoint.
+- `pnpm test` passed 52 tests across 15 files on 2026-08-22 after the strong spatial reasoning checkpoint.
+- `pnpm test:e2e` passed all 11 tablet Chromium scenarios after the strong spatial reasoning checkpoint on 2026-08-22.
+- `pnpm build` produced all 15 application and private-media routes after the strong spatial reasoning checkpoint on 2026-08-22.
+- The detailed first activity, hidden six-region recall, and shared-surface association were inspected in the in-app browser at 1194 by 834 pixels with no viewport overflow on 2026-08-22.

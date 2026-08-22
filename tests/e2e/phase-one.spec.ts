@@ -76,12 +76,14 @@ async function answerRemainingQuestions(
   answers: readonly string[],
 ) {
   for (const answer of answers) {
-    if (answer === "Right side") {
+    if (answer === "Upper right") {
       await page
         .getByRole("button", { name: "I'm ready. Hide the room." })
         .click();
       await page
-        .getByRole("button", { name: "Choose right side of the room" })
+        .getByRole("button", {
+          name: "Choose upper right region of the room",
+        })
         .click();
     } else {
       await page
@@ -101,17 +103,13 @@ test("caregiver correction persists into the complete six-question flow", async 
   await prepareRoom(page, "reading table");
   await prepareGuide(page, false);
 
-  await expect(
-    page.getByText(
-      /Touch the reading glasses exactly where it appears on the reading table/,
-    ),
-  ).toBeVisible();
+  await expect(page.getByText("On the reading table").first()).toBeVisible();
   await page.getByRole("button", { name: "Start activity" }).click();
 
   await page
     .getByRole("button", { name: "Choose Blue mug in the room" })
     .click();
-  await expect(page.getByText(/scan the reading table/i)).toBeVisible();
+  await expect(page.getByText(/verify the reading table/i)).toBeVisible();
   await page.getByRole("button", { name: "Help me" }).click();
   await expect(page.getByText("Verified target highlighted")).toBeVisible();
   await page.getByRole("button", { name: "Help me" }).click();
@@ -130,10 +128,10 @@ test("caregiver correction persists into the complete six-question flow", async 
   await page.getByRole("button", { name: "Next question" }).click();
 
   await answerRemainingQuestions(page, [
-    "Reading glasses",
     "Blue mug",
     "Lamp",
-    "Right side",
+    "Blue mug",
+    "Upper right",
     "Reading glasses",
   ]);
 
@@ -154,10 +152,10 @@ test("neutral guide and deterministic media fallback complete without likeness m
 
   await answerRemainingQuestions(page, [
     "Reading glasses",
-    "Reading glasses",
     "Blue mug",
     "Lamp",
-    "Right side",
+    "Blue mug",
+    "Upper right",
     "Reading glasses",
   ]);
 

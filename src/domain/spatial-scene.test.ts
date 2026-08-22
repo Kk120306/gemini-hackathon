@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildSpatialScene,
   horizontalZoneFor,
+  recallZoneFor,
   relationBetween,
   relationMatches,
 } from "@/domain/spatial-scene";
@@ -21,6 +22,12 @@ describe("spatial room model", () => {
     expect(
       horizontalZoneFor({ x: 0.42, y: 0.2, width: 0.1, height: 0.1 }),
     ).toBe("center");
+    expect(recallZoneFor({ x: 0.72, y: 0.66, width: 0.1, height: 0.1 })).toBe(
+      "lower_right",
+    );
+    expect(recallZoneFor({ x: 0.42, y: 0.14, width: 0.1, height: 0.1 })).toBe(
+      "upper_center",
+    );
   });
 
   it("states only clear image-plane relationships", () => {

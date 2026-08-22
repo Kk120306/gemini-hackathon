@@ -2,6 +2,7 @@ import {
   worldModelSchema,
   type BoundingBox,
   type HorizontalZone,
+  type RecallZone,
   type WorldModel,
   type WorldObject,
 } from "@/domain/anchor";
@@ -53,6 +54,12 @@ export function verticalZoneFor(box: BoundingBox): VerticalZone {
     return "lower";
   }
   return "middle";
+}
+
+export function recallZoneFor(box: BoundingBox): RecallZone {
+  const horizontal = horizontalZoneFor(box);
+  const row = center(box).y < 0.5 ? "upper" : "lower";
+  return `${row}_${horizontal}`;
 }
 
 export function buildSpatialScene(worldModel: WorldModel): SpatialScene {
@@ -124,5 +131,22 @@ export function zoneLabel(zone: HorizontalZone) {
       return "Middle";
     case "right":
       return "Right side";
+  }
+}
+
+export function recallZoneLabel(zone: RecallZone) {
+  switch (zone) {
+    case "upper_left":
+      return "Upper left";
+    case "upper_center":
+      return "Upper middle";
+    case "upper_right":
+      return "Upper right";
+    case "lower_left":
+      return "Lower left";
+    case "lower_center":
+      return "Lower middle";
+    case "lower_right":
+      return "Lower right";
   }
 }

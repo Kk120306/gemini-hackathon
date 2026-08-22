@@ -53,11 +53,23 @@ export function LessonReview() {
               <li key={question.id}>
                 <span className="lesson-list__number">{index + 1}</span>
                 <div className="lesson-list__question">
-                  <span>{typeLabels[question.type]}</span>
+                  <span>
+                    {typeLabels[question.type]} · {question.challengeTitle}
+                  </span>
                   <strong>{question.prompt}</strong>
+                  <div
+                    className="lesson-list__clues"
+                    aria-label="Evidence path"
+                  >
+                    {question.evidenceClues.map((clue, clueIndex) => (
+                      <span key={`${question.id}-${clue.kind}`}>
+                        {clueIndex + 1}. {clue.label}: {clue.detail}
+                      </span>
+                    ))}
+                  </div>
                   <small>
                     {question.interactionMode === "recall_zone"
-                      ? "Spatial recall map"
+                      ? "Six-region spatial recall map"
                       : question.selectableObjectIds.length +
                         " room anchors"}{" "}
                     · Answer: {question.correctAnswer}

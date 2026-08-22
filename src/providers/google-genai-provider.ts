@@ -62,6 +62,7 @@ Return one JSON object with this exact shape:
 {"questions":[{"type":"object_recognition|location_matching|visual_search|visual_recall|association","targetObjectId":"approved object id","choiceObjectIds":["2 or 3 distinct approved object ids including the target exactly once"]}]}
 Use exactly one visual_recall question and exactly one association question.
 Use object_recognition, location_matching, or visual_search for the other four questions.
+Distribute the six targets across at least three approved objects, and never target one object more than twice.
 Choose three objects whenever the approved world model has three or more objects so the room can provide two selectable anchors plus a visual landmark.
 For association, prefer a target that shares an approved location with another object.
 For visual_search, prefer targets and alternatives with clearly separated bounding boxes.

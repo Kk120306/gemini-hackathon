@@ -29,7 +29,8 @@ Deterministic overlays, static expressions, and text remain available whenever g
 - Ground all personalized content in observed or caregiver-confirmed facts.
 - Generate a familiar family guide with explicit caregiver consent.
 - Deliver six varied questions, including two cognitive exercises.
-- Make every question use specific visible attributes, verified locations, or image-plane spatial relationships when the evidence supports them.
+- Make every question require a three-part evidence path assembled from visible attributes, verified locations, landmarks, or image-plane spatial rules.
+- Distribute the six targets across at least three approved objects so the lesson cannot repeat one easy answer.
 - Let the patient answer directly in the familiar room image.
 - Demonstrate progressive cueing after an incorrect answer.
 - Demonstrate live image generation without making it a single point of failure.
@@ -75,8 +76,8 @@ The stage promise is:
 22. As a patient, I want the full answer revealed only after progressive help, so that the interaction remains supportive.
 23. As a patient, I want a simple progress indicator, so that I know the lesson is finite.
 24. As a patient, I want positive feedback after a correct answer, so that the guide feels encouraging.
-25. As a patient, I want a short visual recall activity, so that part of the lesson exercises working memory.
-26. As a patient, I want a simple sequencing or association activity, so that part of the lesson exercises reasoning using familiar objects.
+25. As a patient, I want a detailed visual recall activity, so that I can bind a familiar object to its surface, row, and column before the room is hidden.
+26. As a patient, I want a multi-evidence sequencing or association activity, so that I can reason from a visible landmark, a verified surface, and a second object's appearance.
 27. As a patient, I want to ask for help through a visible button, so that speech recognition is never required.
 28. As a patient, I want reduced motion when my device requests it, so that generated media does not create discomfort.
 29. As a demo presenter, I want the live image-generation step to have an immediate fallback, so that network latency cannot stop the lesson.
@@ -91,7 +92,8 @@ The stage promise is:
 38. As a demo presenter, I want the prepared caregiver path to complete within 90 seconds, so that the patient interaction remains the focus.
 39. As a patient, I want to touch an object where it appears in the room, so that the activity stays connected to a familiar space.
 40. As a patient, I want questions to name verified color, shape, material, location, or spatial relationships, so that each activity provides a meaningful observation task.
-41. As a patient, I want a recall activity with no timer, so that I can study the room before choosing a broad remembered area.
+41. As a patient, I want a recall activity with no timer, so that I can study the room before choosing an exact upper or lower and left, middle, or right region.
+42. As a patient, I want every activity to show the evidence path I should use, so that the lesson exercises observation and reasoning rather than guessing from a generic prompt.
 
 ## Required Demo Flow
 
@@ -131,9 +133,11 @@ The lesson contains exactly six questions:
 The last two questions are the required cognitive activities.
 The lesson must not evaluate or label cognitive ability.
 Five activities use direct object selection inside the approved room image.
-The visual-recall activity first shows the complete room without a timer, then hides it and asks for one broad left, middle, or right area.
-Question wording should combine multiple approved cues when available, such as a specific color, object type, verified surface, and one image-plane relationship to a visible landmark.
-Application code must prefer evidence-rich prompts over generic prompts such as `Which object is this?` or `Where does this belong?`.
+The visual-recall activity first shows the complete room without a timer, asks the patient to bind the target to a surface, row, and column, then hides the image and exposes six exact regions.
+Every activity presents exactly three approved evidence clues and asks the patient to satisfy the complete evidence path rather than match one obvious attribute.
+The activities include three-clue identification, complete location claims, landmark-guided search, systematic scene search, six-region object-place recall, and shared-surface or landmark association.
+Application code must reject generic prompts such as `Which object is this?` or `Where does this belong?`.
+The six targets must span at least three approved objects, and no object may be the target more than twice.
 
 ## Grounding Ledger
 
@@ -205,8 +209,9 @@ The model may recommend the next cue, but application code enforces the allowed 
 - The app produces an approved family guide from reference photos.
 - The app produces six valid, grounded questions with exactly two cognitive activities.
 - At least five questions are answered through verified spatial regions on the room image.
-- The lesson includes one no-timer hide-and-recall activity using broad spatial zones.
-- Every patient prompt contains enough verified detail to distinguish its target from the other choices.
+- The lesson includes one no-timer hide-and-recall activity using a six-region row-and-column map.
+- Every patient activity exposes exactly three verified evidence clues that jointly distinguish its target from the other choices.
+- The lesson targets at least three approved objects and never targets the same object more than twice.
 - An incorrect answer visibly advances the cue sequence.
 - A generated simplified scene can replace the deterministic overlay after validation.
 - One short generated video appears without blocking the remainder of the lesson.

@@ -82,14 +82,17 @@ Interface responsibilities:
 
 The Lesson Engine accepts only an approved world model.
 It asks Gemma for candidate content, validates grounding, enforces the six-question composition, and returns a draft for caregiver approval.
+The model selects only a constrained plan of approved identifiers and activity types.
+Deterministic application code expands that plan into named challenges, three-part evidence paths, instructions, answers, and progressive cues.
 
 Interface responsibilities:
 
 - Generate six questions.
 - Enforce exactly two cognitive activities.
+- Distribute targets across at least three objects and use no object more than twice.
 - Ensure every object and location reference exists in the approved world model.
 - Ensure sequencing content has explicit caregiver verification.
-- Produce deterministic answer choices and cue metadata.
+- Produce exactly three grounded evidence clues, deterministic answer choices, detailed explanations, and cue metadata for every activity.
 
 ### Cue Engine
 
@@ -106,7 +109,7 @@ none -> verbal -> focus -> simplified -> reveal
 ### Spatial Scene Engine
 
 The Spatial Scene Engine converts caregiver-approved normalized object boxes into a deterministic two-dimensional scene model.
-It derives only image-plane facts such as left of, right of, above, below, and broad horizontal zones.
+It derives only image-plane facts such as left of, right of, above, below, and six-region row-and-column positions.
 It does not claim monocular depth, room dimensions, occluded objects, or a reconstructed three-dimensional environment.
 
 Interface responsibilities:
@@ -114,7 +117,7 @@ Interface responsibilities:
 - Project normalized evidence boxes into a contained responsive image.
 - Expand small projected boxes into accessible touch regions while preserving their centers.
 - Derive unique landmark relationships when object separation crosses the configured threshold.
-- Assign left, center, or right recall zones from verified object centers.
+- Assign upper-left, upper-middle, upper-right, lower-left, lower-middle, or lower-right recall regions from verified object centers.
 - Keep every spatial answer tied to the original source image and grounding record.
 
 ### Media Generation Service
@@ -142,7 +145,7 @@ Rejected media never appears in patient mode.
 The Session Engine manages question order, selected answers, current cue level, speech replay, and completion.
 It stores no cognitive score and makes no clinical inference.
 For object-tap activities, it accepts only selected approved object identifiers projected over the room image.
-For visual recall, it accepts one broad horizontal zone after the patient explicitly hides the studied room.
+For visual recall, it accepts one exact six-region answer after the patient explicitly hides the studied room.
 
 ### Storage Adapter
 

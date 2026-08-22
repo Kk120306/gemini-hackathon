@@ -221,6 +221,18 @@ The patient receives an immediate cue and can finish the question whether live g
 Exit condition:
 The patient explores the verified room directly, every answer remains grounded, and all six questions provide a concrete observation or recall task.
 
+### Strong Spatial Reasoning Checkpoint
+
+- [x] Give every activity a distinct reasoning task instead of a generic recognition prompt.
+- [x] Present exactly three grounded evidence clues for every question.
+- [x] Require complete evidence matching across appearance, place, landmark, or image-region rules.
+- [x] Upgrade recall from three broad columns to a six-region row-and-column map.
+- [x] Distribute six targets across at least three objects and cap each object at two targets.
+- [x] Add contract, compiler, spatial geometry, browser interaction, accessibility, and tablet viewport coverage.
+
+Exit condition:
+The six activities form a varied evidence-reasoning sequence, no activity can be solved from a generic one-line prompt alone, and the full tablet session remains calm, grounded, and usable without a score or timer.
+
 ### Phase 4: Trustworthy Family Guide
 
 - [ ] Capture name, relationship, likeness permission, and caregiver confirmation.

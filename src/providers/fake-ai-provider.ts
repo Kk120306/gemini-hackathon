@@ -89,22 +89,22 @@ export class FakeAiProvider implements AiProvider {
           },
           {
             type: "location_matching",
-            targetObjectId: glasses.id,
-            choiceObjectIds: [glasses.id, mug.id],
+            targetObjectId: mug.id,
+            choiceObjectIds: [mug.id, glasses.id],
           },
           {
             type: "visual_search",
-            targetObjectId: mug.id,
-            choiceObjectIds: all,
-          },
-          {
-            type: "object_recognition",
             targetObjectId: lamp.id,
             choiceObjectIds: all,
           },
           {
+            type: "object_recognition",
+            targetObjectId: mug.id,
+            choiceObjectIds: all,
+          },
+          {
             type: "visual_recall",
-            targetObjectId: glasses.id,
+            targetObjectId: lamp.id,
             choiceObjectIds: all,
           },
           {

@@ -63,12 +63,15 @@ Each scenario must produce a visible recovery path.
 - Require exactly six questions.
 - Require exactly one visual-recall question.
 - Require exactly one sequencing or association question.
+- Require targets across at least three approved objects.
+- Reject plans that target one object more than twice.
+- Require exactly three grounded evidence clues for every compiled question.
 - Require every answer to reference approved data.
 - Reject invented locations and missing object identifiers.
 - Reject sequencing content without caregiver verification.
 - Reject duplicate or missing correct choices.
 - Require each object-tap activity to include the target among two or three unique approved hotspot objects.
-- Require the recall activity to use one derived broad spatial zone and no object hotspots.
+- Require the recall activity to use one derived six-region row-and-column answer, expose exactly six choices, and show no object hotspots.
 - Verify that landmark relations are used only when normalized box geometry supports them.
 
 ### Spatial Scene Engine
@@ -142,6 +145,7 @@ Use `pnpm test:live:media` for the Gemini room edit and independent two-image va
 - Verify every non-recall answer is an accessible object hotspot on the approved room image.
 - Verify small object hotspots remain at least 64 by 64 CSS pixels.
 - Verify the recall room stays visible until the patient explicitly chooses to hide it.
+- Verify all three evidence clues remain readable without obscuring the room or answer controls.
 
 ## Visual Testing
 
@@ -155,7 +159,7 @@ Capture screenshots for:
 - Simplified generated scene.
 - Revealed answer.
 - Correct answer celebration.
-- Recall study and hidden-zone states.
+- Recall study and hidden six-region states.
 - Association state with a visible landmark.
 - Video loading and fallback.
 - Completion state.

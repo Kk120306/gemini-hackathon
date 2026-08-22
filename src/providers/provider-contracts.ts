@@ -245,6 +245,29 @@ export const lessonPlanSchema = z
         message: "A plan must contain exactly one association activity.",
       });
     }
+    const targetCounts = new Map<string, number>();
+    for (const question of lesson.questions) {
+      targetCounts.set(
+        question.targetObjectId,
+        (targetCounts.get(question.targetObjectId) ?? 0) + 1,
+      );
+    }
+    if (targetCounts.size < 3) {
+      context.addIssue({
+        code: "custom",
+        message:
+          "A plan must distribute targets across at least three objects.",
+      });
+    }
+    for (const [targetObjectId, count] of targetCounts) {
+      if (count > 2) {
+        context.addIssue({
+          code: "custom",
+          message: "No object may be the target more than twice.",
+          path: ["questions", targetObjectId],
+        });
+      }
+    }
   });
 
 export type LessonPlan = z.infer<typeof lessonPlanSchema>;
