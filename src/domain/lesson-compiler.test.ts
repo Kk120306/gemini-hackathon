@@ -41,7 +41,7 @@ function strongPlan() {
 }
 
 describe("grounded spatial lesson compiler", () => {
-  it("turns every non-recall activity into direct room interaction", () => {
+  it("turns the six questions into one room-memory progression", () => {
     const state = createPreparedAnchorState();
     const lesson = compileGroundedLesson(
       strongPlan(),
@@ -52,12 +52,31 @@ describe("grounded spatial lesson compiler", () => {
     const objectActivities = lesson.questions.filter(
       ({ interactionMode }) => interactionMode === "tap_object",
     );
+    expect(
+      lesson.questions.map(({ challengeTitle }) => challengeTitle),
+    ).toEqual([
+      "Learn a room anchor",
+      "Link the object and place",
+      "Find it from a landmark",
+      "Picture it, then find it",
+      "Study, hide, remember",
+      "Link two room objects",
+    ]);
+    expect(lesson.questions.map(({ prompt }) => prompt).join(" ")).toMatch(
+      /learn one anchor.*object-place memory.*starting at.*after picturing.*room is hidden.*picture the lamp/is,
+    );
+    expect(lesson.questions.map(({ prompt }) => prompt).join(" ")).not.toMatch(
+      /constraint|eliminate|complete location claim|multi-evidence/i,
+    );
     expect(objectActivities).toHaveLength(5);
+    for (const question of lesson.questions) {
+      expect(question.prompt.match(/[.!?](?:\s|$)/g)).toHaveLength(1);
+    }
     for (const question of objectActivities) {
       expect(question.selectableObjectIds.length).toBeGreaterThanOrEqual(2);
       expect(question.selectableObjectIds).toContain(question.targetObjectId);
       expect(question.correctAnswer).not.toMatch(/^On the /);
-      expect(question.answerExplanation).toMatch(/verified/i);
+      expect(question.answerExplanation).toMatch(/approved bedroom image/i);
       expect(question.evidenceClues).toHaveLength(3);
       expect(new Set(question.evidenceClues.map(({ kind }) => kind)).size).toBe(
         3,
@@ -84,9 +103,6 @@ describe("grounded spatial lesson compiler", () => {
       new Set(lesson.questions.map(({ challengeTitle }) => challengeTitle))
         .size,
     ).toBe(6);
-    expect(lesson.questions[3]?.challengeTitle).toBe(
-      "Constraint-elimination challenge",
-    );
 
     expect(search?.evidenceClues).toContainEqual(
       expect.objectContaining({ detail: "Above the landmark" }),
@@ -98,6 +114,10 @@ describe("grounded spatial lesson compiler", () => {
       correctAnswer: "Upper right",
       selectableObjectIds: [],
     });
+    expect(recall?.prompt).toMatch(
+      /study where.*room is hidden.*upper or lower/i,
+    );
+    expect(recall?.instruction).toContain('"Lamp on the bedside table"');
     expect(recall?.choices).toHaveLength(6);
     expect(recall?.evidenceClues).toHaveLength(3);
     expect(association?.evidenceClues).toContainEqual(
@@ -106,6 +126,7 @@ describe("grounded spatial lesson compiler", () => {
       }),
     );
     expect(association?.referenceObjectId).toBe("object-lamp");
+    expect(association?.prompt).toMatch(/picture the lamp.*shares that place/i);
     expect(association?.selectableObjectIds).toEqual([
       "object-glasses",
       "object-mug",

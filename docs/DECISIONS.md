@@ -5,7 +5,7 @@
 Status: Accepted
 
 ANCHOR supports one patient, one familiar room, one trusted person, and one lesson for the hackathon.
-This keeps the demonstration focused on verification and progressive visual cueing.
+This keeps the demonstration focused on verified familiar-room recognition, orientation, recall, association, and progressive visual cueing.
 
 ## AD-002: Six Questions With Two Cognitive Activities
 
@@ -15,6 +15,8 @@ The lesson contains exactly six questions.
 Four questions cover object recognition, location matching, or visual search.
 One question covers short-term visual recall.
 One question covers caregiver-confirmed sequencing or simple association.
+All six questions provide cognitive practice through caregiver-approved familiar-room evidence.
+The visual-recall and sequencing or association questions remain the exactly two designated higher-memory activities.
 
 The app does not score or interpret performance.
 
@@ -26,6 +28,7 @@ The guide is generated from one to three caregiver-provided reference photos.
 One clear authorized portrait supports the common single-photo setup, while additional views can improve consistency.
 The caregiver must enter the relationship, confirm likeness consent, and approve the result.
 The guide is visibly labeled as AI-generated.
+The feature is consented portrait-conditioned generation with one-to-one likeness-consistency validation, not facial recognition, biometric identification, or identity search.
 Voice cloning is excluded.
 
 ## AD-004: Live Generative Media With Deterministic Fallbacks
@@ -35,8 +38,8 @@ Status: Accepted
 Live Gemini image generation is part of the progressive-cue demonstration.
 The UI renders an immediate CSS-based focus cue and replaces it only with validated generated media.
 
-One short generated video is part of the demonstration.
-The static guide remains the fallback and the lesson never waits on video.
+One independently validated generated video is required for the live demonstration when provider access is available.
+Approved questions may request clips opportunistically, but the static guide remains the fallback and the lesson never waits on video.
 
 ## AD-005: Application-Controlled Cue State Machine
 
@@ -60,11 +63,13 @@ Status: Accepted
 The hackathon implementation stores JSON and media under an ignored `.data` directory through a storage adapter.
 Cloud persistence is deferred until the complete local flow works.
 
-## AD-008: Constrained Speech Only
+## AD-008: Approved Synthetic Speech Only
 
 Status: Accepted
 
-Browser speech synthesis reads approved content using a generic voice.
+Gemini native speech or text-to-speech reads exact approved content using a fixed neutral synthetic voice.
+Generic browser speech and visible text remain the deterministic fallbacks.
+The provider never receives a trusted-person voice reference and never attempts to clone or imitate that person's voice.
 Optional push-to-talk speech recognition maps only to visible answers, repeat, or help.
 Open-ended conversation is excluded from the core demo.
 
@@ -72,7 +77,7 @@ Open-ended conversation is excluded from the core demo.
 
 Status: Accepted
 
-The verified transformation from room evidence to progressive visual cue is the headline feature.
+The verified transformation from familiar-room evidence to recognition, orientation, recall, association, and progressive visual cueing is the headline feature.
 The family guide, video, and speech features are supporting elements and may not delay or obscure it.
 
 ## AD-010: Visible Grounding Ledger
@@ -113,6 +118,8 @@ Status: Accepted
 
 Gemma selects approved object IDs, location IDs, and question types for exactly six questions.
 Application code deterministically compiles patient prompts, choices, answers, encouragement, and cues from caregiver-approved evidence.
+Each spoken prompt is one conversational room task, while exactly three grounded evidence clues remain visible as secondary support.
+Generic trivia, unsupported habitual-location claims, and pressuring memory-test language fail validation.
 This boundary prevents model-generated wording from introducing an unverified fact after the structured plan passes validation.
 
 ## AD-015: Room Uploads Remain Server-Private
@@ -184,5 +191,22 @@ This prevents a real office photo from receiving unrelated bedroom objects and k
 Status: Accepted
 
 After caregiver consent, independent portrait validation, and explicit guide approval, Gemini Omni Flash may animate the approved guide to ask the current deterministic lesson prompt.
-Each clip uses a neutral synthetic voice, carries a persistent AI-generated and not-live label, and must pass independent video validation before storage or display.
-Generation is lazy and non-blocking, so the room, question text, and static guide remain the complete fallback.
+Each clip uses a neutral synthetic voice, carries a persistent AI-generated and not-live label, and must pass independent one-person, likeness-consistency, facial-integrity, exact-dialogue, and safe-content validation before storage or display.
+Generation is lazy and non-blocking, so the room, question text, static guide, generic browser speech, and visible text remain complete fallbacks.
+
+## AD-023: Familiar-Room Practice Without Clinical Claims
+
+Status: Accepted
+
+ANCHOR is designed for people living with dementia to practice recognizing objects, orienting within one familiar room, recalling verified object locations, and associating objects with visible landmarks or caregiver-confirmed places.
+This intended interaction may be described as memory practice or familiar-surroundings rehearsal.
+It must not be described as making someone remember better, training or improving the brain, preventing dementia, slowing decline, treating symptoms, assessing cognitive ability, or producing clinical benefit.
+
+## AD-024: Gemini Speech With a Deterministic Fallback Ladder
+
+Status: Accepted
+
+The primary spoken-question path uses Gemini native speech or text-to-speech with a fixed neutral synthetic voice and the exact caregiver-approved text.
+Portrait consent never authorizes voice imitation, and ANCHOR does not accept a trusted-person voice reference.
+Presentation falls back from a validated guide video to the static guide with Gemini speech, the static guide with generic browser speech, and finally the static guide with visible text only.
+Audio and video generation never block room interaction or change deterministic lesson state.

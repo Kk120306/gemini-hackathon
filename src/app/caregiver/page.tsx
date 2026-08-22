@@ -7,7 +7,7 @@ const checklist = [
   "One real familiar-room image",
   "Gemini-detected visible objects",
   "A consented family portrait",
-  "Six grounded cognitive challenges",
+  "Six familiar-room memory questions",
 ] as const;
 
 export default function CaregiverStartPage() {
@@ -15,8 +15,8 @@ export default function CaregiverStartPage() {
     <main>
       <StepHeading
         eyebrow="Prepared demonstration"
-        title="Turn a real room into cognitive practice."
-        description="Gemini detects what is truly visible, then ANCHOR builds detailed attention, spatial recall, recognition, and association challenges. Nothing reaches the patient until you review it."
+        title="Turn a real room into memory practice."
+        description="Gemini detects what is truly visible, then ANCHOR builds detailed questions about recognizing objects, remembering their places, and using nearby landmarks. Nothing reaches the patient until you review it."
       />
 
       <div className="start-grid">

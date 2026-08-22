@@ -13,7 +13,7 @@ import { SiteHeader } from "@/components/site-header";
 const proofSteps = [
   {
     number: "01",
-    title: "Detect",
+    title: "See",
     text: "Gemini finds and boxes the real objects visible in one familiar room.",
   },
   {
@@ -23,8 +23,8 @@ const proofSteps = [
   },
   {
     number: "03",
-    title: "Exercise",
-    text: "Six grounded challenges practice attention, recall, and association.",
+    title: "Remember",
+    text: "Six calm questions rehearse where verified objects are in the room.",
   },
 ] as const;
 
@@ -35,16 +35,16 @@ export default function HomePage() {
 
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero__copy">
-          <p className="eyebrow">Room-grounded cognitive engagement</p>
+          <p className="eyebrow">Familiar-room memory practice</p>
           <h1 id="hero-title">
-            Train attention.
-            <span>Rehearse familiar spaces.</span>
+            Remember the room.
+            <span>Rehearse what appears where.</span>
           </h1>
           <p className="hero__lede">
-            ANCHOR turns a real room photo into six detailed visual challenges
-            for attention, spatial recall, recognition, and association. It is
-            designed for older adults and people living with dementia, with
-            every object verified by a caregiver first.
+            ANCHOR turns one photo of a familiar room into six detailed
+            object-and-place questions. A person living with dementia can study
+            visible landmarks, recall where items sit, and hear each prompt from
+            an AI-generated guide. A caregiver verifies every room fact first.
           </p>
           <div className="hero__actions">
             <Link className="primary-button" href="/caregiver">
@@ -59,8 +59,8 @@ export default function HomePage() {
           <div className="hero__boundary">
             <ShieldIcon />
             <p>
-              Cognitive engagement and familiarity support, not dementia
-              prevention, diagnosis, treatment, or assessment.
+              Familiar-room memory rehearsal and cognitive engagement, not
+              dementia prevention, diagnosis, treatment, or assessment.
             </p>
           </div>
         </div>
@@ -79,7 +79,7 @@ export default function HomePage() {
             <div className="hero-scene__label">
               <EyeIcon />
               <span>
-                Gemma observed
+                Gemini detected
                 <strong>Reading glasses on the bedside table</strong>
               </span>
             </div>
@@ -103,7 +103,7 @@ export default function HomePage() {
             />
             <span>
               Elena
-              <small>AI-generated guide</small>
+              <small>AI-generated · synthetic voice · not live</small>
             </span>
           </div>
         </div>
@@ -113,8 +113,8 @@ export default function HomePage() {
         <div className="proof-strip__intro">
           <SparkIcon />
           <p>
-            <strong>One visible proof chain</strong>
-            from room image to patient cue
+            <strong>One verified memory path</strong>
+            from familiar room photo to supported prompt
           </p>
         </div>
         {proofSteps.map((step) => (

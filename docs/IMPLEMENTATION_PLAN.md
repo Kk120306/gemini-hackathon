@@ -4,7 +4,7 @@
 
 The finished demo must prove one thing exceptionally well:
 
-> Gemma understands a familiar room, a caregiver verifies the evidence, and Gemini provides the minimum visual cue that helps the patient complete an activity.
+> Gemini understands a familiar room, a caregiver verifies the evidence, and ANCHOR turns that room into calm recognition, orientation, recall, and association practice with the minimum helpful cue.
 
 The generated family guide supports the interaction.
 It is not allowed to replace, obscure, or delay the verified room-to-cue experience.
@@ -17,7 +17,7 @@ It is not allowed to replace, obscure, or delay the verified room-to-cue experie
 - Gemma object and location proposals.
 - A caregiver-editable grounding ledger with one visible evidence card.
 - One caregiver-approved, lightly stylized generated family guide with a neutral fallback.
-- Six grounded questions with exactly two cognitive activities.
+- Six grounded familiar-room questions that all provide cognitive practice, with four direct recognition or orientation tasks and exactly two designated higher-memory activities.
 - One complete patient question with incorrect-answer progression.
 - Immediate verbal, focus, simplified, and reveal cue states.
 - Live Gemini room-image generation with deterministic fallback.
@@ -47,7 +47,8 @@ Mitigation:
 - Use a warm, lightly stylized guide rather than seamless photorealism.
 - Show `AI-generated guide based on [name]` beside the guide.
 - Require explicit likeness consent and caregiver approval.
-- Use a generic system voice and prohibit voice cloning.
+- Use a neutral Gemini synthetic voice for exact approved text, with generic browser speech and visible text as fallbacks.
+- Prohibit voice cloning, imitation, and trusted-person voice-reference uploads.
 - Keep a neutral non-likeness fallback.
 - Give the avatar less visual area than the room scene.
 
@@ -57,6 +58,7 @@ Acceptance criteria:
 - The room image and answer controls remain the dominant visual elements.
 - The complete lesson works with the neutral fallback guide.
 - No guide line contains an invented memory, quote, routine, or live-call implication.
+- Every generated clip is described as consented portrait-conditioned generation rather than facial recognition and passes one-to-one likeness and exact-dialogue validation.
 
 ### Weakness 2: Live Image or Video Generation Could Be Slow
 
@@ -98,8 +100,8 @@ Acceptance criteria:
 
 Mitigation:
 
-- Describe ANCHOR as a familiarity-based engagement prototype.
-- Do not claim treatment, improvement, diagnosis, assessment, or slowed decline.
+- Describe ANCHOR as caregiver-verified familiar-room recognition, orientation, recall, and association practice.
+- Do not claim better memory, brain-training results, prevention, treatment, improvement, diagnosis, assessment, or slowed decline.
 - Do not score the patient or interpret incorrect answers.
 - Distinguish intended experience from clinical evidence.
 - Use synthetic or explicitly consented demonstration data.
@@ -132,7 +134,7 @@ Mitigation:
 
 - Make the grounding ledger the shared input to lesson generation, cueing, and media validation.
 - Explain every model call as part of one proof chain.
-- Treat video as one supporting moment and speech recognition as optional.
+- Treat portrait-conditioned guide video and neutral Gemini speech as supporting presentation layers with static, browser-speech, and text fallbacks.
 - Remove any feature that cannot be explained as improving the verified room-to-cue interaction.
 
 Acceptance criteria:
@@ -274,6 +276,20 @@ The guide adds familiarity without impersonation and never blocks the patient fl
 
 Exit condition:
 The supplied office image yields literal office objects with tight normalized bounds, while provider failure remains visible and no unrelated placeholder world model is published.
+
+### Familiar-Room Memory and Gemini Speech Correction
+
+- [x] Reframe every patient prompt around recognition, orientation, recall, or caregiver-confirmed association within the verified familiar room.
+- [x] Keep the spoken question to one conversational sentence and render exactly three grounded evidence clues as secondary visible support.
+- [x] Reject generic trivia, unsupported habitual-location claims, and pressuring memory-test language.
+- [ ] Add separately validated Gemini speech after the hackathon core is frozen.
+- [x] Fall back from validated guide video to the static guide with generic browser speech and visible text.
+- [x] Describe guide animation as consented portrait-conditioned generation and validate one person, likeness consistency, facial integrity, exact dialogue, and no live-call implication.
+- [x] Confirm that audio and video jobs never block room interaction or change lesson state.
+- [ ] Exercise the complete feature through live Gemini after the billing spending cap is raised or reset.
+
+Exit condition:
+Every question rehearses the verified familiar room, the approved guide asks the exact question through neutral synthetic media when available, all fallback modes remain complete, and no interface or presenter copy makes a medical-effectiveness claim.
 
 ### Phase 5: Demo Hardening and Submission
 

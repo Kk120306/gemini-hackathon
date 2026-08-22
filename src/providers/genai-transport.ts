@@ -54,3 +54,18 @@ export type GeneratedVideo = {
 export interface VideoGenAiTransport {
   generateVideo(request: VideoGenAiRequest): Promise<GeneratedVideo>;
 }
+
+export type SpeechGenAiRequest = {
+  model: string;
+  transcript: string;
+  voice: string;
+};
+
+export type GeneratedAudio = {
+  data: string;
+  mimeType: "audio/wav";
+};
+
+export interface SpeechGenAiTransport {
+  generateSpeech(request: SpeechGenAiRequest): Promise<GeneratedAudio>;
+}

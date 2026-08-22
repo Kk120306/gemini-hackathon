@@ -46,10 +46,10 @@ export function PatientCompletion() {
           {guide?.label ?? "AI-generated neutral guide"}
         </span>
         <CareIcon className="patient-complete__care" />
-        <h1>Thank you for looking together.</h1>
+        <h1>Thank you for exploring the room together.</h1>
         <p>
-          You have reached the end of this activity. There is nothing else you
-          need to do.
+          You have reached the end of these six familiar-room questions. There
+          is no score and nothing else you need to do.
         </p>
         <div>
           <button className="secondary-button" type="button" onClick={replay}>

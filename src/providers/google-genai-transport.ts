@@ -3,25 +3,33 @@ import "server-only";
 import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 
 import type {
+  GeneratedAudio,
   GeneratedImage,
   GenAiRequest,
   GenAiTransport,
   ImageGenAiRequest,
   ImageGenAiTransport,
+  SpeechGenAiRequest,
+  SpeechGenAiTransport,
   VideoGenAiRequest,
   VideoGenAiTransport,
 } from "@/providers/genai-transport";
 
 export class GoogleGenAiTransport
-  implements GenAiTransport, ImageGenAiTransport, VideoGenAiTransport
+  implements
+    GenAiTransport,
+    ImageGenAiTransport,
+    VideoGenAiTransport,
+    SpeechGenAiTransport
 {
   private readonly client: GoogleGenAI;
 
   constructor(
     apiKey: string,
     private readonly timeoutMs: number,
+    client?: GoogleGenAI,
   ) {
-    this.client = new GoogleGenAI({ apiKey });
+    this.client = client ?? new GoogleGenAI({ apiKey });
   }
 
   async generate(request: GenAiRequest): Promise<string> {
@@ -97,6 +105,7 @@ export class GoogleGenAiTransport
             mime_type: "image/jpeg",
             image_size: "1K",
           },
+          store: false,
         },
         { signal: controller.signal },
       );
@@ -132,12 +141,14 @@ export class GoogleGenAiTransport
           response_format: {
             type: "video",
             aspect_ratio: "9:16",
+            delivery: "inline",
           },
           generation_config: {
             video_config: {
               task: "image_to_video",
             },
           },
+          store: false,
         },
         { signal: controller.signal },
       );
@@ -150,10 +161,78 @@ export class GoogleGenAiTransport
       clearTimeout(timeout);
     }
   }
+
+  async generateSpeech(request: SpeechGenAiRequest): Promise<GeneratedAudio> {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
+
+    try {
+      const interaction = await this.client.interactions.create(
+        {
+          model: request.model,
+          input: `Synthesize speech for a calm familiar-room memory-practice guide.
+Use a warm, unhurried, reassuring adult delivery with clear articulation and natural pauses.
+Use only the selected generic synthetic voice. Never imitate, clone, or claim to be a real family member.
+Read the transcript exactly once. Do not read these directions aloud and do not add or omit words.
+
+TRANSCRIPT:
+${request.transcript}`,
+          response_format: {
+            type: "audio",
+            mime_type: "audio/wav",
+            delivery: "inline",
+          },
+          generation_config: {
+            speech_config: [{ voice: request.voice, language: "en" }],
+          },
+          store: false,
+        },
+        { signal: controller.signal },
+      );
+      const audio = interaction.output_audio;
+      if (!audio?.data) {
+        throw new Error("Gemini returned no synthetic guide speech.");
+      }
+      const decoded = Buffer.from(audio.data, "base64");
+      const wav = isWave(decoded)
+        ? decoded
+        : encodeWave(decoded, audio.sample_rate ?? 24_000, audio.channels ?? 1);
+      return { data: wav.toString("base64"), mimeType: "audio/wav" };
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
 }
 
 function isSupportedGeneratedMimeType(
   value: string,
 ): value is GeneratedImage["mimeType"] {
   return ["image/jpeg", "image/png", "image/webp"].includes(value);
+}
+
+function isWave(bytes: Buffer) {
+  return (
+    bytes.length >= 12 &&
+    bytes.toString("ascii", 0, 4) === "RIFF" &&
+    bytes.toString("ascii", 8, 12) === "WAVE"
+  );
+}
+
+function encodeWave(pcm: Buffer, sampleRate: number, channels: number) {
+  const header = Buffer.alloc(44);
+  const bytesPerSample = 2;
+  header.write("RIFF", 0, "ascii");
+  header.writeUInt32LE(36 + pcm.length, 4);
+  header.write("WAVE", 8, "ascii");
+  header.write("fmt ", 12, "ascii");
+  header.writeUInt32LE(16, 16);
+  header.writeUInt16LE(1, 20);
+  header.writeUInt16LE(channels, 22);
+  header.writeUInt32LE(sampleRate, 24);
+  header.writeUInt32LE(sampleRate * channels * bytesPerSample, 28);
+  header.writeUInt16LE(channels * bytesPerSample, 32);
+  header.writeUInt16LE(bytesPerSample * 8, 34);
+  header.write("data", 36, "ascii");
+  header.writeUInt32LE(pcm.length, 40);
+  return Buffer.concat([header, pcm]);
 }

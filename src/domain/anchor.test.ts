@@ -103,6 +103,7 @@ describe("ANCHOR runtime contracts", () => {
         recognizableAsApprovedGuide: true,
         noCallOrMessagingUi: false,
         neutralSafeDialogue: true,
+        exactDialogueMatch: true,
         safeToDisplay: true,
         conciseReason: "A video-call frame was introduced.",
       }),
@@ -113,18 +114,34 @@ describe("ANCHOR runtime contracts", () => {
     expect(
       guideQuestionVideoActionResultSchema.parse({
         status: "completed",
-        outputSrc:
+        videoSrc:
           "/api/generated-guide-video/1359a8a6-0fbf-468f-8667-f18947b0aa20.mp4",
-        model: "gemini-omni-flash-preview",
+        audioSrc:
+          "/api/generated-guide-audio/2359a8a6-0fbf-468f-8667-f18947b0aa20.wav",
+        videoModel: "gemini-omni-flash-preview",
+        audioModel: "gemini-3.1-flash-tts-preview",
+        voice: "Sulafat",
       }).status,
     ).toBe("completed");
 
     expect(() =>
       guideQuestionVideoActionResultSchema.parse({
-        status: "completed",
-        outputSrc: "https://example.com/untrusted.mp4",
-        model: "gemini-omni-flash-preview",
+        status: "video_only",
+        videoSrc: "https://example.com/untrusted.mp4",
+        videoModel: "gemini-omni-flash-preview",
       }),
     ).toThrow();
+  });
+
+  it("keeps safe Gemini speech when portrait video is unavailable", () => {
+    expect(
+      guideQuestionVideoActionResultSchema.parse({
+        status: "audio_only",
+        audioSrc:
+          "/api/generated-guide-audio/3359a8a6-0fbf-468f-8667-f18947b0aa20.wav",
+        audioModel: "gemini-3.1-flash-tts-preview",
+        voice: "Sulafat",
+      }),
+    ).toMatchObject({ status: "audio_only", voice: "Sulafat" });
   });
 });

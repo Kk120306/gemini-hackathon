@@ -4,18 +4,25 @@ Last updated: 2026-08-22
 
 ## Current Phase
 
-Core Rebuild: Real-Room Grounding and Family Question Video
+Core Correction Complete: Familiar-Room Memory Practice and Gemini Guide Speech
+
+## In Progress
+
+- Complete live acceptance after the Gemini billing spending cap is raised or reset.
 
 ## Completed
 
-- Corrected the product position to cognitive engagement, attention, recognition, spatial orientation, recall, association, and familiar-space support without dementia-prevention or treatment claims.
+- Corrected the documented product position to caregiver-verified familiar-room recognition, orientation, recall, and association practice for people living with dementia without better-memory, brain-training, prevention, treatment, or assessment claims.
 - Reproduced the real-upload defect end to end and found that demo mode routed every caregiver image through the bedroom fixture provider.
 - Real caregiver-uploaded JPG, PNG, and WebP images now use Gemini vision whenever the server key is configured, even while prepared demo mode remains enabled.
 - Room analysis now requests six to ten distinct question-ready objects when supported by the pixels and persists a medium or high confidence signal beside each caregiver-review proposal.
 - The supplied 640 by 480 office photo is stored only as an ignored local acceptance fixture and has an opt-in live test for monitor, keyboard, chair, desk, window, bottle, and computer-tower evidence.
 - Trusted-person setup now accepts one to three authorized portrait references, independently validates the generated lightly stylized guide, and preserves caregiver approve, reject, and neutral-fallback controls.
-- Approved family guides can ask the active detailed lesson question through a lazy Gemini Omni Flash portrait video using a neutral synthetic voice.
-- Generated guide videos remain private, receive an independent one-person, likeness, no-call-UI, and safe-dialogue validation gate, and never block the static guide or room activity.
+- Every generated lesson now follows one enforced familiar-room progression: learn an anchor, link object and place, navigate from a landmark, picture and verify, hide and recall, then associate two verified room objects.
+- Every spoken question is one conversational sentence backed by exactly three visible room-memory anchors, with no generic trivia, unsupported routine, or pressuring memory-test language.
+- The guide-video path now uses the generated clip's synchronized synthetic voice only after exact-dialogue validation, with generic browser speech and visible text as immediate fallbacks.
+- Portrait video remains gated by caregiver consent and approved guide media, compares the generated clip with the approved still, and must pass one-person, likeness, exact-dialogue, safe-speech, and no-live-call checks.
+- Generated guide video never changes lesson state or blocks the room controls, and every patient-facing guide state remains labeled as AI-generated, synthetic voice, and not live.
 - Tailscale preview recovery is now persistent through the `com.anchor.preview` macOS LaunchAgent rather than depending on a terminal-owned server process.
 - Product scope narrowed to one room and one six-question lesson.
 - Two cognitive activities added to the lesson composition.
@@ -81,8 +88,8 @@ Core Rebuild: Real-Room Grounding and Family Question Video
 - Runtime contracts now distinguish object-tap and recall-zone interactions and reject missing targets, duplicate hotspots, unsupported references, and inconsistent spatial answers.
 - The caregiver lesson preview now explains each spatial interaction and its grounded answer instead of showing only generic choices.
 - Spatial core design QA passed at 1194 by 834 pixels across initial, incorrect, focus, correct, recall, and association states.
-- Every lesson activity now has a distinct reasoning-task title and exactly three grounded evidence clues selected from appearance, verified place, landmark, and image-region rules.
-- Patient prompts now state the complete verified claim, while instructions require evidence matching, constraint elimination, landmark-guided search, row-and-column recall, or shared-surface association.
+- Every lesson activity now has a distinct room-memory title and exactly three grounded anchors selected from appearance, verified place, landmark, and image-region rules.
+- Patient prompts now rehearse approved object-place relationships through anchor learning, landmark navigation, picture-and-check recognition, row-and-column recall, and shared-surface association.
 - The lesson plan must target at least three approved objects and cannot target any object more than twice.
 - Visual recall now binds the target to its verified surface, one row, and one column before exposing six exact answer regions.
 - Strong spatial reasoning design QA passed at 1194 by 834 pixels for the detailed first activity, hidden six-region recall, and multi-evidence association with no viewport overflow.
@@ -102,13 +109,15 @@ Core Rebuild: Real-Room Grounding and Family Question Video
 ## Next Actions
 
 1. Raise or reset the Gemini API billing spending cap, then run `pnpm test:live:office` with the supplied office photo.
-2. Rehearse one real office upload, caregiver verification, six-question session, and family-guide video through Tailscale.
+2. Rehearse one real office upload, caregiver verification, six-question room-memory session, guide video, and speech fallback ladder through Tailscale.
 3. Push the local phase commits when the repository owner is ready to publish the completed handover.
 
 ## Open Risks
 
 - The configured Gemini account currently returns HTTP 429 `RESOURCE_EXHAUSTED` because its monthly spending cap is exceeded, so real object detection, room generation, guide generation, and video generation cannot complete until billing is restored.
 - The Gemini Omni Flash preview requires paid-tier access and may not be available to the chosen API key.
+- Gemini native speech availability, output format, and latency may vary by model and account, so generic browser speech and visible text must remain complete fallbacks.
+- A synthetic guide voice may be mistaken for the trusted person's real voice unless the persistent synthetic-voice and not-live labels remain adjacent to the guide.
 - Live spatial-room generation and validation took 12.3 seconds in the latest prepared-flow check, so caregiver-time prefetch and safe late-publication remain essential.
 - Generative preservation is nondeterministic, so every candidate must continue to pass the two-image validation gate.
 - Browser speech-recognition support varies and must remain optional.
@@ -118,15 +127,21 @@ Core Rebuild: Real-Room Grounding and Family Question Video
 - Medical-effectiveness language could undermine credibility despite a polished demo.
 - The newest Vite major currently requests an unpublished transitive dependency, so the test toolchain is pinned to the stable Vite 7 line.
 - A single room photograph can support a perspective-preserving 2.5D interpretation, but it cannot justify a metric mesh, unseen geometry, or free-camera reconstruction.
-- Stronger evidence tasks increase reading and reasoning demand, so caregiver review, spoken replay, progressive help, neutral feedback, and the no-score boundary must remain mandatory.
+- Stronger evidence tasks increase reading and reasoning demand, so the spoken question must remain conversational while evidence clues, replay, progressive help, neutral feedback, and the no-score boundary remain available.
 
 ## Blockers
 
 - The deterministic prepared and fallback demo remains usable locally and through Tailscale.
 - Live Gemini acceptance for the supplied office photo is blocked by the account's monthly spending cap, not by request validation or missing credentials.
+- Live portrait-conditioned video and Gemini speech acceptance remain blocked by the same billing condition and must not be reported as verified until the paid endpoint succeeds.
 
 ## Verification Log
 
+- `pnpm lint`, `pnpm typecheck`, `pnpm test`, and `pnpm build` passed after the familiar-room memory and Gemini speech correction on 2026-08-22.
+- `pnpm test` passed 58 tests across 16 files, including ordered lesson progression, exact media contracts, PCM-to-WAV conversion, and Gemini image-to-video request coverage, on 2026-08-22.
+- The production build compiled all application routes plus the new private generated-guide audio route on 2026-08-22.
+- The live Gemini 3.1 Flash TTS request reached the configured endpoint and returned HTTP 429 because the billing account remains over its monthly spending cap on 2026-08-22.
+- The restarted production preview returned HTTP 200 for the landing, patient welcome, and patient session routes both locally and through Tailscale on 2026-08-22.
 - `pnpm format:check`, `pnpm lint`, and `pnpm typecheck` passed after the real-room and guide-video implementation on 2026-08-22.
 - `pnpm test` passed 54 tests across 15 files after the real-room and guide-video contract coverage was added on 2026-08-22.
 - `pnpm build` compiled all application routes and the private guide-reference, guide-image, guide-video, room-image, and generated-room media routes after the core rebuild on 2026-08-22.

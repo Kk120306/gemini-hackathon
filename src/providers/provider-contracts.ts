@@ -119,6 +119,7 @@ export const guideVideoValidationSchema = z
     recognizableAsApprovedGuide: z.boolean(),
     noCallOrMessagingUi: z.boolean(),
     neutralSafeDialogue: z.boolean(),
+    exactDialogueMatch: z.boolean(),
     safeToDisplay: z.boolean(),
     conciseReason: z.string().trim().min(1).max(300),
   })
@@ -127,7 +128,8 @@ export const guideVideoValidationSchema = z
       validation.singlePersonOnly &&
       validation.recognizableAsApprovedGuide &&
       validation.noCallOrMessagingUi &&
-      validation.neutralSafeDialogue;
+      validation.neutralSafeDialogue &&
+      validation.exactDialogueMatch;
     if (validation.safeToDisplay && !passed) {
       context.addIssue({
         code: "custom",
@@ -137,17 +139,41 @@ export const guideVideoValidationSchema = z
     }
   });
 
+const generatedGuideVideoSrcSchema = z
+  .string()
+  .regex(
+    /^\/api\/generated-guide-video\/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.mp4$/,
+    "Generated guide videos must use a server-issued private path.",
+  );
+
+const generatedGuideAudioSrcSchema = z
+  .string()
+  .regex(
+    /^\/api\/generated-guide-audio\/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.wav$/,
+    "Generated guide speech must use a server-issued private path.",
+  );
+
 export const guideQuestionVideoActionResultSchema = z.discriminatedUnion(
   "status",
   [
     z.object({
       status: z.literal("completed"),
-      outputSrc: z
-        .string()
-        .regex(
-          /^\/api\/generated-guide-video\/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.mp4$/,
-        ),
-      model: z.string().trim().min(1),
+      videoSrc: generatedGuideVideoSrcSchema,
+      audioSrc: generatedGuideAudioSrcSchema,
+      videoModel: z.string().trim().min(1),
+      audioModel: z.string().trim().min(1),
+      voice: z.string().trim().min(1),
+    }),
+    z.object({
+      status: z.literal("audio_only"),
+      audioSrc: generatedGuideAudioSrcSchema,
+      audioModel: z.string().trim().min(1),
+      voice: z.string().trim().min(1),
+    }),
+    z.object({
+      status: z.literal("video_only"),
+      videoSrc: generatedGuideVideoSrcSchema,
+      videoModel: z.string().trim().min(1),
     }),
     z.object({ status: z.literal("disabled") }),
   ],
@@ -261,6 +287,14 @@ export const roomProposalSchema = z
   });
 
 const generatedQuestionTypeSchema = questionTypeSchema.exclude(["sequencing"]);
+const requiredRoomMemoryQuestionOrder = [
+  "object_recognition",
+  "location_matching",
+  "visual_search",
+  "object_recognition",
+  "visual_recall",
+  "association",
+] as const;
 
 export const lessonPlanQuestionSchema = z
   .object({
@@ -294,6 +328,15 @@ export const lessonPlanSchema = z
     questions: z.array(lessonPlanQuestionSchema).length(6),
   })
   .superRefine((lesson, context) => {
+    requiredRoomMemoryQuestionOrder.forEach((expectedType, index) => {
+      if (lesson.questions[index]?.type !== expectedType) {
+        context.addIssue({
+          code: "custom",
+          message: `Question ${index + 1} must be ${expectedType} in the familiar-room progression.`,
+          path: ["questions", index, "type"],
+        });
+      }
+    });
     const recallCount = lesson.questions.filter(
       ({ type }) => type === "visual_recall",
     ).length;

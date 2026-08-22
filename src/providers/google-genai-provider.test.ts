@@ -255,6 +255,24 @@ describe("GoogleGenAiProvider contracts", () => {
     );
   });
 
+  it("rejects a plan that skips the familiar-room learning progression", async () => {
+    const state = createPreparedAnchorState();
+    const outOfOrder = validLessonPlan();
+    const first = outOfOrder.questions[0]!;
+    outOfOrder.questions[0] = outOfOrder.questions[1]!;
+    outOfOrder.questions[1] = first;
+    const response = JSON.stringify(outOfOrder);
+    const transport = new CapturedTransport([response, response]);
+    const provider = new GoogleGenAiProvider(transport, "gemma-test");
+
+    await expect(
+      provider.generateLesson(state.worldModel, state.groundingRecords),
+    ).rejects.toBeInstanceOf(ModelContractError);
+    expect(transport.requests[1]?.prompt).toContain(
+      "must be object_recognition in the familiar-room progression",
+    );
+  });
+
   it("rejects unapproved evidence before making a model call", async () => {
     const state = createPreparedAnchorState();
     state.worldModel.approval = "draft";

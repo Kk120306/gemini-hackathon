@@ -261,63 +261,88 @@ export async function generateGuideAction(input: unknown) {
 export async function generateGuideQuestionVideoAction(input: unknown) {
   const request = guideQuestionVideoActionInputSchema.parse(input);
   if (
-    !serverEnv.ANCHOR_ENABLE_VIDEO_GENERATION ||
     !serverEnv.GEMINI_API_KEY ||
-    request.guide.presentation !== "stylized_likeness"
-  ) {
-    return guideQuestionVideoActionResultSchema.parse({ status: "disabled" });
-  }
-  if (
     request.guide.approval !== "approved" ||
-    !request.guide.validation?.safeToDisplay ||
-    !request.trustedPerson.likenessConsent ||
-    request.guide.trustedPersonId !== request.trustedPerson.id
+    !canGenerateGuideVideo(request)
   ) {
-    throw new Error(
-      "Guide video requires approved likeness consent and a validated guide.",
-    );
-  }
-  const prefix = "/api/generated-guide-media/";
-  if (!request.guide.imageSrc.startsWith(prefix)) {
     return guideQuestionVideoActionResultSchema.parse({ status: "disabled" });
   }
-
   const mediaStore = new LocalMediaStore(serverEnv.ANCHOR_DATA_DIR);
-  const image = await mediaStore.readGeneratedGuideImage(
-    request.guide.imageSrc.slice(prefix.length),
-  );
-  if (!image || image.mimeType === "image/svg+xml") {
-    throw new Error("The approved guide image is unavailable.");
-  }
-  const transport = new GoogleGenAiTransport(
+  const videoTransport = new GoogleGenAiTransport(
     serverEnv.GEMINI_API_KEY,
     serverEnv.ANCHOR_VIDEO_TIMEOUT_MS,
   );
   const dialogue = request.question.prompt.replace(/\s+/g, " ").trim();
-  const generated = await transport.generateVideo({
+  try {
+    const video = await generateValidatedGuideVideo({
+      request,
+      dialogue,
+      mediaStore,
+      transport: videoTransport,
+    });
+    return guideQuestionVideoActionResultSchema.parse({
+      status: "video_only",
+      ...video,
+    });
+  } catch {
+    return guideQuestionVideoActionResultSchema.parse({ status: "disabled" });
+  }
+}
+
+function canGenerateGuideVideo(
+  request: z.infer<typeof guideQuestionVideoActionInputSchema>,
+) {
+  return (
+    serverEnv.ANCHOR_ENABLE_VIDEO_GENERATION &&
+    request.guide.presentation === "stylized_likeness" &&
+    request.guide.validation?.safeToDisplay === true &&
+    request.trustedPerson.likenessConsent &&
+    request.guide.trustedPersonId === request.trustedPerson.id &&
+    request.guide.imageSrc.startsWith("/api/generated-guide-media/")
+  );
+}
+
+async function generateValidatedGuideVideo(input: {
+  request: z.infer<typeof guideQuestionVideoActionInputSchema>;
+  dialogue: string;
+  mediaStore: LocalMediaStore;
+  transport: GoogleGenAiTransport;
+}) {
+  const prefix = "/api/generated-guide-media/";
+  const image = await input.mediaStore.readGeneratedGuideImage(
+    input.request.guide.imageSrc.slice(prefix.length),
+  );
+  if (!image || image.mimeType === "image/svg+xml") {
+    throw new Error("The approved guide image is unavailable.");
+  }
+  const approvedGuideImage = {
+    data: image.bytes.toString("base64"),
+    mimeType: image.mimeType,
+  };
+  const generated = await input.transport.generateVideo({
     model: serverEnv.GEMINI_VIDEO_MODEL,
-    image: {
-      data: image.bytes.toString("base64"),
-      mimeType: image.mimeType,
-    },
-    prompt: `Animate this caregiver-approved, AI-generated guide portrait into one short portrait video that gently asks a cognitive activity question.
+    image: approvedGuideImage,
+    prompt: `Animate this caregiver-approved, AI-generated guide portrait into one short portrait video that gently asks a familiar-room memory-practice question.
 Preserve the same face, age cues, hair, clothing, framing, and lightly stylized visual treatment.
 Use only natural blinking, a small reassuring nod, subtle breathing, and direct eye contact.
-The person must say exactly: ${JSON.stringify(dialogue)}
+The person must say exactly: ${JSON.stringify(input.dialogue)}
 Use a neutral synthetic adult voice. Do not imitate or clone the real person's voice.
 Show one person only against the same simple background.
 Do not add captions, text, logos, medical claims, another person, a phone frame, a video-call interface, or messaging UI.
 The clip is prerecorded generated guidance, never a live call.`,
   });
 
-  const validationText = await transport.generate({
+  const validationText = await input.transport.generate({
     model: serverEnv.GEMINI_VALIDATION_MODEL,
+    images: [approvedGuideImage],
     video: generated,
     prompt: `Inspect this AI-generated family-guide question video.
-Expected dialogue: ${JSON.stringify(dialogue)}
-Return one JSON object exactly shaped as {"singlePersonOnly":true,"recognizableAsApprovedGuide":true,"noCallOrMessagingUi":true,"neutralSafeDialogue":true,"safeToDisplay":true,"conciseReason":"short literal reason"}.
+The still image is the caregiver-approved guide identity anchor. Compare the person in the video directly against that still image.
+Expected dialogue: ${JSON.stringify(input.dialogue)}
+Return one JSON object exactly shaped as {"singlePersonOnly":true,"recognizableAsApprovedGuide":true,"noCallOrMessagingUi":true,"neutralSafeDialogue":true,"exactDialogueMatch":true,"safeToDisplay":true,"conciseReason":"short literal reason"}.
 Set neutralSafeDialogue true only if the speech is a calm room-activity prompt with no diagnosis, prevention, treatment, scoring, shaming, urgency, fabricated memory, or claim that the person is live.
-Set safeToDisplay true only when all four checks pass. Fail closed when uncertain. Return JSON only.`,
+Set exactDialogueMatch true only if the audible words match the expected dialogue without additions, omissions, or substitutions.
+Set safeToDisplay true only when all five checks pass. Fail closed when uncertain. Return JSON only.`,
   });
   const validation = guideVideoValidationSchema.parse(
     parseModelJson(validationText),
@@ -327,12 +352,10 @@ Set safeToDisplay true only when all four checks pass. Fail closed when uncertai
       `The generated guide video failed validation: ${validation.conciseReason}`,
     );
   }
-  const outputSrc = await mediaStore.saveGeneratedGuideVideo(generated);
-  return guideQuestionVideoActionResultSchema.parse({
-    status: "completed",
-    outputSrc,
-    model: serverEnv.GEMINI_VIDEO_MODEL,
-  });
+  return {
+    videoSrc: await input.mediaStore.saveGeneratedGuideVideo(generated),
+    videoModel: serverEnv.GEMINI_VIDEO_MODEL,
+  };
 }
 
 export async function generateSimplifiedRoomAction(input: unknown) {

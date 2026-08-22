@@ -161,132 +161,133 @@ function compileQuestionContent(input: {
   reference: WorldObject | null;
   relation: SpatialRelation | null;
   typeOccurrence: number;
+  roomName: string;
 }) {
   const description = input.target.description.toLowerCase();
   const name = input.target.name.toLowerCase();
   const location = input.target.location.toLowerCase();
+  const roomName = input.roomName.toLowerCase();
   const imageRegion = recallZoneLabel(
     recallZoneFor(input.target.boundingBox),
   ).toLowerCase();
-  const verifiedAnswer = `All three verified clues agree: ${input.target.description} on the ${input.target.location}, in the ${imageRegion} region of the room image.`;
+  const verifiedAnswer = `The approved ${roomName} image shows ${input.target.description.toLowerCase()} on the ${input.target.location}, in the ${imageRegion} region.`;
   const appearanceClue = {
     kind: "appearance" as const,
-    label: "Visible signature",
+    label: "Object to remember",
     detail: input.target.description,
   };
   const placeClue = {
     kind: "place" as const,
-    label: "Verified place",
+    label: "Place to remember",
     detail: `On the ${input.target.location}`,
   };
   const regionClue = {
     kind: "spatial_rule" as const,
-    label: "Image region",
-    detail: `The ${imageRegion} of the approved room image`,
+    label: "Room position",
+    detail: `The ${imageRegion} of the approved ${roomName} image`,
   };
 
   switch (input.type) {
     case "object_recognition":
       if (input.typeOccurrence > 0) {
         return {
-          challengeTitle: "Constraint-elimination challenge",
-          prompt: `Which numbered object remains after you eliminate anything that is not ${description}, not on the ${location}, or outside the ${imageRegion} region?`,
+          challengeTitle: "Picture it, then find it",
+          prompt: `After picturing where the ${name} appears in this ${roomName}, which numbered area shows ${description} on the ${location}, in the ${imageRegion} region?`,
           instruction:
-            "Reject any object with the wrong visible signature, verified surface, or image region.",
+            "Recall the object-place pair first, then use the visible room to check your memory before choosing.",
           evidenceClues: [
             appearanceClue,
             {
               ...placeClue,
-              label: "Surface filter",
+              label: "Object-place pair",
             },
             {
               ...regionClue,
-              label: "Region filter",
+              label: "Position to picture",
             },
           ],
-          verbalCue: `Eliminate anything that does not match ${description}, the ${location}, and the ${imageRegion} region together.`,
+          verbalCue: `Picture the ${name} on the ${location}, then look toward the ${imageRegion}.`,
           answerExplanation: verifiedAnswer,
         };
       }
       return {
-        challengeTitle: "Three-clue identification",
-        prompt: `Which numbered object matches ${description}, on the ${location}, in the ${imageRegion} region?`,
-        instruction:
-          "Check the visible signature, verified place, and image region before choosing one numbered area.",
+        challengeTitle: "Learn a room anchor",
+        prompt: `To learn one anchor in this ${roomName}, which numbered object is ${description}, on the ${location}, in the ${imageRegion} region?`,
+        instruction: `Touch it, then remember the pair "${input.target.name} on the ${input.target.location}."`,
         evidenceClues: [appearanceClue, placeClue, regionClue],
-        verbalCue: `Begin with the visible signature, then verify the ${location}, and finally check the ${imageRegion} region.`,
+        verbalCue: `Think "${name} on the ${location}," then look in the ${imageRegion}.`,
         answerExplanation: verifiedAnswer,
       };
     case "location_matching":
       return {
-        challengeTitle: "Complete location claim",
-        prompt: `Which numbered area verifies the ${name} on the ${location} in the ${imageRegion} region?`,
-        instruction:
-          "Reject any area that matches only one or two details. Choose the area that makes the whole claim true.",
+        challengeTitle: "Link the object and place",
+        prompt: `Which numbered area completes this ${roomName} object-place memory: the ${name} on the ${location}, in the ${imageRegion} region?`,
+        instruction: `Say "${input.target.name} on the ${input.target.location}" if helpful, then touch that object in the room.`,
         evidenceClues: [
           {
             kind: "appearance" as const,
-            label: "Object identity",
+            label: "Object to link",
             detail: `${input.target.name}, visibly described as ${input.target.description.toLowerCase()}`,
           },
           placeClue,
           regionClue,
         ],
-        verbalCue: `Find the ${location} first, then confirm both the ${name} and its ${imageRegion} position.`,
+        verbalCue: `Recall the pair "${name} on the ${location}," then check the ${imageRegion}.`,
         answerExplanation: verifiedAnswer,
       };
     case "visual_search":
       if (input.reference && input.relation) {
         return {
-          challengeTitle: "Landmark-guided search",
-          prompt: `Starting at ${input.reference.description.toLowerCase()} on the ${input.reference.location.toLowerCase()}, which object is ${input.relation} the landmark and has the visible signature ${description}?`,
-          instruction:
-            "Follow the landmark, direction, and target signature in order before choosing.",
+          challengeTitle: "Find it from a landmark",
+          prompt: `Starting at the ${input.reference.name.toLowerCase()} on the ${input.reference.location.toLowerCase()}, which object is ${input.relation} that landmark and looks like ${description}?`,
+          instruction: `Use a route through the ${roomName}: find the landmark, move ${input.relation}, then confirm the object.`,
           evidenceClues: [
             {
               kind: "landmark" as const,
-              label: "Start landmark",
+              label: "Start here",
               detail: `${input.reference.description} on the ${input.reference.location}`,
             },
             {
               kind: "spatial_rule" as const,
-              label: "Move through image",
+              label: "Move from it",
               detail: `${input.relation[0]?.toUpperCase()}${input.relation.slice(1)} the landmark`,
             },
             appearanceClue,
           ],
-          verbalCue: `Anchor your eyes on the ${input.reference.name.toLowerCase()}, move ${input.relation}, then confirm ${description}.`,
+          verbalCue: `Picture the ${input.reference.name.toLowerCase()}, move ${input.relation}, then look for ${description}.`,
           answerExplanation: `${verifiedAnswer} It also appears ${input.relation} the ${input.reference.name.toLowerCase()} in the approved image.`,
         };
       }
       return {
-        challengeTitle: "Systematic scene search",
-        prompt: `Which object matches ${description}, on the ${location}, in the ${imageRegion} region?`,
+        challengeTitle: "Rehearse a room location",
+        prompt: `Which object shows where the ${name} appears in this ${roomName}: ${description} on the ${location}, in the ${imageRegion} region?`,
         instruction:
-          "Scan the room in a steady path and stop only when all three clues align.",
+          "Look across the room in one steady direction, then connect the object with its place.",
         evidenceClues: [appearanceClue, placeClue, regionClue],
-        verbalCue: `Scan toward the ${imageRegion}, locate the ${location}, then check the visible signature.`,
+        verbalCue: `Picture the ${location}, look toward the ${imageRegion}, then find ${description}.`,
         answerExplanation: verifiedAnswer,
       };
     case "visual_recall": {
       const zone = recallZoneFor(input.target.boundingBox);
       return {
-        challengeTitle: "Six-region object-place recall",
-        prompt: `Study the ${name}'s exact six-region position before the room is hidden.`,
-        instruction:
-          "Remember the target, its surface, one row, and one column. Hide the room when you feel ready.",
+        challengeTitle: "Study, hide, remember",
+        prompt: `Study where the ${name} appears in this ${roomName} and, after the room is hidden, recall its exact region: upper or lower, then left, middle, or right.`,
+        instruction: `Hold the pair "${input.target.name} on the ${input.target.location}" in mind, then remember one row and one column. Hide the room when you feel ready.`,
         evidenceClues: [
           appearanceClue,
-          placeClue,
+          {
+            ...placeClue,
+            label: "Object-place pair",
+          },
           {
             kind: "spatial_rule" as const,
-            label: "Memory rule",
+            label: "Position to hold",
             detail:
-              "Store one row (upper/lower) and one column (left/middle/right)",
+              "One row (upper or lower) and one column (left, middle, or right)",
           },
         ],
-        verbalCue: `Picture the ${input.target.name.toLowerCase()} on the ${location}, then recall both its row and column.`,
-        answerExplanation: `The ${input.target.name} is verified on the ${location} in the ${recallZoneLabel(zone).toLowerCase()} region of the image.`,
+        verbalCue: `Picture the ${input.target.name.toLowerCase()} on the ${location}, then recall one row and one column.`,
+        answerExplanation: `The approved ${roomName} image places the ${input.target.name} on the ${location}, in the ${recallZoneLabel(zone).toLowerCase()} region.`,
       };
     }
     case "association":
@@ -295,57 +296,57 @@ function compileQuestionContent(input: {
         input.reference.location.toLowerCase() === location
       ) {
         return {
-          challengeTitle: "Shared-surface association",
-          prompt: `The ${input.reference.name.toLowerCase()} and one different object share the ${location}. Which option matches ${description}?`,
+          challengeTitle: "Link two room objects",
+          prompt: `While you picture the ${input.reference.name.toLowerCase()} on the ${location}, which different object shares that place and looks like ${description}?`,
           instruction:
-            "Connect the landmark to the shared surface, then confirm the second object's visible signature.",
+            "Hold the first object and shared place in mind, then choose the second object that completes the pair.",
           evidenceClues: [
             {
               kind: "landmark" as const,
-              label: "Fixed landmark",
+              label: "First object",
               detail: input.reference.description,
             },
             {
               kind: "place" as const,
-              label: "Association rule",
+              label: "Shared place",
               detail: `Choose a different object on the same ${input.target.location}`,
             },
             appearanceClue,
           ],
-          verbalCue: `Start with the ${input.reference.name.toLowerCase()}, stay on the same ${location}, then find ${description}.`,
-          answerExplanation: `The ${input.target.name} and ${input.reference.name} are both verified on the ${input.target.location}; the target is ${input.target.description.toLowerCase()}.`,
+          verbalCue: `Picture the ${input.reference.name.toLowerCase()} on the ${location}, then add ${description} beside it.`,
+          answerExplanation: `The approved ${roomName} image shows both the ${input.reference.name} and the ${input.target.name} on the ${input.target.location}.`,
         };
       }
       if (input.reference && input.relation) {
         return {
-          challengeTitle: "Landmark relation association",
-          prompt: `Which object is ${input.relation} the ${input.reference.name.toLowerCase()} and also matches ${description}?`,
+          challengeTitle: "Connect two room landmarks",
+          prompt: `After you picture the ${input.reference.name.toLowerCase()}, which object is ${input.relation} it and looks like ${description}?`,
           instruction:
-            "Use the landmark relation and the target's visible signature together.",
+            "Connect the two objects by their visible direction, then choose the object that completes the pair.",
           evidenceClues: [
             {
               kind: "landmark" as const,
-              label: "Fixed landmark",
+              label: "First object",
               detail: input.reference.description,
             },
             {
               kind: "spatial_rule" as const,
-              label: "Relation",
+              label: "How they connect",
               detail: `${input.relation[0]?.toUpperCase()}${input.relation.slice(1)} the landmark`,
             },
             appearanceClue,
           ],
-          verbalCue: `Start at the ${input.reference.name.toLowerCase()}, move ${input.relation}, and confirm ${description}.`,
+          verbalCue: `Picture the ${input.reference.name.toLowerCase()}, move ${input.relation}, then add ${description}.`,
           answerExplanation: `${verifiedAnswer} It appears ${input.relation} the ${input.reference.name}.`,
         };
       }
       return {
-        challengeTitle: "Multi-evidence association",
-        prompt: `Which object matches ${description}, the ${location}, and the ${imageRegion} region together?`,
+        challengeTitle: "Connect an object with its place",
+        prompt: `Complete this ${roomName} connection: which object looks like ${description} and appears on the ${location}, in the ${imageRegion} region?`,
         instruction:
-          "Use all three evidence types together before choosing an object.",
+          "Picture the place first, then choose the object that completes the room connection.",
         evidenceClues: [appearanceClue, placeClue, regionClue],
-        verbalCue: `Match the visible signature, check the ${location}, then confirm the ${imageRegion}.`,
+        verbalCue: `Picture the ${location} in the ${imageRegion}, then add ${description}.`,
         answerExplanation: verifiedAnswer,
       };
     case "sequencing":
@@ -432,6 +433,7 @@ export function compileGroundedLesson(
       reference,
       relation,
       typeOccurrence,
+      roomName: evidence.worldModel.roomName,
     });
     const evidenceObjects = reference
       ? [

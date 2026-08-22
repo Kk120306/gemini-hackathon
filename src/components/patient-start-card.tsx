@@ -58,8 +58,8 @@ export function PatientStartCard() {
         <p className="eyebrow">Caregiver approval required</p>
         <h1>This activity is not ready yet.</h1>
         <p>
-          The room evidence, guide, and all six questions must be approved
-          before patient mode can begin.
+          The familiar room, AI-generated guide, and all six room-memory
+          questions must be approved before patient mode can begin.
         </p>
         <Link className="primary-button" href="/caregiver">
           Return to caregiver setup
@@ -98,11 +98,12 @@ export function PatientStartCard() {
       </div>
       <div className="patient-start__copy">
         <div>
-          <p className="eyebrow">Your activity is ready</p>
+          <p className="eyebrow">Remember your room</p>
           <h1>Hello, {state.patient.firstName}.</h1>
           <p>
-            Six gentle questions about this familiar room. Take your time and
-            ask for help whenever you like.
+            First, take in where visible objects and landmarks are arranged.
+            Then answer six gentle questions about what appears where. Take your
+            time and ask for help whenever you like.
           </p>
           <div className="patient-start__guide-label">
             <Image
@@ -113,8 +114,8 @@ export function PatientStartCard() {
               unoptimized
             />
             <span>
-              ANCHOR will guide the activity
-              <small>{state.guide.label}</small>
+              The guide will ask each room question
+              <small>AI-generated · synthetic voice · not live</small>
             </span>
           </div>
         </div>
@@ -129,7 +130,7 @@ export function PatientStartCard() {
           </button>
           <div className="patient-start__support">
             <span>
-              <VolumeIcon /> Prompts can be read aloud
+              <VolumeIcon /> Validated guide voice with device fallback
             </span>
             <span>
               <ShieldIcon /> No score or timer

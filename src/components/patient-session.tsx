@@ -27,6 +27,61 @@ const recallZones = [
   "lower_right",
 ] as const;
 
+type GuideMediaState =
+  | { status: "pending" }
+  | { status: "completed"; videoSrc: string; audioSrc: string }
+  | { status: "audio_only"; audioSrc: string }
+  | { status: "video_only"; videoSrc: string }
+  | { status: "fallback" };
+
+function normalizeGuideMedia(result: unknown): GuideMediaState {
+  if (!result || typeof result !== "object") {
+    return { status: "fallback" };
+  }
+
+  const candidate = result as Record<string, unknown>;
+  const videoSrc =
+    typeof candidate.videoSrc === "string"
+      ? candidate.videoSrc
+      : typeof candidate.outputSrc === "string"
+        ? candidate.outputSrc
+        : undefined;
+  const audioSrc =
+    typeof candidate.audioSrc === "string" ? candidate.audioSrc : undefined;
+
+  if (candidate.status === "completed" && videoSrc && audioSrc) {
+    return { status: "completed", videoSrc, audioSrc };
+  }
+  if (
+    (candidate.status === "audio_only" || candidate.status === "completed") &&
+    audioSrc
+  ) {
+    return { status: "audio_only", audioSrc };
+  }
+  if (
+    (candidate.status === "video_only" || candidate.status === "completed") &&
+    videoSrc
+  ) {
+    return { status: "video_only", videoSrc };
+  }
+  return { status: "fallback" };
+}
+
+function guideMediaLabel(media: GuideMediaState | undefined) {
+  switch (media?.status) {
+    case "pending":
+      return "AI-generated guide · preparing Gemini synthetic voice · not live";
+    case "completed":
+      return "AI-generated video · Gemini synthetic voice · not live";
+    case "audio_only":
+      return "AI-generated guide image · Gemini synthetic voice · not live";
+    case "video_only":
+      return "AI-generated video · validated synthetic voice · not live";
+    default:
+      return "AI-generated guide image · device synthetic voice fallback · not live";
+  }
+}
+
 export function PatientSession() {
   const router = useRouter();
   const {
@@ -44,10 +99,11 @@ export function PatientSession() {
   >(null);
   const [exploredObjectId, setExploredObjectId] = useState<string | null>(null);
   const [sceneTilt, setSceneTilt] = useState({ x: 0, y: 0 });
-  const [guideVideos, setGuideVideos] = useState<Record<string, string>>({});
-  const [guideVideoStatus, setGuideVideoStatus] = useState<
-    Record<string, "pending" | "ready" | "fallback">
-  >({});
+  const [guideMedia, setGuideMedia] = useState<Record<string, GuideMediaState>>(
+    {},
+  );
+  const guideVideoRef = useRef<HTMLVideoElement | null>(null);
+  const guideAudioRef = useRef<HTMLAudioElement | null>(null);
   const requestedGuideVideos = useRef(new Set<string>());
   const question = state.lesson?.questions[state.session.questionIndex];
   const target = useMemo(
@@ -126,42 +182,38 @@ export function PatientSession() {
       !question ||
       !state.guide ||
       state.guide.approval !== "approved" ||
-      state.guide.presentation !== "stylized_likeness" ||
-      !state.guide.validation?.safeToDisplay ||
       requestedGuideVideos.current.has(question.id)
     ) {
       return;
     }
     requestedGuideVideos.current.add(question.id);
-    setGuideVideoStatus((current) => ({
+    setGuideMedia((current) => ({
       ...current,
-      [question.id]: "pending",
+      [question.id]: { status: "pending" },
     }));
     void generateGuideQuestionVideo(question)
       .then((result) => {
-        if (result.status === "completed") {
-          setGuideVideos((current) => ({
-            ...current,
-            [question.id]: result.outputSrc,
-          }));
-          setGuideVideoStatus((current) => ({
-            ...current,
-            [question.id]: "ready",
-          }));
-          return;
-        }
-        setGuideVideoStatus((current) => ({
+        setGuideMedia((current) => ({
           ...current,
-          [question.id]: "fallback",
+          [question.id]: normalizeGuideMedia(result),
         }));
       })
       .catch(() => {
-        setGuideVideoStatus((current) => ({
+        setGuideMedia((current) => ({
           ...current,
-          [question.id]: "fallback",
+          [question.id]: { status: "fallback" },
         }));
       });
   }, [generateGuideQuestionVideo, question, state.guide]);
+
+  useEffect(
+    () => () => {
+      guideAudioRef.current?.pause();
+      guideVideoRef.current?.pause();
+      window.speechSynthesis?.cancel();
+    },
+    [question?.id],
+  );
 
   if (!ready) {
     return (
@@ -225,8 +277,19 @@ export function PatientSession() {
       }
     : null;
   const displayPrompt = activeQuestion.prompt;
+  const activeGuideMedia = guideMedia[activeQuestion.id];
+  const guideVideoSrc =
+    activeGuideMedia?.status === "completed" ||
+    activeGuideMedia?.status === "video_only"
+      ? activeGuideMedia.videoSrc
+      : undefined;
+  const guideAudioSrc =
+    activeGuideMedia?.status === "completed" ||
+    activeGuideMedia?.status === "audio_only"
+      ? activeGuideMedia.audioSrc
+      : undefined;
 
-  function speakPrompt() {
+  function speakWithDeviceVoice() {
     const speech = window.speechSynthesis;
     if (!speech || typeof SpeechSynthesisUtterance === "undefined") {
       setSpeechMessage(
@@ -243,7 +306,61 @@ export function PatientSession() {
     utterance.rate = 0.88;
     utterance.pitch = 1;
     speech.speak(utterance);
-    setSpeechMessage("Reading the prompt aloud with a generic device voice.");
+    setSpeechMessage(
+      "Gemini audio is unavailable. Reading with a generic synthetic device voice.",
+    );
+  }
+
+  function playGuideQuestion() {
+    window.speechSynthesis?.cancel();
+
+    if (guideAudioSrc && guideAudioRef.current) {
+      const audio = guideAudioRef.current;
+      const video = guideVideoRef.current;
+      audio.pause();
+      audio.currentTime = 0;
+      if (video) {
+        video.pause();
+        video.currentTime = 0;
+        video.muted = true;
+      }
+
+      const audioPlayback = audio.play();
+      const videoPlayback = video?.play();
+      void Promise.allSettled(
+        videoPlayback ? [audioPlayback, videoPlayback] : [audioPlayback],
+      ).then((results) => {
+        if (results[0]?.status === "rejected") {
+          video?.pause();
+          speakWithDeviceVoice();
+          return;
+        }
+        setSpeechMessage(
+          guideVideoSrc
+            ? "Playing the AI-generated guide video with Gemini synthetic voice. This is not live."
+            : "Playing the question with Gemini synthetic voice. This is not live.",
+        );
+      });
+      return;
+    }
+
+    if (guideVideoSrc && guideVideoRef.current) {
+      const video = guideVideoRef.current;
+      video.pause();
+      video.currentTime = 0;
+      video.muted = false;
+      void video.play().then(
+        () => {
+          setSpeechMessage(
+            "Playing the AI-generated guide video with a synthetic voice. This is not live.",
+          );
+        },
+        () => speakWithDeviceVoice(),
+      );
+      return;
+    }
+
+    speakWithDeviceVoice();
   }
 
   function moveNext() {
@@ -397,7 +514,7 @@ export function PatientSession() {
                     : isRecall
                       ? recallReady
                         ? "Six-region recall map"
-                        : "Study object, surface, row, and column"
+                        : "Study where this object sits: surface, row, and column"
                       : spatialSceneReady
                         ? spatialSceneLabel
                         : "Touch a numbered object area"}
@@ -418,14 +535,15 @@ export function PatientSession() {
           className={`session-panel session-panel--dense${isRecall ? " session-panel--recall" : ""}`}
         >
           <div
-            className={`session-guide${guideVideos[activeQuestion.id] ? " session-guide--video" : ""}`}
+            className={`session-guide${guideVideoSrc ? " session-guide--video" : ""}`}
           >
-            {guideVideos[activeQuestion.id] ? (
+            {guideVideoSrc ? (
               <video
-                key={guideVideos[activeQuestion.id]}
-                src={guideVideos[activeQuestion.id]}
+                ref={guideVideoRef}
+                key={guideVideoSrc}
+                src={guideVideoSrc}
                 aria-label={`AI-generated video guide based on ${state.trustedPerson.name}. This is not live.`}
-                controls
+                muted={Boolean(guideAudioSrc)}
                 playsInline
                 preload="auto"
               />
@@ -442,14 +560,19 @@ export function PatientSession() {
               {state.guide.presentation === "neutral"
                 ? "ANCHOR"
                 : state.trustedPerson.name}
-              <small>
-                {guideVideoStatus[activeQuestion.id] === "pending"
-                  ? "Gemini is preparing a generated question video"
-                  : guideVideoStatus[activeQuestion.id] === "ready"
-                    ? "AI-generated video · not live · synthetic voice"
-                    : state.guide.label}
-              </small>
+              <small>{guideMediaLabel(activeGuideMedia)}</small>
             </span>
+            {guideAudioSrc ? (
+              <audio
+                ref={guideAudioRef}
+                key={guideAudioSrc}
+                src={guideAudioSrc}
+                preload="auto"
+                onEnded={() => {
+                  guideVideoRef.current?.pause();
+                }}
+              />
+            ) : null}
           </div>
 
           <div className="session-question">
@@ -465,9 +588,9 @@ export function PatientSession() {
 
           <section
             className="reasoning-path"
-            aria-label="Three-part evidence path"
+            aria-label="Three room-memory anchors"
           >
-            <span>Evidence path</span>
+            <span>Room-memory anchors</span>
             <ol>
               {activeQuestion.evidenceClues.map((clue, index) => (
                 <li key={`${activeQuestion.id}-${clue.kind}`}>
@@ -504,7 +627,7 @@ export function PatientSession() {
               <p>
                 {isRecall
                   ? "Choose one exact region using both row and column."
-                  : "Use the full evidence path, then choose one numbered area."}
+                  : "Use each room-memory anchor, then choose one numbered area."}
               </p>
             )}
           </div>
@@ -536,9 +659,9 @@ export function PatientSession() {
             </button>
           ) : (
             <div className="session-controls">
-              <button type="button" onClick={speakPrompt}>
+              <button type="button" onClick={playGuideQuestion}>
                 <ReplayIcon />
-                Hear again
+                Play guide question
               </button>
               <button type="button" onClick={requestHelp} aria-label="Help me">
                 <HelpIcon />

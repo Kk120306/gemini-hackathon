@@ -17,7 +17,7 @@ Caregiver browser
 Patient browser
     -> Next.js patient routes
     -> Deterministic lesson session
-    -> Browser speech and visual presentation
+    -> Gemini speech with browser-speech and text fallbacks
     -> Optional generated image or video assets
 ```
 
@@ -30,7 +30,7 @@ No patient-facing route may use unapproved world-model or guide data.
 
 ### Patient Experience
 
-The patient experience owns the six-question session, speech playback, answer selection, help requests, cue progression, and completion state.
+The patient experience owns the six-question familiar-room practice session, speech playback, answer selection, help requests, cue progression, and completion state.
 The patient experience does not call an unrestricted conversational model.
 
 ### Server Boundary
@@ -68,9 +68,10 @@ Interface responsibilities:
 
 ### Guide Service
 
-The Guide Service accepts consent metadata and one to three trusted-person reference images.
+The Guide Service accepts consent metadata and one to three trusted-person reference images for portrait-conditioned generation.
 It creates an independently validated portrait and optional question-specific short videos.
 It never generates speech in the trusted person's cloned voice.
+It performs only one-to-one likeness-consistency validation and does not perform facial recognition, biometric identification, or identity search.
 
 Interface responsibilities:
 
@@ -78,24 +79,26 @@ Interface responsibilities:
 - Generate and store guide candidates.
 - Track caregiver approval.
 - Animate only an approved generated guide portrait and ask only the current validated lesson prompt.
-- Validate that each clip contains one recognizable guide, neutral safe dialogue, and no call or messaging interface.
+- Validate that each clip contains one recognizable guide, the exact approved dialogue, neutral safe speech, and no call or messaging interface.
 - Expose static fallback media for every animated state.
 
 ### Lesson Engine
 
-The Lesson Engine accepts only an approved world model.
-It asks Gemma for candidate content, validates grounding, enforces the six-question composition, and returns a draft for caregiver approval.
+The Lesson Engine accepts only an approved world model and builds a familiar-room rehearsal lesson rather than a generic cognitive quiz.
+It asks Gemma for candidate content, validates grounding and room-practice purpose, enforces the six-question composition, and returns a draft for caregiver approval.
 The model selects only a constrained plan of approved identifiers and activity types.
 Deterministic application code expands that plan into named challenges, three-part evidence paths, instructions, answers, and progressive cues.
 
 Interface responsibilities:
 
 - Generate six questions.
-- Enforce exactly two cognitive activities.
+- Make all six questions provide cognitive practice through approved room evidence.
+- Keep four questions as direct recognition or orientation tasks and exactly two as designated higher-memory activities.
 - Distribute targets across at least three objects and use no object more than twice.
 - Ensure every object and location reference exists in the approved world model.
 - Ensure sequencing content has explicit caregiver verification.
-- Produce exactly three grounded evidence clues, deterministic answer choices, detailed explanations, and cue metadata for every activity.
+- Produce one conversational spoken prompt plus exactly three secondary grounded evidence clues, deterministic answer choices, detailed explanations, and cue metadata for every activity.
+- Reject generic trivia, unsupported habitual-location claims, and pressuring memory-test language.
 
 ### Cue Engine
 
@@ -126,7 +129,7 @@ Interface responsibilities:
 
 ### Media Generation Service
 
-The Media Generation Service hides Gemini image and video APIs behind one interface.
+The Media Generation Service hides Gemini image, video, and native speech APIs behind provider interfaces.
 It stores job status and returns generated assets only after validation.
 
 Interface responsibilities:
@@ -135,7 +138,8 @@ Interface responsibilities:
 - Generate guide expression variants.
 - Generate a simplified room scene from an original image.
 - Generate a perspective-preserving 2.5D room composition from an approved source image.
-- Generate one short guide or cue video.
+- Generate question-specific guide video from an approved portrait and exact approved dialogue.
+- Generate neutral synthetic speech from exact approved patient-facing text.
 - Record pending, completed, failed, timed-out, and rejected states.
 - Return deterministic fallback instructions with every request.
 
@@ -144,6 +148,23 @@ Interface responsibilities:
 The Media Validation Service compares a generated scene with the approved world model and source image.
 It checks that the target object remains present, the target location remains consistent, and no misleading person or object has been introduced.
 Rejected media never appears in patient mode.
+
+### Speech Service
+
+The Speech Service receives only immutable approved prompt, cue, or encouragement text.
+It requests a fixed neutral Gemini synthetic voice for the current approved text.
+It never accepts trusted-person voice audio or attempts to imitate the approved guide's real-world voice.
+
+Fallback order is deterministic:
+
+```text
+validated guide video with neutral Gemini-generated audio
+    -> approved static guide with Gemini speech
+    -> approved static guide with generic browser speech
+    -> approved static guide with visible text only
+```
+
+Every stage preserves the room controls, replay control, and approved text.
 
 ### Session Engine
 
@@ -193,12 +214,13 @@ Uploaded room images
     -> patient session events
 
 Uploaded family images + consent
-    -> guide candidates
+    -> consented portrait-conditioned guide candidates
     -> caregiver approval
     -> approved guide assets
-    -> question-specific Gemini Omni Flash clip
-    -> independent video validation
-    -> patient presentation or static-guide fallback
+    -> exact approved question text
+    -> question-specific Gemini video and neutral speech jobs
+    -> independent likeness, transcript, and content validation
+    -> patient presentation or static-guide, browser-speech, and text fallback
 ```
 
 ## Persistence Layout
@@ -231,8 +253,11 @@ At the `simplified` cue level, a safe generated focus scene may crossfade in whi
 
 Guide video generation begins asynchronously when a patient question becomes active and only after the caregiver approves the static guide.
 The current question, room interaction, and static guide remain immediately usable while the clip is pending.
-The generated MP4 is stored under the ignored private media directory and served through a no-store route only after independent multimodal validation.
+The generated MP4 is stored under the ignored private media directory and served through a no-store route only after independent multimodal validation confirms one guide, likeness consistency, exact approved dialogue, neutral speech, and no live-call implication.
 The static guide remains visible when video is pending, failed, rejected, disabled, or blocked by provider quota.
+
+Gemini speech is requested only for the exact approved text.
+If Gemini speech is unavailable, slow, invalid, or blocked by quota, the client uses a generic browser voice and then visible text without changing lesson state.
 
 The stage script should wait no more than eight seconds for generated media before continuing with the fallback.
 Late media may be shown only at a later safe transition and must never replace an image while the patient is choosing an answer.
@@ -243,7 +268,7 @@ Late media may be shown only at a later safe transition and must never replace a
 - Invalid lesson output is repaired or regenerated before caregiver preview.
 - Image-generation failure preserves the deterministic cue.
 - Video-generation failure preserves the static guide.
-- Speech-synthesis failure preserves readable text.
+- Gemini speech failure falls back to generic browser speech and then readable text.
 - Speech-recognition failure preserves large answer buttons.
 - Storage failure produces a visible retry state and never silently discards caregiver approval.
 - Missing grounding evidence blocks lesson approval rather than guessing or repairing the personal fact.

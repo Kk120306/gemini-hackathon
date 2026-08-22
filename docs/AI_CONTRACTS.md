@@ -6,6 +6,7 @@ Model output is a proposal, not trusted application state.
 Every structured response must be parsed and validated before use.
 Every personalized fact must be traceable to an uploaded image or caregiver confirmation.
 Prompts must request concise, literal language suitable for a calm patient experience.
+Every lesson question must rehearse recognition, orientation, recall, or association within the approved familiar room rather than become generic cognitive trivia.
 
 ## Core Domain Types
 
@@ -137,6 +138,14 @@ The generated guide must:
 
 Optional expression variants are `neutral`, `encouraging`, and `celebrating`.
 
+## Familiar-Room Purpose Contract
+
+A lesson question is valid only when its primary purpose is rehearsing recognition, location, orientation, visual recall, or association within the approved familiar room.
+Every prompt must rely on an approved object and at least one verified location, landmark relationship, or image region.
+Generic brain games, abstract trivia, unsupported routines, and questions that can be answered without the verified room evidence are invalid.
+Habitual language such as `belongs`, `usually`, and `always` requires a separate caregiver-confirmed grounding record.
+Prompts must not pressure the patient with language such as `Do you remember?`, `You should know this`, or `Let's test your brain`.
+
 ## Lesson Contract
 
 ```ts
@@ -212,8 +221,10 @@ Lesson validation rules:
 - Require exactly one `visual_recall` question.
 - Require exactly one `sequencing` or `association` question.
 - Require four other questions from recognition, location matching, and visual search.
+- Treat all six questions as cognitive practice through familiar-room evidence while reserving the visual-recall and sequencing or association formats as the exactly two designated higher-memory activities.
 - Require the plan to target at least three approved objects and no object more than twice.
 - Require every compiled activity to contain a named challenge and exactly three grounded evidence clues.
+- Require the spoken prompt to be one conversational room task and present the three clues as secondary visible support rather than a long riddle.
 - Require two or three distinct answer choices for object-tap activities.
 - Require the correct answer to appear exactly once in `choices`.
 - Require every referenced object identifier to exist in the approved world model.
@@ -226,6 +237,7 @@ Lesson validation rules:
 - Compile patient-facing prompts, instructions, answers, explanations, and cues in deterministic application code.
 - Prefer a concrete visible attribute, a verified surface, and a unique image-plane relation whenever the approved evidence supports them.
 - Keep each prompt direct enough to follow in one step even when it includes several grounded details.
+- Reject generic trivia, unsupported habitual-location claims, and prompts that do not require the approved room evidence.
 - Avoid childish language, tests, scores, countdowns, and negative feedback.
 
 Example cognitive question:
@@ -235,8 +247,8 @@ Example cognitive question:
   "id": "question-5",
   "type": "visual_recall",
   "cognitiveSkill": "short_term_memory",
-  "prompt": "Study the reading glasses' exact six-region position before the room is hidden.",
-  "instruction": "Remember the target, its surface, one row, and one column. Hide the room when you feel ready.",
+  "prompt": "Take a moment to study where the dark blue reading glasses appear on the right bedside table.",
+  "instruction": "When you are ready, hide the room and choose the same row and column.",
   "targetObjectId": "glasses",
   "objectIds": ["glasses"],
   "selectableObjectIds": [],
@@ -329,19 +341,34 @@ The validator must fail closed when uncertain.
 
 ## Guide Video Contract
 
-Gemini Omni Flash receives only the approved generated guide portrait and the current validated lesson prompt.
-The clip should use natural blinking, a small nod, subtle breathing, direct eye contact, and a neutral synthetic adult voice.
-The spoken dialogue must match the detailed visible question and must not add a memory, relationship claim, diagnosis, treatment claim, score, urgency, or claim of live presence.
+Gemini video receives only the caregiver-approved generated guide portrait, the exact validated lesson prompt, and a fixed neutral synthetic-voice instruction.
+This is consented portrait-conditioned generation with one-to-one likeness-consistency validation, not facial recognition, biometric identification, or identity search.
+The request must not include trusted-person voice audio.
+The clip should use natural blinking, a small nod, subtle breathing, direct eye contact, and a neutral synthetic adult voice that is not presented as the trusted person's voice.
+The spoken dialogue must match the exact approved question and must not add a memory, relationship claim, diagnosis, treatment claim, score, urgency, or claim of live presence.
 
-The independent validator must confirm one person only, recognizable consistency with the approved guide, no call or messaging interface, and neutral safe dialogue.
+The independent validator must confirm one person only, recognizable consistency with the approved guide, preserved apparent age and ethnicity, intact facial and mouth motion, exact normalized dialogue, no call or messaging interface, and neutral safe speech.
+The validator must reject an additional person, face substitution, material identity drift, distorted facial motion, added dialogue, or uncertainty.
 The media may be stored and displayed only when every check passes.
-The UI must label the clip as AI-generated, not live, and synthetic voice.
+The UI must label the clip `AI-generated guide video - not live - synthetic voice`.
 The question text, room interaction, and static guide must remain available before the video is ready and whenever generation or validation fails.
 
 ## Speech Contract
 
-Browser speech synthesis may read approved prompt, cue, and encouragement text.
-The MVP must use a generic system voice.
+Gemini native speech or text-to-speech is the primary audio path for approved prompt, cue, and encouragement text.
+The service receives only exact immutable approved text and uses a fixed neutral synthetic voice that is not conditioned on the trusted person.
+The provider must not receive trusted-person voice samples or instructions to imitate the person's voice.
+If Gemini speech is unavailable, slow, invalid, or blocked by quota, generic browser speech synthesis reads the same approved text.
+If browser speech is unavailable, visible text and replay controls remain available without blocking the activity.
+
+The deterministic presentation fallback order is:
+
+```text
+validated guide video with neutral Gemini-generated audio
+    -> approved static guide with Gemini speech
+    -> approved static guide with generic browser speech
+    -> approved static guide with visible text only
+```
 
 Optional speech recognition accepts only constrained intents:
 
@@ -361,6 +388,7 @@ An unknown transcript must not be sent into an open-ended conversation.
 - Structured text generation may retry once after schema failure.
 - Image generation may retry once with a stricter preservation prompt.
 - Video generation should not retry during the patient lesson.
+- Gemini speech should fall back immediately rather than retrying during the patient lesson.
 - Timeouts must resolve to a typed failure rather than an indefinite loading state.
 - Every AI operation must have a deterministic user-visible fallback.
 - The stage experience must continue after eight seconds without waiting for an unfinished media operation.

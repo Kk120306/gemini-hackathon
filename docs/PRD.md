@@ -2,12 +2,12 @@
 
 ## Problem Statement
 
-People living with dementia can find generic cognitive exercises abstract, unfamiliar, or stressful.
-Caregivers need a simple way to create gentle engagement activities grounded in the patient's real surroundings and trusted relationships.
-Existing tools often require manual lesson authoring or use generic content that lacks personal context.
+People living with dementia may find it difficult to recognize where familiar objects are, recall an object's location, or orient themselves within a room they know.
+Generic brain games do not rehearse the actual room, objects, and landmarks the person encounters.
+Caregivers need a safe way to turn a verified image of a familiar room into calm practice for object recognition, spatial orientation, object-location recall, and association without inventing personal history or claiming clinical improvement.
 
 The hackathon needs a focused demonstration rather than a complete care platform.
-The demonstration must prove that verified household context and progressive visual cueing can create a more familiar interaction without inventing personal history.
+The demonstration must prove one complete loop from an actual room image through a caregiver-verified object map, six familiar-room activities, progressive cues, and calm completion without a score.
 
 ## Solution
 
@@ -15,23 +15,29 @@ ANCHOR lets a caregiver upload an image of one familiar room and one to three au
 Gemini vision proposes a literal world model containing six to ten useful visible objects, their locations, discriminating appearance evidence, confidence, and normalized bounds when the image supports that many objects.
 The caregiver confirms or edits every object before it can be used.
 
-ANCHOR then generates a caregiver-approved family guide and a six-question lesson based on the verified objects.
+ANCHOR then turns the verified room into one six-question room-memory lesson and generates a caregiver-approved family guide.
 Gemini transforms the approved room image into a realistic, perspective-preserving 2.5D spatial interpretation during caregiver review.
 A candidate becomes the primary interaction surface only after it preserves every approved visible object and its image-plane location under independent validation.
 Large touch targets remain projected from verified object regions rather than generated guesses, and the approved source image remains the complete fallback.
-The patient completes six detailed attention, recognition, spatial orientation, short-term recall, and association activities through this calm spatial interface.
+Four questions rehearse object recognition, location matching, landmark-guided search, and room orientation.
+One activity hides the room and asks the patient to recall a verified object position.
+One activity rehearses a caregiver-confirmed object-place association or sequence.
+Every prompt, answer, and cue stays tied to an approved object, location, landmark, or image region.
 When the patient struggles, ANCHOR gives the minimum next cue and progressively simplifies the visual scene.
 
-The demo includes live Gemini image generation and one short Gemini video-generation moment.
-Deterministic overlays, static expressions, and text remain available whenever generative media is slow or unavailable.
+An approved portrait of a trusted person may be animated into a short AI-generated guide clip that speaks the exact approved question with a neutral Gemini synthetic voice.
+The clip remains labeled as AI-generated and not live.
+Deterministic overlays, the static guide, generic browser speech, and visible text remain available whenever generative media is slow or unavailable.
 
 ## Goals
 
 - Demonstrate a complete caregiver-to-patient flow with one room.
 - Ground all personalized content in observed or caregiver-confirmed facts.
 - Generate a familiar family guide with explicit caregiver consent.
-- Deliver six varied questions, including two cognitive exercises.
+- Deliver six familiar-room questions that all provide cognitive practice through verified room evidence.
+- Keep four questions as direct recognition or orientation tasks and exactly two as designated higher-memory activities: one visual recall and one caregiver-confirmed association or sequencing activity.
 - Make every question require a three-part evidence path assembled from visible attributes, verified locations, landmarks, or image-plane spatial rules.
+- Make the spoken question one conversational room task and present the three evidence clues as supporting context rather than a long riddle.
 - Distribute the six targets across at least three approved objects so the lesson cannot repeat one easy answer.
 - Let the patient answer directly in the familiar room image.
 - Let the patient explore a validated Gemini spatial interpretation with subtle perspective motion while retaining source-image grounding.
@@ -43,7 +49,7 @@ Deterministic overlays, static expressions, and text remain available whenever g
 
 ## Hackathon Product Thesis
 
-The product is the verified room-to-cue interaction.
+The product is the verified familiar-room rehearsal loop from room evidence to question to progressive cue.
 The family guide supports familiarity, but it is not the headline feature.
 The winning demonstration must show Gemma turning visible evidence into a caregiver-approved world model and Gemini turning that evidence into the minimum helpful visual cue.
 
@@ -52,7 +58,7 @@ Most Creative Gemini Hack is a credible third track when the live scene transfor
 
 The stage promise is:
 
-> ANCHOR helps people living with dementia engage with familiar spaces, one verified and gentle cue at a time.
+> ANCHOR turns a caregiver-verified room image into calm recognition, orientation, and recall practice for a person living with dementia.
 
 ## User Stories
 
@@ -100,6 +106,9 @@ The stage promise is:
 42. As a patient, I want every activity to show the evidence path I should use, so that the lesson exercises observation and reasoning rather than guessing from a generic prompt.
 43. As a patient, I want the approved family guide to ask the current detailed question in a short generated video, so that the guide supports the activity without pretending to be a live call.
 44. As a caregiver, I want every uploaded raster image analyzed by live Gemini vision when a server credential is configured, so that demo mode cannot silently substitute bedroom fixtures for a real office or living room.
+45. As a patient, I want every activity to rehearse an object, location, landmark, or image region from my caregiver-verified room, so that the lesson stays connected to familiar surroundings.
+46. As a patient, I want the exact approved question spoken with a neutral Gemini synthetic voice, with generic browser speech and visible text as fallbacks, so that the activity never depends on reading or generated media.
+47. As a caregiver, I want trusted-person media described as consented portrait-conditioned generation rather than facial recognition, so that the feature cannot be confused with biometric identification or surveillance.
 
 ## Required Demo Flow
 
@@ -116,16 +125,17 @@ The stage promise is:
 11. Gemini composes a perspective-preserving 2.5D room interpretation while the caregiver reviews the lesson.
 12. Independent validation compares the source and candidate before the candidate can become the patient scene.
 13. The patient starts the lesson.
-14. The patient answers by touching one of the large verified object regions projected over the spatial room scene or source fallback.
-15. The patient answers at least one question incorrectly.
-16. ANCHOR gives a verbal cue and immediately applies a deterministic visual focus effect.
-17. ANCHOR prepares a generated focus scene without blocking the answer controls.
-18. ANCHOR displays generated media only if it preserves the verified object and location.
-19. The patient receives a stronger highlight or close-up after another incorrect answer.
-20. The patient selects the correct object in the room.
-21. The guide celebrates and moves to the next question.
-22. The approved guide may ask each active question through a short, independently validated generated video while the static guide remains immediately available.
-23. The lesson ends with a calm completion message and no score.
+14. ANCHOR shows the exact approved question in text and requests neutral Gemini synthetic speech without blocking the room controls.
+15. A validated guide clip may ask the same question, while the static guide and speech fallbacks remain immediately available.
+16. The patient answers by touching one of the large verified object regions projected over the spatial room scene or source fallback.
+17. The patient answers at least one question incorrectly.
+18. ANCHOR gives a verbal cue and immediately applies a deterministic visual focus effect.
+19. ANCHOR prepares a generated focus scene without blocking the answer controls.
+20. ANCHOR displays generated media only if it preserves the verified object and location.
+21. The patient receives a stronger highlight or close-up after another incorrect answer.
+22. The patient selects the correct object in the room.
+23. The guide celebrates and moves to the next question.
+24. The lesson ends with a calm completion message and no score.
 
 ## Lesson Composition
 
@@ -138,13 +148,18 @@ The lesson contains exactly six questions:
 5. One short-term visual-recall activity.
 6. One caregiver-confirmed sequencing or association activity.
 
-The last two questions are the required cognitive activities.
+All six questions provide cognitive practice through the familiar room.
+The first four are direct recognition and orientation tasks.
+The last two are the exactly two designated higher-memory activities required for the hackathon lesson.
 The lesson must not evaluate or label cognitive ability.
 Five activities use direct object selection inside the approved room image.
 The visual-recall activity first shows the complete room without a timer, asks the patient to bind the target to a surface, row, and column, then hides the image and exposes six exact regions.
-Every activity presents exactly three approved evidence clues and asks the patient to satisfy the complete evidence path rather than match one obvious attribute.
-The activities include three-clue identification, complete location claims, landmark-guided search, systematic scene search, six-region object-place recall, and shared-surface or landmark association.
-Application code must reject generic prompts such as `Which object is this?` or `Where does this belong?`.
+Every activity presents exactly three approved evidence clues and asks the patient to use a complete evidence path rather than match one obvious attribute.
+The spoken prompt remains one conversational sentence, and the three clues appear as secondary visible support.
+The activities include object recognition from appearance and verified place, object-to-location matching, landmark-guided search, systematic room orientation, six-region object-place recall, and shared-surface or landmark association.
+Application code must reject generic prompts such as `Which object is this?`, generic trivia that could apply to any room, and unsupported habitual questions such as `Where does this belong?`.
+Words such as `belongs`, `usually`, and `always` require separate caregiver-confirmed evidence.
+Prompts must not pressure the patient with phrases such as `Do you remember?`, `You should know this`, or `Let's test your brain`.
 The six targets must span at least three approved objects, and no object may be the target more than twice.
 
 ## Grounding Ledger
@@ -158,7 +173,7 @@ The stage demo must expose one concise proof chain:
 bedroom image
     -> Gemma observed glasses on the bedside table
     -> caregiver confirmed the observation
-    -> lesson asked where the glasses belong
+    -> lesson asked the patient to find where the glasses appear in this room image
     -> cue highlighted the verified bedside-table region
 ```
 
@@ -192,6 +207,10 @@ The model may recommend the next cue, but application code enforces the allowed 
 - The caregiver must be able to inspect one grounding record without viewing raw JSON.
 - The guide must be described as an AI-generated guide based on the trusted person.
 - The guide must remain a supporting element and must not obscure the room image or answer controls.
+- Every question must rehearse a caregiver-approved room object, object location, landmark relationship, or image region.
+- Gemini speech must read only the exact approved patient-facing text and must not imitate the trusted person's voice.
+- The UI must label every generated guide clip as AI-generated, not live, and synthetic-voice media.
+- The fallback order is validated guide video, approved static guide with Gemini speech, approved static guide with generic browser speech, then approved static guide with visible text only.
 - The approved room image must be the answer surface for every non-recall activity.
 - A validated 2.5D spatial interpretation may replace the approved source pixels, but every hotspot and claim must remain tied to source-image grounding.
 - The interface must label the generated spatial interpretation and must not describe it as a metric 3D reconstruction.
@@ -218,6 +237,7 @@ The model may recommend the next cue, but application code enforces the allowed 
 - The app produces literal caregiver-confirmed objects from the actual uploaded room pixels and never swaps in prepared fixture detections for a real upload.
 - The app produces an approved family guide from reference photos.
 - The app produces six valid, grounded questions with exactly two cognitive activities.
+- All six questions serve familiar-room recognition, orientation, recall, or caregiver-confirmed association rather than generic cognitive trivia.
 - At least five questions are answered through verified spatial regions on the room image.
 - The lesson includes one no-timer hide-and-recall activity using a six-region row-and-column map.
 - Every patient activity exposes exactly three verified evidence clues that jointly distinguish its target from the other choices.
@@ -225,7 +245,8 @@ The model may recommend the next cue, but application code enforces the allowed 
 - An incorrect answer visibly advances the cue sequence.
 - A generated simplified scene can replace the deterministic overlay after validation.
 - A validated Gemini spatial interpretation can serve as the primary scene without changing verified hotspot coordinates.
-- A generated guide question video may appear without blocking the question, with a labeled static fallback when video is unavailable.
+- A generated guide question video may appear without blocking the question, uses the exact approved dialogue, and has a labeled static fallback when video is unavailable.
+- The patient can replay neutral Gemini speech for approved text, with generic browser speech and visible text preserved as fallbacks.
 - The patient can finish the lesson entirely through visible controls.
 - No generated copy invents memories, quotes, routines, or relationships.
 - The complete seeded flow passes the primary end-to-end test.
@@ -240,7 +261,8 @@ The model may recommend the next cue, but application code enforces the allowed 
 - Use hosted Gemma through the Gemini API for world-model extraction and lesson generation.
 - Use a Gemini multimodal model to validate generated images against the verified world model.
 - Use Gemini native image generation for guide portraits, expression variants, and simplified room scenes.
-- Use Gemini Omni Flash for one short video-generation moment.
+- Use Gemini Omni Flash for consented portrait-conditioned guide video generation rather than describing the feature as facial recognition.
+- Require one independently validated guide clip for demo acceptance while allowing approved questions to request clips opportunistically.
 - Keep model names configurable through environment variables.
 - Use local filesystem persistence for the hackathon and hide it behind a storage interface.
 - Use normalized bounding boxes so visual overlays remain responsive.
@@ -248,7 +270,8 @@ The model may recommend the next cue, but application code enforces the allowed 
 - Generate lesson content during caregiver setup and cache it before entering patient mode.
 - Start live visual generation during the lesson while showing a deterministic overlay immediately.
 - Treat generated video as an enhancement with a static-guide fallback.
-- Use browser speech synthesis and optional browser speech recognition.
+- Use Gemini native speech or text-to-speech for exact approved prompts and cues, with generic browser speech synthesis and visible text as fallbacks.
+- Keep optional browser speech recognition constrained to visible intents.
 - Do not implement voice cloning.
 
 ## Testing Decisions
@@ -283,4 +306,6 @@ The model may recommend the next cue, but application code enforces the allowed 
 
 ANCHOR is an engagement prototype, not a medical device.
 The generated family guide must be introduced as an AI-generated visual guide based on caregiver-provided photos.
+The product may describe familiar-room memory practice, but it must not claim better memory, improved cognition, brain training results, dementia prevention, treatment, or slowed decline.
+Portrait reference images support consented generation and one-to-one candidate consistency validation only, not biometric identification or identity search.
 The caregiver remains the final authority for personal information and lesson suitability.

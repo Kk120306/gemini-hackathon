@@ -9,12 +9,12 @@ import { ArrowRightIcon, CheckIcon, EyeIcon } from "@/components/icons";
 import type { LessonQuestion } from "@/domain/anchor";
 
 const typeLabels: Record<LessonQuestion["type"], string> = {
-  object_recognition: "Recognition",
-  location_matching: "Location",
-  visual_search: "Visual search",
-  visual_recall: "Visual recall",
-  sequencing: "Sequence",
-  association: "Association",
+  object_recognition: "Object-place memory",
+  location_matching: "Where it appears",
+  visual_search: "Landmark recall",
+  visual_recall: "Picture the location",
+  sequencing: "Order and place",
+  association: "What sits together",
 };
 
 export function LessonReview() {
@@ -59,7 +59,7 @@ export function LessonReview() {
                   <strong>{question.prompt}</strong>
                   <div
                     className="lesson-list__clues"
-                    aria-label="Evidence path"
+                    aria-label="Room-memory anchors"
                   >
                     {question.evidenceClues.map((clue, clueIndex) => (
                       <span key={`${question.id}-${clue.kind}`}>
@@ -77,7 +77,7 @@ export function LessonReview() {
                   <small>{question.answerExplanation}</small>
                 </div>
                 <span className="lesson-list__evidence">
-                  <EyeIcon /> Grounded
+                  <EyeIcon /> Verified room fact
                 </span>
                 <span className="lesson-list__check">
                   <CheckIcon />
@@ -88,11 +88,11 @@ export function LessonReview() {
         ) : (
           <div className="lesson-empty">
             <EyeIcon />
-            <h2>Generate from approved evidence</h2>
+            <h2>Build from approved room facts</h2>
             <p>
               {state.room.analysisSource !== "fixture"
-                ? "Gemini will plan exactly six questions from the objects it detected and you approved. ANCHOR compiles every prompt, answer, choice, and cue from those verified facts."
-                : "The fixture provider will return exactly six validated questions, including one visual recall and one association activity."}
+                ? "Gemini will use only the visible objects it detected and you approved. ANCHOR then builds exactly six detailed prompts about recognizing objects, remembering their locations, and connecting nearby landmarks."
+                : "The prepared room will produce exactly six validated object-place questions, including one visual recall and one association activity."}
             </p>
             <button
               className="primary-button"
@@ -115,8 +115,8 @@ export function LessonReview() {
         <div>
           <CheckIcon />
           <span>
-            <strong>Composition enforced in code</strong>4 familiar-room
-            questions + 2 gentle cognitive activities
+            <strong>Composition enforced in code</strong>4 object-place
+            questions + 2 gentle recall and association activities
           </span>
         </div>
         <div className="form-actions">

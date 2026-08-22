@@ -10,6 +10,8 @@ describe("server environment", () => {
     expect(environment.GEMINI_API_KEY).toBeUndefined();
     expect(environment.GEMINI_IMAGE_MODEL).toBe("gemini-3.1-flash-lite-image");
     expect(environment.GEMINI_VIDEO_MODEL).toBe("gemini-omni-flash-preview");
+    expect(environment.GEMINI_TTS_MODEL).toBe("gemini-3.1-flash-tts-preview");
+    expect(environment.GEMINI_TTS_VOICE).toBe("Sulafat");
   });
 
   it("requires an API credential in live mode", () => {

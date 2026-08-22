@@ -34,6 +34,14 @@ export const serverEnvSchema = z
       .trim()
       .min(1)
       .default("gemini-omni-flash-preview"),
+    GEMINI_TTS_MODEL: z
+      .string()
+      .trim()
+      .min(1)
+      .default("gemini-3.1-flash-tts-preview"),
+    GEMINI_TTS_VOICE: z
+      .enum(["Sulafat", "Vindemiatrix", "Gacrux", "Iapetus", "Erinome"])
+      .default("Sulafat"),
     ANCHOR_STORAGE_MODE: z.enum(["local"]).default("local"),
     ANCHOR_DATA_DIR: z.string().trim().min(1).default(".data"),
     ANCHOR_DEMO_MODE: booleanFlag(true),

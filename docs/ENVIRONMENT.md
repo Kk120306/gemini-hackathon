@@ -8,7 +8,7 @@ The application uses the repository's pinned package-manager version.
 ## Required Secret
 
 `GEMINI_API_KEY` is the only required external secret for the hackathon architecture.
-It is used server-side for hosted Gemma, Gemini text and validation, native image generation, and Gemini Omni Flash video generation.
+It is used server-side for hosted Gemma, Gemini text and validation, native image generation, Gemini Omni Flash video generation, and Gemini native speech.
 
 Create the key in Google AI Studio and place it only in `.env.local`:
 
@@ -27,6 +27,8 @@ The initial model selections are:
 - `GEMINI_VALIDATION_MODEL=gemini-3.6-flash` for generated-media validation and repair tasks.
 - `GEMINI_IMAGE_MODEL=gemini-3.1-flash-lite-image` for the single-reference simplified room image.
 - `GEMINI_VIDEO_MODEL=gemini-omni-flash-preview` for one short generated video.
+- `GEMINI_TTS_MODEL=gemini-3.1-flash-tts-preview` for exact approved question speech.
+- `GEMINI_TTS_VOICE=Sulafat` for the fixed warm synthetic guide voice.
 
 All names are environment variables because availability and preview identifiers can change.
 Model access must be verified with the actual hackathon API key before implementation is locked.
@@ -43,6 +45,8 @@ The demo must keep its static fallback if access is unavailable.
 | `GEMINI_VALIDATION_MODEL`               | Yes                   | Multimodal validation and structured repair             |
 | `GEMINI_IMAGE_MODEL`                    | Yes                   | Avatar and room image generation                        |
 | `GEMINI_VIDEO_MODEL`                    | When video is enabled | Short video generation                                  |
+| `GEMINI_TTS_MODEL`                      | Yes                   | Exact approved question speech                          |
+| `GEMINI_TTS_VOICE`                      | Yes                   | Fixed allowlisted synthetic guide voice                 |
 | `ANCHOR_STORAGE_MODE`                   | Yes                   | Selects `local` or a future storage adapter             |
 | `ANCHOR_DATA_DIR`                       | Yes in local mode     | Private JSON and media root                             |
 | `ANCHOR_DEMO_MODE`                      | Yes                   | Enables deterministic demo fixtures and fallback assets |

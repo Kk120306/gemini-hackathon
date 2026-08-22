@@ -65,8 +65,8 @@ function lessonContract(worldModel: WorldModel) {
   return `Create a six-question activity plan using only the approved objects below.
 Return one JSON object with this exact shape:
 {"questions":[{"type":"object_recognition|location_matching|visual_search|visual_recall|association","targetObjectId":"approved object id","choiceObjectIds":["2 or 3 distinct approved object ids including the target exactly once"]}]}
-Use exactly one visual_recall question and exactly one association question.
-Use object_recognition, location_matching, or visual_search for the other four questions.
+Use this exact six-question type order: object_recognition, location_matching, visual_search, object_recognition, visual_recall, association.
+This order creates a familiar-room progression from learning an anchor, to binding object and place, navigating from a landmark, picturing and checking another object, hiding and recalling one location, and associating two verified room objects.
 Distribute the six targets across at least three approved objects, and never target one object more than twice.
 Choose three objects whenever the approved world model has three or more objects so the room can provide two selectable anchors plus a visual landmark.
 For association, prefer a target that shares an approved location with another object.
