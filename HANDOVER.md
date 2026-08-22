@@ -27,10 +27,9 @@ The next implementation phase has not been included in this handover.
 ## Move the Project to the Mac mini
 
 The Mac mini should have Git, Node.js 22, and Corepack installed.
-Replace `<REPOSITORY_URL>` with the Git remote supplied with this handover.
 
 ```bash
-git clone <REPOSITORY_URL> gemini-hackathon
+git clone https://github.com/Kk120306/gemini-hackathon.git gemini-hackathon
 cd gemini-hackathon
 corepack enable
 corepack prepare pnpm@11.9.0 --activate

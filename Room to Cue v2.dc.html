@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+body{margin:0;background:#221E1B;font-family:"Nunito",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#0E7C7C}a:hover{color:#F4643C}
+@keyframes an-shimmer{0%{background-position:-320px 0}100%{background-position:320px 0}}
+@keyframes an-ring{0%,100%{box-shadow:0 0 0 5px rgba(255,176,32,1),0 0 0 14px rgba(255,176,32,.3)}50%{box-shadow:0 0 0 5px rgba(255,176,32,1),0 0 0 26px rgba(255,176,32,0)}}
+@keyframes an-fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes an-wave{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
+@keyframes an-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes an-pop{0%{transform:scale(.7)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+</style>
+</helmet>
+
+<div style="display:flex;flex-direction:column;align-items:flex-start;min-height:100vh;background:#221E1B;padding-bottom:64px">
+
+<div style="position:sticky;top:0;z-index:60;width:100%;display:flex;justify-content:flex-start;background:rgba(34,30,27,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.09)">
+<div style="width:1440px;flex:none;margin:0 auto;display:flex;align-items:center;gap:16px;padding:11px 24px;white-space:nowrap">
+<span style="font:800 10.5px/1 'Nunito',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.38)">Mockup</span>
+<div style="display:flex;gap:7px">
+<button onClick="{{ goGate }}" style="background:{{ tabGateBg }};color:{{ tabGateFg }};border:none;border-radius:11px;padding:8px 14px;font:800 12.5px/1 'Nunito',sans-serif;cursor:pointer">Approval gate</button>
+<button onClick="{{ goSession }}" style="background:{{ tabSessBg }};color:{{ tabSessFg }};border:none;border-radius:11px;padding:8px 14px;font:800 12.5px/1 'Nunito',sans-serif;cursor:pointer">Patient session</button>
+<button onClick="{{ goComplete }}" style="background:{{ tabDoneBg }};color:{{ tabDoneFg }};border:none;border-radius:11px;padding:8px 14px;font:800 12.5px/1 'Nunito',sans-serif;cursor:pointer">Completion</button>
+</div>
+<div style="flex:1"></div>
+<button onClick="{{ togglePresenter }}" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.72);border:none;border-radius:11px;padding:8px 13px;font:800 12.5px/1 'Nunito',sans-serif;cursor:pointer">Cue console</button>
+</div>
+</div>
+
+<div style="width:1440px;margin:26px auto 0;border-radius:26px;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.55);background:#FFF9EF;position:relative">
+
+<sc-if value="{{ isSession }}" hint-placeholder-val="{{ true }}">
+<div style="position:relative;height:900px;overflow:hidden;background:#E9DCC6">
+
+<div style="position:absolute;inset:0;transform:{{ stageTransform }};transition:transform .7s cubic-bezier(.2,.8,.2,1)">
+<image-slot id="anchor-room" shape="rect" placeholder="Drop the bedroom photo - this fills the whole screen"></image-slot>
+<sc-if value="{{ showSimplified }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:#E9DCC6;animation:an-fade .8s ease both">
+<image-slot id="anchor-room-simplified" shape="rect" placeholder="Gemini-generated simplified scene"></image-slot>
+</div>
+</sc-if>
+<sc-if value="{{ showDim }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:{{ boxLeft }};top:{{ boxTop }};width:{{ boxW }};height:{{ boxH }};border-radius:16px;box-shadow:0 0 0 9999px rgba(34,30,27,.78);animation:an-ring 2.2s ease-in-out infinite;transition:all .5s cubic-bezier(.2,.8,.2,1)"></div>
+</sc-if>
+<sc-if value="{{ showRevealTag }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:{{ tagLeft }};top:{{ tagTop }};background:#46A758;border-bottom:5px solid #2F7B3C;color:#FFFFFF;border-radius:18px;padding:14px 20px;font:800 21px/1.3 'Nunito',sans-serif;max-width:22ch;animation:an-pop .35s ease both">{{ revealText }}</div>
+</sc-if>
+</div>
+
+<div style="position:absolute;left:22px;right:22px;top:20px;display:flex;align-items:center;gap:14px">
+<div style="display:flex;align-items:center;gap:12px;background:#FFFFFF;border-bottom:4px solid rgba(34,30,27,.14);border-radius:18px;padding:11px 16px">
+<div style="width:32px;height:32px;border-radius:11px;background:#14A0A0;display:flex;align-items:center;justify-content:center">
+<div style="width:12px;height:12px;border-radius:50%;border:3px solid #FFF9EF;position:relative"><div style="position:absolute;left:50%;top:-7px;width:3px;height:10px;border-radius:2px;background:#FFF9EF;transform:translateX(-50%)"></div></div>
+</div>
+<span style="font:700 19px/1 'Nunito',sans-serif;color:#2E2A26;white-space:nowrap">Good afternoon, {{ patientName }}</span>
+</div>
+<div style="flex:1;display:flex;align-items:center;gap:13px;background:#FFFFFF;border-bottom:4px solid rgba(34,30,27,.14);border-radius:18px;padding:13px 18px">
+<div style="flex:1;display:flex;gap:6px">
+<sc-for list="{{ segments }}" as="s" hint-placeholder-count="6">
+<div style="flex:1;height:16px;border-radius:999px;background:{{ s.bg }};position:relative;overflow:hidden">
+<div style="position:absolute;left:4px;right:4px;top:3px;height:4px;border-radius:999px;background:{{ s.gloss }}"></div>
+</div>
+</sc-for>
+</div>
+<span style="font:800 16px/1 'Nunito',sans-serif;color:#8B8073;white-space:nowrap">{{ progressLabel }}</span>
+</div>
+<button onClick="{{ askExit }}" style="background:#FFFFFF;border:none;border-bottom:4px solid rgba(34,30,27,.14);border-radius:18px;padding:15px 20px;font:800 16px/1 'Nunito',sans-serif;color:#6F675C;cursor:pointer;white-space:nowrap">Stop for now</button>
+</div>
+
+<div style="position:absolute;right:22px;top:96px;display:flex;flex-direction:column;gap:9px;width:236px">
+<div style="background:rgba(34,30,27,.72);backdrop-filter:blur(8px);border-radius:20px;padding:14px 15px">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px">
+<span style="font:800 11px/1 'Nunito',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,249,239,.55)">Help</span>
+<span style="font:800 12px/1 'Nunito',sans-serif;color:#FFF9EF">{{ cueChip }}</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:7px">
+<sc-for list="{{ cueToggles }}" as="c" hint-placeholder-count="5">
+<button onClick="{{ c.go }}" style="display:flex;align-items:center;gap:11px;background:{{ c.bg }};border:none;border-bottom:4px solid {{ c.shadow }};border-radius:14px;padding:11px 12px;cursor:{{ c.cursor }};text-align:left">
+<span style="flex:none;width:26px;height:26px;border-radius:9px;background:{{ c.numBg }};color:{{ c.numFg }};display:flex;align-items:center;justify-content:center;font:800 12.5px/1 'Nunito',sans-serif">{{ c.num }}</span>
+<span style="flex:1;font:800 13.5px/1.2 'Nunito',sans-serif;color:{{ c.fg }}">{{ c.label }}</span>
+<span style="font:800 15px/1 'Nunito',sans-serif;color:{{ c.stateFg }}">{{ c.state }}</span>
+</button>
+</sc-for>
+</div>
+<div style="font:600 11.5px/1.45 'Nunito',sans-serif;color:rgba(255,249,239,.5);margin-top:11px">One level at a time. Later levels stay locked until this one is used.</div>
+</div>
+<button onClick="{{ openInspector }}" style="background:rgba(34,30,27,.72);backdrop-filter:blur(8px);border:none;border-radius:16px;padding:12px;font:800 12.5px/1 'Nunito',sans-serif;color:rgba(255,249,239,.8);cursor:pointer">Caregiver view · evidence</button>
+</div>
+
+<sc-if value="{{ mediaPending }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;right:272px;top:96px;display:flex;align-items:center;gap:12px;background:#FFFFFF;border-bottom:4px solid rgba(34,30,27,.14);border-radius:16px;padding:12px 15px;max-width:290px">
+<div style="flex:none;width:36px;height:24px;border-radius:8px;background:linear-gradient(90deg,#F0E5D2 0%,#FFFFFF 50%,#F0E5D2 100%);background-size:320px 100%;animation:an-shimmer 1.1s linear infinite"></div>
+<div>
+<div style="font:800 13px/1.3 'Nunito',sans-serif;color:#2E2A26">Simplifying the scene</div>
+<div style="font:600 12px/1.35 'Nunito',sans-serif;color:#8B8073">The focus cue stays. Nothing waits for this.</div>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ mediaRejected }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;right:272px;top:96px;background:#F4643C;border-bottom:4px solid #C64822;border-radius:16px;padding:12px 15px;max-width:300px;font:600 12.5px/1.4 'Nunito',sans-serif;color:#FFF3EE"><span style="font-weight:800">Generated scene rejected.</span> The mug moved off the windowsill, so the focus cue stays.</div>
+</sc-if>
+<sc-if value="{{ showSimplified }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:22px;top:96px;display:flex;align-items:center;gap:8px;background:#46A758;border-bottom:4px solid #2F7B3C;border-radius:16px;padding:11px 15px;font:800 13px/1 'Nunito',sans-serif;color:#FFFFFF">AI scene · checked and safe</div>
+</sc-if>
+
+<div style="position:absolute;left:26px;bottom:{{ guideBottom }};display:flex;align-items:flex-end;gap:14px;max-width:520px;transition:bottom .3s ease">
+<div style="position:relative;flex:none;width:132px;height:132px;animation:{{ guideBob }}">
+<div style="position:absolute;inset:0;border-radius:50%;border:7px solid {{ guideRing }};overflow:hidden;background:#EFE2CC">
+<image-slot id="anchor-guide" shape="circle" placeholder="Approved AI guide portrait"></image-slot>
+</div>
+<div style="position:absolute;left:50%;bottom:-11px;transform:translateX(-50%);background:#2E2A26;color:#FFF9EF;border-radius:999px;padding:5px 11px;font:800 10.5px/1 'Nunito',sans-serif;white-space:nowrap">AI guide</div>
+</div>
+<div style="position:relative;background:{{ guideBubbleBg }};border-bottom:5px solid {{ guideBubbleShadow }};border-radius:22px;padding:15px 19px;margin-bottom:14px">
+<div style="position:absolute;left:-9px;bottom:22px;width:18px;height:18px;background:{{ guideBubbleBg }};border-radius:4px;transform:rotate(45deg)"></div>
+<div style="position:relative;font:700 20px/1.35 'Nunito',sans-serif;color:{{ guideBubbleFg }};text-wrap:pretty">{{ guideLine }}</div>
+<div style="position:relative;font:700 12px/1 'Nunito',sans-serif;color:{{ guideBubbleFg }};opacity:.6;margin-top:7px">{{ guideName }} · {{ guideRelationship }} · not a live call</div>
+</div>
+</div>
+
+<div style="position:absolute;left:22px;right:22px;bottom:{{ cardBottom }};background:#FFFFFF;border-radius:28px;border-bottom:8px solid rgba(34,30,27,.16);padding:22px 24px 24px;transition:bottom .3s ease">
+<div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:18px">
+<div style="flex:1">
+<div style="font:800 42px/1.12 'Baloo 2',cursive;color:#2E2A26;max-width:30ch;text-wrap:pretty">{{ prompt }}</div>
+<sc-if value="{{ showVerbalCue }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:12px;display:inline-flex;align-items:center;gap:12px;background:#FFF0CF;border:3px solid #FFB020;border-radius:18px;padding:11px 18px;animation:an-fade .3s ease both">
+<span style="flex:none;width:28px;height:28px;border-radius:10px;background:#FFB020;color:#4A3405;display:flex;align-items:center;justify-content:center;font:800 16px/1 'Nunito',sans-serif">!</span>
+<span style="font:700 20px/1.3 'Nunito',sans-serif;color:#6B4A05">{{ verbalCue }}</span>
+</div>
+</sc-if>
+</div>
+<div style="flex:none;display:flex;gap:12px">
+<button onClick="{{ replay }}" style="display:flex;align-items:center;gap:11px;background:#14A0A0;border:none;border-bottom:6px solid #0E7C7C;border-radius:18px;padding:16px 20px;font:800 16px/1 'Nunito',sans-serif;color:#FFFFFF;cursor:pointer;white-space:nowrap">
+<span style="display:flex;align-items:flex-end;gap:3px;height:18px">
+<sc-for list="{{ waveBars }}" as="b" hint-placeholder-count="4">
+<span style="width:4px;height:18px;border-radius:3px;background:{{ b.bg }};transform-origin:bottom;animation:{{ b.anim }}"></span>
+</sc-for>
+</span>
+{{ replayLabel }}
+</button>
+<sc-if value="{{ showHelp }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ help }}" style="background:#FFB020;border:none;border-bottom:6px solid #D18A0A;border-radius:18px;padding:16px 22px;font:800 16px/1 'Nunito',sans-serif;color:#4A3405;cursor:pointer;white-space:nowrap">Show me a little more</button>
+</sc-if>
+<sc-if value="{{ showNext }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ next }}" style="background:#46A758;border:none;border-bottom:6px solid #2F7B3C;border-radius:18px;padding:16px 30px;font:800 18px/1 'Nunito',sans-serif;color:#FFFFFF;cursor:pointer;white-space:nowrap;animation:an-fade .25s ease both">{{ nextLabel }}</button>
+</sc-if>
+</div>
+</div>
+<div style="display:flex;gap:16px">
+<sc-for list="{{ choices }}" as="c" hint-placeholder-count="3">
+<button onClick="{{ c.pick }}" style="flex:1;min-height:108px;background:{{ c.bg }};border:4px solid {{ c.bd }};border-bottom-width:8px;border-radius:24px;padding:16px 18px;font:800 27px/1.2 'Nunito',sans-serif;color:{{ c.fg }};cursor:pointer;text-align:left;display:flex;align-items:center;gap:16px;transition:background .18s,border-color .18s">
+<span style="flex:none;width:52px;height:52px;border-radius:17px;background:{{ c.badgeBg }};color:{{ c.badgeFg }};display:flex;align-items:center;justify-content:center;font:800 24px/1 'Nunito',sans-serif">{{ c.badge }}</span>
+<span style="flex:1">{{ c.label }}</span>
+<span style="flex:none;font:800 15px/1.2 'Nunito',sans-serif;color:{{ c.markFg }};text-align:right;max-width:7ch">{{ c.mark }}</span>
+</button>
+</sc-for>
+</div>
+</div>
+
+<sc-if value="{{ presenterOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:0;right:0;bottom:0;background:#2B2521;padding:18px 30px 20px;display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:30px;animation:an-fade .25s ease both">
+<div>
+<div style="font:800 11px/1 'Nunito',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,249,239,.4);margin-bottom:12px">Cue engine · deterministic</div>
+<div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+<sc-for list="{{ machine }}" as="m" hint-placeholder-count="5">
+<span style="font:800 12.5px/1 'Nunito',sans-serif;color:{{ m.fg }};background:{{ m.bg }};border-radius:999px;padding:8px 13px">{{ m.label }}</span>
+</sc-for>
+</div>
+<div style="font:700 12.5px/1.5 'Nunito',sans-serif;color:rgba(255,249,239,.7);margin-top:10px">Model recommendation: <span style="color:#FFB020">{{ recommendation }}</span> · advisory only</div>
+</div>
+<div>
+<div style="font:800 11px/1 'Nunito',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,249,239,.4);margin-bottom:12px">Media job</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ jobRows }}" as="j" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:11px">
+<span style="flex:none;width:9px;height:9px;border-radius:50%;background:{{ j.dot }}"></span>
+<span style="font:700 12.5px/1.3 'Nunito',sans-serif;color:rgba(255,249,239,.85)">{{ j.label }}</span>
+<span style="flex:1;height:2px;border-radius:2px;background:rgba(255,249,239,.1)"></span>
+<span style="font:600 11.5px/1 ui-monospace,Menlo,monospace;color:rgba(255,249,239,.45)">{{ j.value }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div>
+<div style="font:800 11px/1 'Nunito',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,249,239,.4);margin-bottom:12px">Grounding</div>
+<div style="font:600 12.5px/1.55 'Nunito',sans-serif;color:rgba(255,249,239,.65)">{{ groundingSummary }}</div>
+<div style="font:600 11.5px/1.5 ui-monospace,Menlo,monospace;color:rgba(255,249,239,.42);margin-top:9px">{{ groundingIds }}</div>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ isGate }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;height:9px"><div style="flex:1;background:#14A0A0"></div><div style="flex:1;background:#46A758"></div><div style="flex:1;background:#FFB020"></div><div style="flex:1;background:#F4643C"></div><div style="flex:1;background:#8E5BC9"></div></div>
+<div style="display:grid;grid-template-columns:1fr 430px;min-height:880px">
+<div style="padding:40px 44px 48px;border-right:3px solid #F0E5D2">
+<div style="display:flex;align-items:center;gap:13px;margin-bottom:32px">
+<div style="width:40px;height:40px;border-radius:14px;background:#14A0A0;display:flex;align-items:center;justify-content:center">
+<div style="width:15px;height:15px;border-radius:50%;border:3.5px solid #FFF9EF;position:relative"><div style="position:absolute;left:50%;top:-9px;width:3.5px;height:12px;border-radius:2px;background:#FFF9EF;transform:translateX(-50%)"></div></div>
+</div>
+<span style="font:800 22px/1 'Baloo 2',cursive;letter-spacing:.1em;color:#2E2A26">ANCHOR</span>
+<span style="font:700 13px/1 'Nunito',sans-serif;color:#8B8073;background:#F5EAD8;border-radius:999px;padding:7px 13px">Caregiver</span>
+</div>
+
+<div style="display:inline-flex;align-items:center;gap:9px;background:{{ gateBadgeBg }};border-radius:999px;padding:9px 16px;margin-bottom:16px">
+<span style="width:11px;height:11px;border-radius:50%;background:{{ gateBadgeDot }}"></span>
+<span style="font:800 13px/1 'Nunito',sans-serif;color:{{ gateBadgeFg }};letter-spacing:.03em">{{ gateBadge }}</span>
+</div>
+<h1 style="font:800 50px/1.05 'Baloo 2',cursive;color:#2E2A26;margin:0 0 12px;max-width:20ch;text-wrap:pretty">{{ gateHeadline }}</h1>
+<p style="font:600 18px/1.5 'Nunito',sans-serif;color:#6F675C;margin:0 0 30px;max-width:54ch;text-wrap:pretty">{{ gateSub }}</p>
+
+<div style="display:flex;flex-direction:column;gap:12px;max-width:740px">
+<sc-for list="{{ gateRows }}" as="g" hint-placeholder-count="6">
+<div style="display:flex;align-items:center;gap:16px;background:#FFFFFF;border:3px solid {{ g.bd }};border-radius:20px;padding:16px 18px">
+<div style="flex:none;width:44px;height:44px;border-radius:15px;background:{{ g.dot }};color:#FFFFFF;display:flex;align-items:center;justify-content:center;font:800 20px/1 'Nunito',sans-serif">{{ g.mark }}</div>
+<div style="flex:1">
+<div style="font:800 16.5px/1.3 'Nunito',sans-serif;color:#2E2A26">{{ g.title }}</div>
+<div style="font:600 14px/1.45 'Nunito',sans-serif;color:#8B8073;margin-top:3px">{{ g.detail }}</div>
+</div>
+<sc-if value="{{ g.showFix }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ openBlockedRecord }}" style="flex:none;background:#FFB020;border:none;border-bottom:5px solid #D18A0A;border-radius:15px;padding:13px 17px;font:800 14px/1 'Nunito',sans-serif;color:#4A3405;cursor:pointer">Open ledger</button>
+</sc-if>
+</div>
+</sc-for>
+</div>
+
+<div style="margin-top:32px;display:flex;align-items:center;gap:18px">
+<button onClick="{{ askApprove }}" style="background:{{ approveBg }};border:none;border-bottom:6px solid {{ approveShadow }};border-radius:20px;padding:20px 30px;font:800 18px/1 'Nunito',sans-serif;color:{{ approveFg }};cursor:{{ approveCursor }}">Approve and unlock patient mode</button>
+<span style="font:700 14px/1.45 'Nunito',sans-serif;color:#8B8073;max-width:26ch">{{ approveHint }}</span>
+</div>
+
+<div style="margin-top:40px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+<sc-for list="{{ freezeNotes }}" as="n" hint-placeholder-count="3">
+<div style="background:{{ n.bg }};border-radius:20px;padding:18px 19px">
+<div style="width:34px;height:34px;border-radius:12px;background:{{ n.chip }};margin-bottom:12px"></div>
+<div style="font:800 14px/1.3 'Nunito',sans-serif;color:#2E2A26;margin-bottom:5px">{{ n.title }}</div>
+<div style="font:600 13.5px/1.5 'Nunito',sans-serif;color:#6F675C">{{ n.body }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="background:#FFF1DC;padding:36px 30px">
+<div style="font:800 11.5px/1 'Nunito',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#A2937E;margin-bottom:15px">Lesson draft · 6 questions</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ draftRows }}" as="q" hint-placeholder-count="6">
+<div style="background:#FFFFFF;border:3px solid {{ q.bd }};border-radius:18px;padding:14px 16px">
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+<span style="font:800 11px/1 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:{{ q.tagFg }};background:{{ q.tagBg }};padding:5px 9px;border-radius:999px">{{ q.type }}</span>
+<sc-if value="{{ q.cognitive }}" hint-placeholder-val="{{ false }}">
+<span style="font:800 11px/1 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#5E3AA0;background:#EFE6FB;padding:5px 9px;border-radius:999px">Thinking activity</span>
+</sc-if>
+</div>
+<div style="font:700 15.5px/1.4 'Nunito',sans-serif;color:#2E2A26">{{ q.prompt }}</div>
+<div style="font:700 13px/1.4 'Nunito',sans-serif;color:{{ q.evFg }};margin-top:6px">{{ q.evidence }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isComplete }}" hint-placeholder-val="{{ false }}">
+<div style="min-height:900px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:70px;background:#FFF9EF;position:relative;overflow:hidden">
+<div style="position:absolute;left:8%;top:14%;width:120px;height:120px;border-radius:38px;background:#FFF0CF;transform:rotate(-12deg)"></div>
+<div style="position:absolute;right:10%;top:22%;width:86px;height:86px;border-radius:50%;background:#E3F4E7"></div>
+<div style="position:absolute;left:16%;bottom:12%;width:64px;height:64px;border-radius:22px;background:#EFE6FB;transform:rotate(18deg)"></div>
+<div style="position:absolute;right:14%;bottom:16%;width:104px;height:104px;border-radius:34px;background:#DDF1F1;transform:rotate(9deg)"></div>
+
+<div style="position:relative;width:196px;height:196px;animation:an-bob 3.4s ease-in-out infinite">
+<div style="position:absolute;inset:0;border-radius:50%;border:8px solid #46A758;overflow:hidden;background:#EFE2CC">
+<image-slot id="anchor-guide-complete" shape="circle" placeholder="Guide portrait"></image-slot>
+</div>
+</div>
+<div style="position:relative;background:#2E2A26;color:#FFF9EF;border-radius:999px;padding:7px 14px;font:800 12px/1 'Nunito',sans-serif;margin-top:-14px">AI-generated guide</div>
+<div style="position:relative;font:800 56px/1.1 'Baloo 2',cursive;color:#2E2A26;text-align:center;max-width:24ch;text-wrap:pretty">That's everything for today, {{ patientName }}.</div>
+<div style="position:relative;font:600 26px/1.5 'Nunito',sans-serif;color:#6F675C;text-align:center;max-width:32ch;text-wrap:pretty">We looked around your room together. Thank you for spending the time.</div>
+<div style="position:relative;display:flex;gap:16px;margin-top:8px">
+<button onClick="{{ restart }}" style="min-height:82px;background:#14A0A0;border:none;border-bottom:7px solid #0E7C7C;border-radius:22px;padding:0 38px;font:800 23px/1 'Nunito',sans-serif;color:#FFFFFF;cursor:pointer">Look again</button>
+<button onClick="{{ goGate }}" style="min-height:82px;background:#FFFFFF;border:4px solid #E7DECD;border-bottom-width:7px;border-radius:22px;padding:0 38px;font:800 23px/1 'Nunito',sans-serif;color:#6F675C;cursor:pointer">Close</button>
+</div>
+<div style="position:relative;font:600 14px/1.5 'Nunito',sans-serif;color:#A2937E;margin-top:14px;text-align:center;max-width:60ch">No score is recorded. ANCHOR is an engagement prototype and does not assess or monitor cognition.</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ inspectorOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:40;background:rgba(34,30,27,.6);display:flex;justify-content:flex-end;animation:an-fade .2s ease both">
+<div style="width:700px;background:#FFF9EF;height:100%;overflow-y:auto;padding:32px 34px 44px">
+<div style="display:flex;align-items:flex-start;gap:18px;margin-bottom:24px">
+<div style="flex:1">
+<div style="display:inline-flex;align-items:center;gap:8px;background:#DDF1F1;border-radius:999px;padding:7px 13px;margin-bottom:11px">
+<span style="width:9px;height:9px;border-radius:50%;background:#14A0A0"></span>
+<span style="font:800 12px/1 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#0E7C7C">Grounding ledger</span>
+</div>
+<h2 style="font:800 34px/1.1 'Baloo 2',cursive;color:#2E2A26;margin:0">{{ inspectorTitle }}</h2>
+</div>
+<button onClick="{{ closeInspector }}" style="flex:none;background:#FFFFFF;border:3px solid #E7DECD;border-bottom-width:5px;border-radius:15px;width:46px;height:46px;font:800 20px/1 'Nunito',sans-serif;color:#6F675C;cursor:pointer">×</button>
+</div>
+
+<div style="display:flex;gap:18px;margin-bottom:24px">
+<div style="flex:none;width:200px">
+<div style="height:146px;border-radius:20px;overflow:hidden;background:#EFE2CC;border:4px solid #FFFFFF;box-shadow:0 5px 0 #EBDFC8">
+<image-slot id="anchor-crop" shape="rect" placeholder="Source crop"></image-slot>
+</div>
+<div style="font:600 11.5px/1.4 ui-monospace,Menlo,monospace;color:#A2937E;margin-top:9px">{{ cropLabel }}</div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px">
+<div style="background:#FFFFFF;border-radius:20px;border-bottom:5px solid #EBDFC8;padding:15px 17px">
+<div style="font:800 11.5px/1 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#A2937E;margin-bottom:7px">Gemma observed · immutable</div>
+<div style="font:700 16px/1.45 'Nunito',sans-serif;color:#2E2A26">{{ modelObservation }}</div>
+</div>
+<div style="background:#E3F4E7;border-radius:20px;border-bottom:5px solid #C6E5CE;padding:15px 17px">
+<div style="font:800 11.5px/1 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#2F7B3C;margin-bottom:7px">Caregiver value · the only usable fact</div>
+<div style="font:700 16px/1.45 'Nunito',sans-serif;color:#2E2A26">{{ caregiverValue }}</div>
+<div style="font:600 13px/1.4 'Nunito',sans-serif;color:#6F675C;margin-top:7px">Confirmed by Ruth (caregiver) · 16 Aug 2026, 14:22</div>
+</div>
+</div>
+</div>
+
+<div style="font:800 11.5px/1 'Nunito',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#A2937E;margin-bottom:14px">Proof chain</div>
+<div style="display:flex;flex-direction:column;margin-bottom:26px">
+<sc-for list="{{ chain }}" as="c" hint-placeholder-count="5">
+<div style="display:flex;gap:14px">
+<div style="flex:none;display:flex;flex-direction:column;align-items:center;width:30px">
+<div style="width:30px;height:30px;border-radius:11px;background:{{ c.chipBg }};color:#FFFFFF;display:flex;align-items:center;justify-content:center;font:800 13px/1 'Nunito',sans-serif">{{ c.num }}</div>
+<div style="width:4px;border-radius:3px;flex:1;background:{{ c.line }}"></div>
+</div>
+<div style="flex:1;padding-bottom:16px">
+<div style="font:700 16.5px/1.4 'Nunito',sans-serif;color:#2E2A26">{{ c.text }}</div>
+<div style="font:600 12px/1.4 ui-monospace,Menlo,monospace;color:#A2937E;margin-top:4px">{{ c.id }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+
+<div style="background:#FFF1DC;border-radius:22px;padding:19px 21px;margin-bottom:24px">
+<div style="font:800 11.5px/1 'Nunito',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#A2937E;margin-bottom:12px">Non-invention check</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ checks }}" as="k" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="flex:none;width:26px;height:26px;border-radius:9px;background:{{ k.dot }};color:#FFFFFF;display:flex;align-items:center;justify-content:center;font:800 13px/1 'Nunito',sans-serif">{{ k.mark }}</span>
+<span style="font:700 14.5px/1.45 'Nunito',sans-serif;color:#4E483F">{{ k.text }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<sc-if value="{{ showResolve }}" hint-placeholder-val="{{ false }}">
+<div style="background:#FFF0CF;border:4px solid #FFB020;border-radius:22px;padding:20px 22px">
+<div style="font:800 17px/1.3 'Nunito',sans-serif;color:#6B4A05;margin-bottom:7px">Question 6 has no caregiver-verified sequence</div>
+<div style="font:600 14.5px/1.5 'Nunito',sans-serif;color:#6F675C;margin-bottom:16px">A sequencing activity needs your explicit confirmation that the order is ordinary for {{ patientName }}. ANCHOR will not infer it.</div>
+<div style="display:flex;gap:12px">
+<button onClick="{{ resolveGrounding }}" style="background:#46A758;border:none;border-bottom:6px solid #2F7B3C;border-radius:18px;padding:15px 20px;font:800 15px/1 'Nunito',sans-serif;color:#FFFFFF;cursor:pointer">Confirm this order is ordinary</button>
+<button onClick="{{ closeInspector }}" style="background:#FFFFFF;border:3px solid #E7DECD;border-bottom-width:5px;border-radius:18px;padding:15px 20px;font:800 15px/1 'Nunito',sans-serif;color:#6F675C;cursor:pointer">Remove the question instead</button>
+</div>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ exitConfirmOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:50;background:rgba(34,30,27,.62);display:flex;align-items:center;justify-content:center;animation:an-fade .2s ease both">
+<div style="width:640px;background:#FFF9EF;border-radius:30px;border-bottom:8px solid #EBDFC8;padding:40px 42px">
+<div style="font:800 40px/1.1 'Baloo 2',cursive;color:#2E2A26;margin-bottom:12px">Stop for now?</div>
+<div style="font:600 22px/1.5 'Nunito',sans-serif;color:#6F675C;margin-bottom:28px">You can come back to this any time. Nothing is recorded.</div>
+<div style="display:flex;gap:16px">
+<button onClick="{{ confirmExit }}" style="flex:1;min-height:86px;background:#14A0A0;border:none;border-bottom:7px solid #0E7C7C;border-radius:22px;font:800 22px/1 'Nunito',sans-serif;color:#FFFFFF;cursor:pointer">Yes, stop for now</button>
+<button onClick="{{ cancelExit }}" style="flex:1;min-height:86px;background:#FFFFFF;border:4px solid #E7DECD;border-bottom-width:7px;border-radius:22px;font:800 22px/1 'Nunito',sans-serif;color:#6F675C;cursor:pointer">Keep looking</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ approveConfirmOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:50;background:rgba(34,30,27,.62);display:flex;align-items:center;justify-content:center;animation:an-fade .2s ease both">
+<div style="width:660px;background:#FFF9EF;border-radius:28px;border-bottom:8px solid #EBDFC8;padding:34px 36px">
+<div style="font:800 32px/1.15 'Baloo 2',cursive;color:#2E2A26;margin-bottom:10px">Approve this lesson for {{ patientName }}?</div>
+<div style="font:600 16px/1.55 'Nunito',sans-serif;color:#6F675C;margin-bottom:20px">Approving freezes world model revision 3 and its six questions. Patient mode unlocks straight away.</div>
+<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:26px">
+<sc-for list="{{ approveList }}" as="a" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:12px;background:#FFFFFF;border-radius:16px;border-bottom:4px solid #EBDFC8;padding:13px 15px">
+<span style="flex:none;width:26px;height:26px;border-radius:9px;background:#46A758;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font:800 13px/1 'Nunito',sans-serif">✓</span>
+<span style="font:700 14.5px/1.45 'Nunito',sans-serif;color:#4E483F">{{ a.text }}</span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;gap:14px">
+<button onClick="{{ confirmApprove }}" style="background:#46A758;border:none;border-bottom:6px solid #2F7B3C;border-radius:20px;padding:18px 26px;font:800 17px/1 'Nunito',sans-serif;color:#FFFFFF;cursor:pointer">Approve and unlock</button>
+<button onClick="{{ cancelApprove }}" style="background:#FFFFFF;border:3px solid #E7DECD;border-bottom-width:6px;border-radius:20px;padding:18px 26px;font:800 17px/1 'Nunito',sans-serif;color:#6F675C;cursor:pointer">Not yet</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1500,&quot;height&quot;:1020},&quot;patientName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Margaret&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;guideName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Anna&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;guideRelationship&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;daughter&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;sceneOutcome&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;validated&quot;,&quot;rejected&quot;,&quot;off&quot;],&quot;default&quot;:&quot;validated&quot;,&quot;tsType&quot;:&quot;\&quot;validated\&quot; | \&quot;rejected\&quot; | \&quot;off\&quot;&quot;,&quot;section&quot;:&quot;Generated media&quot;}}">
+const OBJ = {
+  glasses: {name:"glasses", loc:"bedside table", box:{x:.62,y:.38,w:.12,h:.09}},
+  mug: {name:"blue mug", loc:"windowsill", box:{x:.09,y:.28,w:.11,h:.11}},
+  photo: {name:"framed photograph", loc:"dresser", box:{x:.34,y:.22,w:.13,h:.14}},
+  lamp: {name:"table lamp", loc:"bedside table", box:{x:.72,y:.18,w:.14,h:.2}}
+};
+
+const QUESTIONS = [
+  {id:"question-1", type:"object_recognition", skill:"recognition", obj:"glasses",
+   prompt:"What is on the bedside table?", correct:"glasses", choices:["glasses","blue mug","book"],
+   verbalCue:"It is something you wear.", strategy:"focus_box",
+   reveal:"Your glasses, here on the bedside table.",
+   observation:"black reading glasses resting on the bedside table",
+   caregiverValue:"glasses - bedside table",
+   grounding:["grounding-glasses-location","grounding-room-1-crop"]},
+  {id:"question-2", type:"location_matching", skill:"spatial_orientation", obj:"glasses",
+   prompt:"Where do your glasses belong?", correct:"On the bedside table", choices:["On the bedside table","On the windowsill","On the dresser"],
+   verbalCue:"They stay beside the bed.", strategy:"focus_box",
+   reveal:"On the bedside table.",
+   observation:"black reading glasses resting on the bedside table",
+   caregiverValue:"glasses - bedside table",
+   grounding:["grounding-glasses-location"]},
+  {id:"question-3", type:"visual_search", skill:"attention", obj:"mug",
+   prompt:"Can you find the blue mug in this picture?", correct:"On the windowsill", choices:["On the windowsill","On the bed","On the chair"],
+   verbalCue:"Look near the window.", strategy:"simplify_scene",
+   reveal:"On the windowsill.",
+   observation:"blue ceramic mug on the windowsill",
+   caregiverValue:"blue mug - windowsill",
+   grounding:["grounding-mug-location"]},
+  {id:"question-4", type:"object_recognition", skill:"recognition", obj:"photo",
+   prompt:"What is standing on the dresser?", correct:"A framed photograph", choices:["A framed photograph","A table lamp","A blue mug"],
+   verbalCue:"It has a frame around it.", strategy:"object_closeup",
+   reveal:"A framed photograph.",
+   observation:"framed photograph standing on the dresser",
+   caregiverValue:"framed photograph - dresser",
+   grounding:["grounding-photo-location"]},
+  {id:"question-5", type:"visual_recall", skill:"short_term_memory", obj:"glasses", cognitive:true,
+   prompt:"Which object did you just see beside the bed?", correct:"glasses", choices:["glasses","blue mug","book"],
+   verbalCue:"It is something you wear.", strategy:"object_closeup",
+   reveal:"Your glasses.",
+   observation:"black reading glasses resting on the bedside table",
+   caregiverValue:"glasses - bedside table",
+   grounding:["grounding-glasses-location"]},
+  {id:"question-6", type:"sequencing", skill:"sequencing", obj:"lamp", cognitive:true, needsSequence:true,
+   prompt:"Which comes first, before you read in bed?", correct:"Turn on the table lamp", choices:["Turn on the table lamp","Put the glasses away"],
+   verbalCue:"The light comes first.", strategy:"focus_box",
+   reveal:"Turn on the table lamp.",
+   observation:"table lamp on the bedside table beside a stack of books",
+   caregiverValue:"table lamp - bedside table (order confirmed by caregiver)",
+   grounding:["grounding-lamp-location","grounding-sequence-reading"]}
+];
+
+const CUES = ["none","verbal","focus","simplified","reveal"];
+const CUE_LABEL = ["No help yet","Spoken hint","Focus the spot","Simplified scene","Show the answer"];
+const CUE_COLOR = ["#14A0A0","#46A758","#FFB020","#F4643C","#8E5BC9"];
+const CUE_SHADOW = ["#0E7C7C","#2F7B3C","#D18A0A","#C64822","#6E43A0"];
+
+class Component extends DCLogic {
+  state = {
+    screen: "session", qi: 0, cue: 0, picked: null, solved: false,
+    media: "idle", speaking: true, inspector: false, exitConfirm: false,
+    approveConfirm: false, presenter: false, grounded: false, inspectQi: 0
+  };
+
+  componentDidMount(){ this.speakTimer = setTimeout(()=>this.setState({speaking:false}), 2600); }
+  componentWillUnmount(){ clearTimeout(this.speakTimer); clearTimeout(this.mediaTimer); }
+
+  q(){ return QUESTIONS[this.state.qi]; }
+
+  speak(){ clearTimeout(this.speakTimer); this.setState({speaking:true}); this.speakTimer = setTimeout(()=>this.setState({speaking:false}), 2600); }
+
+  prefetch(){
+    if (this.state.media !== "idle") return;
+    const outcome = this.props.sceneOutcome ?? "validated";
+    if (outcome === "off") return;
+    this.setState({media:"pending"});
+    clearTimeout(this.mediaTimer);
+    this.mediaTimer = setTimeout(()=>{
+      this.setState({media: outcome === "rejected" ? "rejected" : "ready"});
+    }, 3200);
+  }
+
+  advance(){
+    const cue = Math.min(this.state.cue + 1, 4);
+    this.setState({cue, picked:null});
+    if (cue >= 1) this.prefetch();
+    this.speak();
+  }
+
+  // Toggling a cue: the next level turns on, an already-used level turns back off.
+  // Levels beyond next stay locked - the engine only moves one step at a time.
+  toggleCue(n){
+    if (n > this.state.cue + 1) return;
+    clearTimeout(this.mediaTimer);
+    const cue = n <= this.state.cue ? n - 1 : n;
+    const next = Math.max(cue, 0);
+    const media = next >= 3 ? ((this.props.sceneOutcome ?? "validated") === "rejected" ? "rejected" : "ready") : (next >= 1 ? "pending" : "idle");
+    this.setState({cue: next, picked:null, solved:false, media});
+    this.speak();
+  }
+
+  pick(label){
+    if (this.state.solved) return;
+    if (label === this.q().correct){ this.setState({picked:label, solved:true}); this.speak(); }
+    else { this.setState({picked:label}); this.advance(); }
+  }
+
+  next(){
+    clearTimeout(this.mediaTimer);
+    if (this.state.qi >= QUESTIONS.length - 1){ this.setState({screen:"complete"}); return; }
+    this.setState({qi:this.state.qi+1, cue:0, picked:null, solved:false, media:"idle"});
+    this.speak();
+  }
+
+  pct(v){ return (v*100).toFixed(1) + "%"; }
+
+  renderVals(){
+    const s = this.state, q = this.q();
+    const patientName = this.props.patientName ?? "Margaret";
+    const guideName = this.props.guideName ?? "Anna";
+    const guideRelationship = this.props.guideRelationship ?? "daughter";
+    const cue = s.cue;
+    const obj = OBJ[q.obj];
+    const box = obj.box;
+    const iq = QUESTIONS[s.inspectQi] || q;
+    const iobj = OBJ[iq.obj];
+    const ibox = iobj.box;
+
+    const mediaReady = s.media === "ready";
+    const showSimplified = cue >= 3 && mediaReady && q.strategy !== "object_closeup";
+    const closeup = cue >= 3 && q.strategy === "object_closeup";
+    const showDim = cue >= 2 && !showSimplified;
+
+    let stageTransform = "none";
+    if (closeup){
+      const cx = box.x + box.w/2, cy = box.y + box.h/2;
+      stageTransform = "scale(1.9) translate(" + ((0.5-cx)*100).toFixed(1) + "%," + ((0.5-cy)*100).toFixed(1) + "%)";
+    }
+
+    const tabBg = (on) => on ? "#FFF9EF" : "rgba(255,255,255,.08)";
+    const tabFg = (on) => on ? "#221E1B" : "rgba(255,255,255,.72)";
+
+    const cueToggles = CUES.map((c,i)=>{
+      const on = i <= cue;
+      const locked = i > cue + 1;
+      return {
+        num: String(i + 1), label: CUE_LABEL[i],
+        go: () => this.toggleCue(i),
+        bg: on ? CUE_COLOR[i] : (locked ? "rgba(255,249,239,.06)" : "rgba(255,249,239,.16)"),
+        shadow: on ? CUE_SHADOW[i] : "transparent",
+        numBg: on ? "rgba(255,255,255,.28)" : "rgba(255,249,239,.12)",
+        numFg: on ? "#FFFFFF" : "rgba(255,249,239,.5)",
+        fg: on ? (i === 2 ? "#4A3405" : "#FFFFFF") : (locked ? "rgba(255,249,239,.38)" : "rgba(255,249,239,.8)"),
+        state: on ? "on" : (locked ? "" : "off"),
+        stateFg: on ? "rgba(255,255,255,.7)" : "rgba(255,249,239,.4)",
+        cursor: locked ? "not-allowed" : "pointer"
+      };
+    });
+
+    const BADGE = [
+      {bg:"#14A0A0", fg:"#FFFFFF", bd:"#DCECEC"},
+      {bg:"#FFB020", fg:"#4A3405", bd:"#F6E3C0"},
+      {bg:"#8E5BC9", fg:"#FFFFFF", bd:"#E5DAF5"}
+    ];
+    const choices = q.choices.map((label,i)=>{
+      const isPicked = s.picked === label;
+      const isCorrect = label === q.correct;
+      const revealed = cue === 4 || s.solved;
+      const t = BADGE[i % 3];
+      let bg = "#FFFFFF", bd = t.bd, fg = "#2E2A26", mark = "", markFg = "#A2937E";
+      let badgeBg = t.bg, badgeFg = t.fg, badge = String(i + 1);
+      if (revealed && isCorrect){ bg = "#E3F4E7"; bd = "#46A758"; badgeBg = "#46A758"; badgeFg = "#FFFFFF"; badge = "✓"; mark = s.solved ? "Yes" : "This one"; markFg = "#2F7B3C"; }
+      else if (isPicked && !isCorrect){ bg = "#FFEEE8"; bd = "#F4A98F"; fg = "#9A8E85"; badgeBg = "#F4643C"; badgeFg = "#FFFFFF"; badge = "×"; mark = "Not this one"; markFg = "#C64822"; }
+      return { label, bg, bd, fg, mark, markFg, badge, badgeBg, badgeFg, pick: () => this.pick(label) };
+    });
+
+    const segments = QUESTIONS.map((_,i)=>({
+      bg: i < s.qi ? "#46A758" : (i === s.qi ? "#FFB020" : "#EFE4D2"),
+      gloss: i <= s.qi ? "rgba(255,255,255,.45)" : "transparent"
+    }));
+
+    let guideLine = "Take your time. Have a look around.";
+    let guideBubbleBg = "#FFFFFF", guideBubbleFg = "#4E483F", guideBubbleShadow = "rgba(34,30,27,.16)";
+    let guideRing = "#14A0A0", guideBob = "none";
+    if (s.solved){ guideLine = "That's it. Nice and steady."; guideBubbleBg = "#E3F4E7"; guideBubbleFg = "#2F7B3C"; guideBubbleShadow = "#C6E5CE"; guideRing = "#46A758"; guideBob = "an-bob 2.6s ease-in-out infinite"; }
+    else if (cue === 4){ guideLine = "Here it is. We can look at it together."; guideBubbleBg = "#EFE6FB"; guideBubbleFg = "#5E3AA0"; guideBubbleShadow = "#DCCDF2"; guideRing = "#8E5BC9"; }
+    else if (cue >= 1){ guideLine = "Take your time. We can look together."; guideBubbleBg = "#FFF0CF"; guideBubbleFg = "#6B4A05"; guideBubbleShadow = "#F0DBAB"; guideRing = "#FFB020"; }
+
+    const machine = CUES.map((c,i)=>({
+      label: i === cue ? "▸ " + c : c,
+      bg: i === cue ? CUE_COLOR[i] : "rgba(255,249,239,.08)",
+      fg: i === cue ? (i === 2 ? "#4A3405" : "#FFFFFF") : (i < cue ? "rgba(255,249,239,.8)" : "rgba(255,249,239,.4)")
+    }));
+
+    const jobStatus = {idle:"not started", pending:"pending · 3.2s budget", ready:"validated · safeToDisplay", rejected:"rejected · fail closed"}[s.media];
+    const jobRows = [
+      {label:"generate_simplified_scene", value:jobStatus, dot: s.media === "ready" ? "#46A758" : (s.media === "pending" ? "#FFB020" : (s.media === "rejected" ? "#F4643C" : "rgba(255,249,239,.25)"))},
+      {label:"validation · targetObjectPresent", value: s.media === "idle" ? "-" : "true", dot: s.media === "idle" ? "rgba(255,249,239,.25)" : "#46A758"},
+      {label:"validation · targetLocationPreserved", value: s.media === "ready" ? "true" : (s.media === "rejected" ? "false" : "-"), dot: s.media === "rejected" ? "#F4643C" : (s.media === "ready" ? "#46A758" : "rgba(255,249,239,.25)")},
+      {label:"deterministic fallback", value:"focus_box · always available", dot:"#46A758"},
+      {label:"speech synthesis", value: s.speaking ? "speaking · generic voice" : "idle", dot: s.speaking ? "#FFB020" : "rgba(255,249,239,.25)"}
+    ];
+
+    const waveBars = [0,1,2,3].map(i=>({
+      bg: s.speaking ? "#FFFFFF" : "rgba(255,255,255,.45)",
+      anim: s.speaking ? "an-wave " + (0.6 + i*0.14) + "s ease-in-out infinite" : "none"
+    }));
+
+    const chain = [
+      {num:"1", text:"Bedroom image uploaded by the caregiver", id:"room-1 · 2 images · 16 Aug 2026", chipBg:"#14A0A0", line:"#DCECEC"},
+      {num:"2", text:"Gemma observed " + iq.observation, id:iq.grounding[0] + " · sourceType visual", chipBg:"#46A758", line:"#C6E5CE"},
+      {num:"3", text:"Caregiver confirmed the observation", id:"caregiverConfirmedBy Ruth · approval approved", chipBg:"#FFB020", line:"#F6E3C0"},
+      {num:"4", text:"Lesson asked: " + iq.prompt, id:iq.id + " · type " + iq.type + " · skill " + iq.skill, chipBg:"#F4643C", line:"#F6D3C6"},
+      {num:"5", text:"Cue highlighted the verified " + iobj.loc + " region", id:"visualCueStrategy " + iq.strategy + " · box " + ibox.x + ", " + ibox.y + ", " + ibox.w + ", " + ibox.h, chipBg:"#8E5BC9", line:"transparent"}
+    ];
+
+    const blocked = !s.grounded;
+    const checks = [
+      {mark:"✓", dot:"#46A758", text:"Every claim resolves to a visible fact or a caregiver-entered fact."},
+      {mark:"✓", dot:"#46A758", text:"No memory, routine, preference, or emotional history is asserted."},
+      {mark:"✓", dot:"#46A758", text:"The location is no more specific than the image supports."},
+      {mark: iq.needsSequence && blocked ? "!" : "✓", dot: iq.needsSequence && blocked ? "#FFB020" : "#46A758",
+       text: iq.needsSequence ? "Sequencing order requires explicit caregiver confirmation." : "No sequencing claim in this question."}
+    ];
+
+    const gateRows = [
+      {title:"Patient profile", detail:patientName + " · one room · no health data collected", mark:"✓", dot:"#46A758", bd:"#E7DECD", showFix:false},
+      {title:"Room images analysed", detail:"2 images · Gemma proposed 5 objects · 4 confirmed, 1 removed", mark:"✓", dot:"#46A758", bd:"#E7DECD", showFix:false},
+      {title:"World model revision 3 approved", detail:"glasses · blue mug · framed photograph · table lamp - each with a grounding record", mark:"✓", dot:"#46A758", bd:"#E7DECD", showFix:false},
+      {title:"Family guide approved", detail:guideName + " · " + guideRelationship + " · likeness consent recorded 16 Aug 14:19 · labelled AI-generated", mark:"✓", dot:"#46A758", bd:"#E7DECD", showFix:false},
+      blocked
+        ? {title:"Question 6 is missing a grounding record", detail:"A sequencing activity needs explicit caregiver confirmation of the order. Approval is blocked.", mark:"!", dot:"#FFB020", bd:"#FFB020", showFix:true}
+        : {title:"All six questions resolve to approved evidence", detail:"Sequencing order confirmed by Ruth just now · 2 thinking activities present", mark:"✓", dot:"#46A758", bd:"#46A758", showFix:false},
+      {title:"Guide video", detail:"3s generation queued · static portrait stays visible if it is not ready", mark:"○", dot:"#C0B4A0", bd:"#E7DECD", showFix:false}
+    ];
+
+    const typeLabel = {object_recognition:"Recognition", location_matching:"Location", visual_search:"Visual search", visual_recall:"Visual recall", sequencing:"Sequencing"};
+    const draftRows = QUESTIONS.map(qq=>{
+      const bad = qq.needsSequence && blocked;
+      return {
+        type: typeLabel[qq.type], prompt: qq.prompt, cognitive: !!qq.cognitive,
+        evidence: bad ? "Blocked · sequence not caregiver-confirmed" : qq.grounding.length + " grounding records · approved",
+        evFg: bad ? "#C64822" : "#2F7B3C",
+        bd: bad ? "#FFB020" : "#F0E5D2",
+        tagBg: bad ? "#FFF0CF" : "#DDF1F1",
+        tagFg: bad ? "#6B4A05" : "#0E7C7C"
+      };
+    });
+
+    return {
+      patientName, guideName, guideRelationship,
+      isGate: s.screen === "gate", isSession: s.screen === "session", isComplete: s.screen === "complete",
+      goGate: () => this.setState({screen:"gate", inspector:false, exitConfirm:false}),
+      goSession: () => this.setState({screen:"session", inspector:false}),
+      goComplete: () => this.setState({screen:"complete", inspector:false, exitConfirm:false}),
+      restart: () => this.setState({screen:"session", qi:0, cue:0, picked:null, solved:false, media:"idle"}),
+      tabGateBg: tabBg(s.screen === "gate"), tabGateFg: tabFg(s.screen === "gate"),
+      tabSessBg: tabBg(s.screen === "session"), tabSessFg: tabFg(s.screen === "session"),
+      tabDoneBg: tabBg(s.screen === "complete"), tabDoneFg: tabFg(s.screen === "complete"),
+      togglePresenter: () => this.setState({presenter: !s.presenter}), presenterOpen: s.presenter,
+      cardBottom: s.presenter ? "150px" : "22px",
+      guideBottom: s.presenter ? "422px" : "294px",
+
+      cueToggles, prompt: q.prompt, choices, segments,
+      progressLabel: (s.qi + 1) + " of 6",
+      showVerbalCue: cue >= 1, verbalCue: q.verbalCue,
+      replay: () => this.speak(), replayLabel: s.speaking ? "Reading it out" : "Say it again",
+      waveBars,
+      stageTransform, showSimplified, showDim,
+      boxLeft: this.pct(box.x), boxTop: this.pct(box.y), boxW: this.pct(box.w), boxH: this.pct(box.h),
+      showRevealTag: cue === 4, revealText: q.reveal,
+      tagLeft: this.pct(Math.min(box.x, .52)), tagTop: this.pct(Math.min(box.y + box.h + .04, .58)),
+      cueChip: cue + " of 4",
+      mediaPending: s.media === "pending" && cue >= 1,
+      mediaRejected: s.media === "rejected" && cue >= 3,
+
+      guideLine, guideBubbleBg, guideBubbleFg, guideBubbleShadow, guideRing, guideBob,
+      showNext: s.solved || cue === 4,
+      nextLabel: s.qi >= 5 ? "Finish" : "Next",
+      next: () => this.next(),
+      showHelp: !(s.solved || cue === 4),
+      help: () => this.advance(),
+      machine, jobRows,
+      recommendation: cue < 4 ? CUES[cue + 1] : "reveal",
+      groundingSummary: "This question uses " + q.grounding.length + " approved grounding records. The cue region is the caregiver-confirmed " + obj.loc + ". A missing record blocks approval rather than being repaired.",
+      groundingIds: q.grounding.join("  ·  "),
+
+      inspectorOpen: s.inspector,
+      openInspector: () => this.setState({inspector:true, inspectQi: s.qi}),
+      openBlockedRecord: () => this.setState({inspector:true, inspectQi: 5}),
+      closeInspector: () => this.setState({inspector:false}),
+      inspectorTitle: "Question " + (s.inspectQi + 1) + " · " + typeLabel[iq.type] + " · " + iobj.name,
+      modelObservation: "\u201C" + iq.observation + "\u201D",
+      caregiverValue: (iq.needsSequence && blocked) ? iq.caregiverValue.replace(" (order confirmed by caregiver)", " · order not yet confirmed") : iq.caregiverValue,
+      cropLabel: "room-1 · crop " + ibox.x + ", " + ibox.y + ", " + ibox.w + ", " + ibox.h,
+      chain, checks,
+      showResolve: iq.needsSequence && blocked,
+      resolveGrounding: () => this.setState({grounded:true, inspector:false}),
+
+      exitConfirmOpen: s.exitConfirm,
+      askExit: () => this.setState({exitConfirm:true}),
+      cancelExit: () => this.setState({exitConfirm:false}),
+      confirmExit: () => this.setState({exitConfirm:false, screen:"complete"}),
+
+      gateRows, draftRows,
+      gateBadge: blocked ? "Locked" : "Ready",
+      gateBadgeBg: blocked ? "#FFF0CF" : "#E3F4E7",
+      gateBadgeFg: blocked ? "#6B4A05" : "#2F7B3C",
+      gateBadgeDot: blocked ? "#FFB020" : "#46A758",
+      gateHeadline: blocked ? "Patient mode is locked." : "Patient mode is ready.",
+      gateSub: blocked
+        ? "Every question must resolve to evidence you have confirmed. One question is missing its grounding record, so the lesson cannot be approved yet."
+        : "Every question now resolves to evidence you confirmed. You can approve the lesson and hand the screen to " + patientName + ".",
+      approveBg: blocked ? "#EFE7D8" : "#46A758",
+      approveShadow: blocked ? "#E0D3BB" : "#2F7B3C",
+      approveFg: blocked ? "#B4A794" : "#FFFFFF",
+      approveCursor: blocked ? "not-allowed" : "pointer",
+      approveHint: blocked ? "One question still has no approved evidence." : "Every question resolves to approved evidence.",
+      askApprove: () => { if (!blocked) this.setState({approveConfirm:true}); },
+      approveConfirmOpen: s.approveConfirm,
+      cancelApprove: () => this.setState({approveConfirm:false}),
+      confirmApprove: () => this.setState({approveConfirm:false, screen:"session", qi:0, cue:0, picked:null, solved:false, media:"idle"}),
+      approveList: [
+        {text:"Six questions, two of them thinking activities, all grounded in revision 3."},
+        {text:"The guide stays labelled as AI-generated in patient mode."},
+        {text:"No score, streak, or cognitive interpretation is shown or stored."},
+        {text:"Lesson content is cached, so no answer control waits on a model call."}
+      ],
+      freezeNotes: [
+        {title:"Revision 3 is frozen", body:"Later edits create revision 4 and never change this approved lesson.", bg:"#DDF1F1", chip:"#14A0A0"},
+        {title:"Cached before start", body:"The six questions and cues are stored, so nothing waits on a model call.", bg:"#E3F4E7", chip:"#46A758"},
+        {title:"Revoke any time", body:"Withdrawing approval returns patient mode to this locked screen.", bg:"#EFE6FB", chip:"#8E5BC9"}
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -67,6 +67,7 @@ pnpm build
 
 ## Documentation
 
+- [Room-to-cue interactive prototype](Room%20to%20Cue%20v2.dc.html)
 - [Product requirements](docs/PRD.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [AI and data contracts](docs/AI_CONTRACTS.md)
