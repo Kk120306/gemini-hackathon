@@ -4,7 +4,7 @@
 
 Status: Accepted
 
-ANCHOR supports one patient, one bedroom, one trusted person, and one lesson for the hackathon.
+ANCHOR supports one patient, one familiar room, one trusted person, and one lesson for the hackathon.
 This keeps the demonstration focused on verification and progressive visual cueing.
 
 ## AD-002: Six Questions With Two Cognitive Activities
@@ -22,7 +22,8 @@ The app does not score or interpret performance.
 
 Status: Accepted
 
-The guide is generated from two or three caregiver-provided reference photos.
+The guide is generated from one to three caregiver-provided reference photos.
+One clear authorized portrait supports the common single-photo setup, while additional views can improve consistency.
 The caregiver must enter the relationship, confirm likeness consent, and approve the result.
 The guide is visibly labeled as AI-generated.
 Voice cloning is excluded.
@@ -169,3 +170,19 @@ Gemini may transform the approved source room into a realistic, perspective-pres
 The composition can become the primary patient interaction surface only after an independent multimodal comparison confirms that every approved visible object, its image-plane location, the camera framing, and the room identity remain intact without misleading additions.
 All answer hotspots continue to use caregiver-approved source coordinates, and the approved source image remains the deterministic fallback.
 Subtle pointer perspective is a presentation effect, not a claim of measured depth, a room mesh, unseen geometry, or free-camera navigation from one photograph.
+
+## AD-021: Real Raster Uploads Never Use Fixture Detections
+
+Status: Accepted
+
+Prepared demo imagery may use the deterministic fake provider.
+Every caregiver-uploaded JPG, PNG, or WebP uses live Gemini vision whenever a server key is configured, even when `ANCHOR_DEMO_MODE` remains enabled for the rest of the rehearsal.
+This prevents a real office photo from receiving unrelated bedroom objects and keeps the evidence ledger tied to the uploaded pixels.
+
+## AD-022: Question-Specific Guide Clips With Static Fallback
+
+Status: Accepted
+
+After caregiver consent, independent portrait validation, and explicit guide approval, Gemini Omni Flash may animate the approved guide to ask the current deterministic lesson prompt.
+Each clip uses a neutral synthetic voice, carries a persistent AI-generated and not-live label, and must pass independent video validation before storage or display.
+Generation is lazy and non-blocking, so the room, question text, and static guide remain the complete fallback.

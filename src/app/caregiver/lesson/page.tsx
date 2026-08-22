@@ -6,8 +6,8 @@ export default function LessonPage() {
     <main>
       <StepHeading
         eyebrow="Step 5 of 5"
-        title="Review the six-question activity."
-        description="Four familiar-room questions and exactly two gentle cognitive activities. There is no score or clinical interpretation."
+        title="Review six grounded cognitive challenges."
+        description="Each challenge uses the approved room pixels to exercise attention, spatial orientation, recognition, recall, or association. There is no score, prevention claim, or clinical interpretation."
         aside={<span className="status-chip">Runtime validated</span>}
       />
       <LessonReview />

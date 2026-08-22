@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useAnchorState } from "@/components/anchor-state-provider";
 import { GroundingOverlay } from "@/components/grounding-overlay";
@@ -29,14 +29,26 @@ const recallZones = [
 
 export function PatientSession() {
   const router = useRouter();
-  const { state, ready, startSession, answer, requestHelp, continueSession } =
-    useAnchorState();
+  const {
+    state,
+    ready,
+    startSession,
+    answer,
+    requestHelp,
+    continueSession,
+    generateGuideQuestionVideo,
+  } = useAnchorState();
   const [speechMessage, setSpeechMessage] = useState<string | null>(null);
   const [recallReadyQuestionId, setRecallReadyQuestionId] = useState<
     string | null
   >(null);
   const [exploredObjectId, setExploredObjectId] = useState<string | null>(null);
   const [sceneTilt, setSceneTilt] = useState({ x: 0, y: 0 });
+  const [guideVideos, setGuideVideos] = useState<Record<string, string>>({});
+  const [guideVideoStatus, setGuideVideoStatus] = useState<
+    Record<string, "pending" | "ready" | "fallback">
+  >({});
+  const requestedGuideVideos = useRef(new Set<string>());
   const question = state.lesson?.questions[state.session.questionIndex];
   const target = useMemo(
     () =>
@@ -108,6 +120,48 @@ export function PatientSession() {
     state.lesson?.approval,
     state.session.status,
   ]);
+
+  useEffect(() => {
+    if (
+      !question ||
+      !state.guide ||
+      state.guide.approval !== "approved" ||
+      state.guide.presentation !== "stylized_likeness" ||
+      !state.guide.validation?.safeToDisplay ||
+      requestedGuideVideos.current.has(question.id)
+    ) {
+      return;
+    }
+    requestedGuideVideos.current.add(question.id);
+    setGuideVideoStatus((current) => ({
+      ...current,
+      [question.id]: "pending",
+    }));
+    void generateGuideQuestionVideo(question)
+      .then((result) => {
+        if (result.status === "completed") {
+          setGuideVideos((current) => ({
+            ...current,
+            [question.id]: result.outputSrc,
+          }));
+          setGuideVideoStatus((current) => ({
+            ...current,
+            [question.id]: "ready",
+          }));
+          return;
+        }
+        setGuideVideoStatus((current) => ({
+          ...current,
+          [question.id]: "fallback",
+        }));
+      })
+      .catch(() => {
+        setGuideVideoStatus((current) => ({
+          ...current,
+          [question.id]: "fallback",
+        }));
+      });
+  }, [generateGuideQuestionVideo, question, state.guide]);
 
   if (!ready) {
     return (
@@ -363,19 +417,38 @@ export function PatientSession() {
         <div
           className={`session-panel session-panel--dense${isRecall ? " session-panel--recall" : ""}`}
         >
-          <div className="session-guide">
-            <Image
-              src={state.guide.imageSrc}
-              alt={state.guide.label}
-              width={76}
-              height={90}
-              unoptimized
-            />
+          <div
+            className={`session-guide${guideVideos[activeQuestion.id] ? " session-guide--video" : ""}`}
+          >
+            {guideVideos[activeQuestion.id] ? (
+              <video
+                key={guideVideos[activeQuestion.id]}
+                src={guideVideos[activeQuestion.id]}
+                aria-label={`AI-generated video guide based on ${state.trustedPerson.name}. This is not live.`}
+                controls
+                playsInline
+                preload="auto"
+              />
+            ) : (
+              <Image
+                src={state.guide.imageSrc}
+                alt={state.guide.label}
+                width={76}
+                height={90}
+                unoptimized
+              />
+            )}
             <span>
               {state.guide.presentation === "neutral"
                 ? "ANCHOR"
                 : state.trustedPerson.name}
-              <small>{state.guide.label}</small>
+              <small>
+                {guideVideoStatus[activeQuestion.id] === "pending"
+                  ? "Gemini is preparing a generated question video"
+                  : guideVideoStatus[activeQuestion.id] === "ready"
+                    ? "AI-generated video · not live · synthetic voice"
+                    : state.guide.label}
+              </small>
             </span>
           </div>
 

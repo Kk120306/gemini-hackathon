@@ -98,7 +98,7 @@ Do not rotate to a new viewpoint, expose an unseen wall, infer room dimensions, 
 Do not add or remove people.
 Do not add text, arrows, labels, answer words, or new objects.
 Do not invent any personal detail, memory, routine, or relationship.`,
-      image: sourceImage,
+      images: [sourceImage],
     });
     const image: RasterRoomImage = {
       ...generated,

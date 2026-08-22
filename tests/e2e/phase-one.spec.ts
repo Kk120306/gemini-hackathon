@@ -54,7 +54,7 @@ async function prepareGuide(page: Page, useNeutralGuide: boolean) {
     await expect(page.getByText("No family likeness is shown.")).toBeVisible();
   } else {
     const generate = page.getByRole("button", {
-      name: "Generate fixture guide",
+      name: "Generate guide candidate",
     });
     await expect(generate).toBeEnabled();
     await generate.click();
@@ -151,6 +151,44 @@ test("caregiver correction persists into the complete six-question flow", async 
     page.getByRole("heading", { name: "Thank you for looking together." }),
   ).toBeVisible();
   await expect(page.getByText(/score/i)).toHaveCount(0);
+});
+
+test("caregiver uploads private references and can reject a guide candidate", async ({
+  page,
+}) => {
+  await prepareRoom(page);
+  await page.getByLabel("Name").fill("Elena");
+  await page.getByLabel("Relationship").fill("daughter");
+  await page
+    .getByLabel("Choose one to three reference photos")
+    .setInputFiles([
+      path.resolve("public/fixtures/elena-reference-1.png"),
+      path.resolve("public/fixtures/elena-reference-2.png"),
+    ]);
+  await page
+    .getByRole("checkbox", {
+      name: /I confirm permission to generate this likeness/,
+    })
+    .check();
+  await page.getByRole("button", { name: "Save details" }).click();
+  await expect(page.locator(".reference-images img").first()).toHaveAttribute(
+    "src",
+    /\/api\/guide-reference-media\//,
+  );
+
+  await page.getByRole("button", { name: "Generate guide candidate" }).click();
+  await expect(page.getByText("Independent check passed")).toBeVisible();
+  await page.getByRole("button", { name: "Reject candidate" }).click();
+  await expect(page.getByText("Caregiver rejected")).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Approve guide" }),
+  ).toBeDisabled();
+
+  await page.getByRole("button", { name: "Generate another" }).click();
+  await expect(page.getByText("Independent check passed")).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Approve guide" }),
+  ).toBeEnabled();
 });
 
 test("neutral guide and deterministic media fallback complete without likeness media", async ({

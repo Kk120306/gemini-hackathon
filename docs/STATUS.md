@@ -4,10 +4,19 @@ Last updated: 2026-08-22
 
 ## Current Phase
 
-Phase 5: Submission Package Ready
+Core Rebuild: Real-Room Grounding and Family Question Video
 
 ## Completed
 
+- Corrected the product position to cognitive engagement, attention, recognition, spatial orientation, recall, association, and familiar-space support without dementia-prevention or treatment claims.
+- Reproduced the real-upload defect end to end and found that demo mode routed every caregiver image through the bedroom fixture provider.
+- Real caregiver-uploaded JPG, PNG, and WebP images now use Gemini vision whenever the server key is configured, even while prepared demo mode remains enabled.
+- Room analysis now requests six to ten distinct question-ready objects when supported by the pixels and persists a medium or high confidence signal beside each caregiver-review proposal.
+- The supplied 640 by 480 office photo is stored only as an ignored local acceptance fixture and has an opt-in live test for monitor, keyboard, chair, desk, window, bottle, and computer-tower evidence.
+- Trusted-person setup now accepts one to three authorized portrait references, independently validates the generated lightly stylized guide, and preserves caregiver approve, reject, and neutral-fallback controls.
+- Approved family guides can ask the active detailed lesson question through a lazy Gemini Omni Flash portrait video using a neutral synthetic voice.
+- Generated guide videos remain private, receive an independent one-person, likeness, no-call-UI, and safe-dialogue validation gate, and never block the static guide or room activity.
+- Tailscale preview recovery is now persistent through the `com.anchor.preview` macOS LaunchAgent rather than depending on a terminal-owned server process.
 - Product scope narrowed to one room and one six-question lesson.
 - Two cognitive activities added to the lesson composition.
 - Generated family guide added with explicit consent and approval.
@@ -38,7 +47,7 @@ Phase 5: Submission Package Ready
 - Patient routes remain gated until persisted caregiver approval has loaded, preventing prepared fixture content from flashing over a saved draft.
 - Tailscale Serve exposes the loopback production preview privately at `https://kais-mac-mini.tail4a140f.ts.net:3443/`.
 - The Google Gen AI SDK is pinned behind a server-only transport and provider boundary.
-- Live Gemma room analysis returns three to five validated visible-object proposals with normalized bounding boxes.
+- Live room analysis returns six to ten validated visible-object proposals when supported, with normalized bounding boxes and confidence.
 - Room images are validated by MIME declaration, byte signature, and decoded size before model use.
 - Selected room media is stored outside version control and served through a private no-store route.
 - Gemma lesson generation is constrained to approved object IDs, location IDs, and question types.
@@ -92,12 +101,13 @@ Phase 5: Submission Package Ready
 
 ## Next Actions
 
-1. Review the finished 2-minute 36-second product film and rehearse the live Tailscale path as a backup presentation.
-2. Replace the neutral narration with the presenter's voice only if that improves the final submission without delaying it.
+1. Raise or reset the Gemini API billing spending cap, then run `pnpm test:live:office` with the supplied office photo.
+2. Rehearse one real office upload, caregiver verification, six-question session, and family-guide video through Tailscale.
 3. Push the local phase commits when the repository owner is ready to publish the completed handover.
 
 ## Open Risks
 
+- The configured Gemini account currently returns HTTP 429 `RESOURCE_EXHAUSTED` because its monthly spending cap is exceeded, so real object detection, room generation, guide generation, and video generation cannot complete until billing is restored.
 - The Gemini Omni Flash preview requires paid-tier access and may not be available to the chosen API key.
 - Live spatial-room generation and validation took 12.3 seconds in the latest prepared-flow check, so caregiver-time prefetch and safe late-publication remain essential.
 - Generative preservation is nondeterministic, so every candidate must continue to pass the two-image validation gate.
@@ -112,10 +122,15 @@ Phase 5: Submission Package Ready
 
 ## Blockers
 
-- None for the local or Tailscale hackathon demo.
+- The deterministic prepared and fallback demo remains usable locally and through Tailscale.
+- Live Gemini acceptance for the supplied office photo is blocked by the account's monthly spending cap, not by request validation or missing credentials.
 
 ## Verification Log
 
+- `pnpm format:check`, `pnpm lint`, and `pnpm typecheck` passed after the real-room and guide-video implementation on 2026-08-22.
+- `pnpm test` passed 54 tests across 15 files after the real-room and guide-video contract coverage was added on 2026-08-22.
+- `pnpm build` compiled all application routes and the private guide-reference, guide-image, guide-video, room-image, and generated-room media routes after the core rebuild on 2026-08-22.
+- The supplied-office live provider test reached Gemini on 2026-08-22 and failed with HTTP 429 `RESOURCE_EXHAUSTED` because the billing account exceeded its monthly spending cap.
 - Documentation and environment files created on 2026-08-16.
 - Final weakness-driven plan revision completed on 2026-08-18.
 - `pnpm lint` passed on 2026-08-22.

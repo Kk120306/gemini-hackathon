@@ -10,7 +10,11 @@ import {
   type ReactNode,
 } from "react";
 
-import type { AnchorState, TrustedPerson } from "@/domain/anchor";
+import type {
+  AnchorState,
+  LessonQuestion,
+  TrustedPerson,
+} from "@/domain/anchor";
 import { anchorReducer } from "@/domain/anchor-reducer";
 import {
   createPendingSimplifiedRoomJob,
@@ -22,6 +26,7 @@ import {
   BrowserAiProvider,
   prepareRoomAnalysisInput,
 } from "@/providers/browser-ai-provider";
+import type { GuideQuestionVideoActionResult } from "@/providers/provider-contracts";
 import { BrowserAnchorStorage } from "@/storage/browser-storage-adapter";
 
 type AnchorContextValue = {
@@ -36,10 +41,16 @@ type AnchorContextValue = {
     name: string;
     relationship: string;
     likenessConsent: boolean;
+    referenceImageSrcs?: TrustedPerson["referenceImageSrcs"];
   }): void;
+  uploadGuideReferences(files: File[]): Promise<string[]>;
   generateGuide(): Promise<void>;
+  rejectGuide(): void;
   useNeutralGuide(): void;
   approveGuide(): void;
+  generateGuideQuestionVideo(
+    question: LessonQuestion,
+  ): Promise<GuideQuestionVideoActionResult>;
   generateLesson(): Promise<void>;
   approveLesson(): void;
   prepareSpatialScene(): void;
@@ -181,7 +192,11 @@ export function AnchorStateProvider({ children }: { children: ReactNode }) {
           });
         } catch {
           dispatch({ type: "room_status", status: "failed" });
-          throw new Error("The prepared room could not be analyzed.");
+          throw new Error(
+            file
+              ? "Gemini could not analyze this image. Check the server API quota, then retry. No prepared-room objects were substituted."
+              : "The prepared room could not be analyzed.",
+          );
         }
       },
       updateObject(objectId, name, location) {
@@ -193,7 +208,12 @@ export function AnchorStateProvider({ children }: { children: ReactNode }) {
           confirmedAt: new Date().toISOString(),
         });
       },
-      saveTrustedPerson({ name, relationship, likenessConsent }) {
+      saveTrustedPerson({
+        name,
+        relationship,
+        likenessConsent,
+        referenceImageSrcs,
+      }) {
         const consentedAt = likenessConsent
           ? new Date().toISOString()
           : undefined;
@@ -201,21 +221,43 @@ export function AnchorStateProvider({ children }: { children: ReactNode }) {
           ...state.trustedPerson,
           name: name.trim(),
           relationship: relationship.trim(),
+          referenceImageSrcs:
+            referenceImageSrcs ?? state.trustedPerson.referenceImageSrcs,
           likenessConsent,
           consentedBy: likenessConsent ? "Demo caregiver" : undefined,
           consentedAt,
         };
         dispatch({ type: "save_trusted_person", trustedPerson });
       },
+      async uploadGuideReferences(files) {
+        const result = await provider.uploadGuideReferences(
+          files,
+          state.trustedPerson.id,
+        );
+        return result.imageSrcs;
+      },
       async generateGuide() {
         const guide = await provider.generateGuide(state.trustedPerson);
         dispatch({ type: "guide_generated", guide });
+      },
+      rejectGuide() {
+        dispatch({ type: "reject_guide" });
       },
       useNeutralGuide() {
         dispatch({ type: "use_neutral_guide" });
       },
       approveGuide() {
         dispatch({ type: "approve_guide" });
+      },
+      async generateGuideQuestionVideo(question) {
+        if (!state.guide) {
+          return { status: "disabled" };
+        }
+        return provider.generateGuideQuestionVideo({
+          guide: state.guide,
+          trustedPerson: state.trustedPerson,
+          question,
+        });
       },
       async generateLesson() {
         const lesson = await provider.generateLesson(

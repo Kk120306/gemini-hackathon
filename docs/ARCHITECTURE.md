@@ -42,8 +42,9 @@ The client receives validated domain objects and opaque media URLs.
 
 ### World Model Service
 
-The World Model Service accepts room images and returns object proposals.
+The World Model Service accepts a room image and returns object proposals from its actual pixels.
 It normalizes and validates model output, assigns stable identifiers, and separates proposals from caregiver-approved objects.
+Prepared demo imagery may use fixture proposals, but any uploaded JPG, PNG, or WebP routes to live Gemini vision whenever a server credential is configured, even when the rest of demo mode remains deterministic.
 
 Interface responsibilities:
 
@@ -67,8 +68,8 @@ Interface responsibilities:
 
 ### Guide Service
 
-The Guide Service accepts consent metadata and trusted-person reference images.
-It creates a portrait, optional expression variants, and one optional short video.
+The Guide Service accepts consent metadata and one to three trusted-person reference images.
+It creates an independently validated portrait and optional question-specific short videos.
 It never generates speech in the trusted person's cloned voice.
 
 Interface responsibilities:
@@ -76,6 +77,8 @@ Interface responsibilities:
 - Verify consent state before generation.
 - Generate and store guide candidates.
 - Track caregiver approval.
+- Animate only an approved generated guide portrait and ask only the current validated lesson prompt.
+- Validate that each clip contains one recognizable guide, neutral safe dialogue, and no call or messaging interface.
 - Expose static fallback media for every animated state.
 
 ### Lesson Engine
@@ -193,7 +196,9 @@ Uploaded family images + consent
     -> guide candidates
     -> caregiver approval
     -> approved guide assets
-    -> patient presentation
+    -> question-specific Gemini Omni Flash clip
+    -> independent video validation
+    -> patient presentation or static-guide fallback
 ```
 
 ## Persistence Layout
@@ -224,9 +229,10 @@ If generation is pending, failed, timed out, disabled, or rejected, the approved
 After an incorrect answer or help request, the UI immediately shows deterministic verbal and focus cues without waiting on media.
 At the `simplified` cue level, a safe generated focus scene may crossfade in while unsafe or unavailable media preserves the deterministic overlay.
 
-Guide video generation begins asynchronously after the caregiver approves the static guide.
-It runs in parallel with lesson generation so that patient mode never waits for it.
-The static guide remains visible when the video is pending, failed, rejected, or disabled by reduced-motion preferences.
+Guide video generation begins asynchronously when a patient question becomes active and only after the caregiver approves the static guide.
+The current question, room interaction, and static guide remain immediately usable while the clip is pending.
+The generated MP4 is stored under the ignored private media directory and served through a no-store route only after independent multimodal validation.
+The static guide remains visible when video is pending, failed, rejected, disabled, or blocked by provider quota.
 
 The stage script should wait no more than eight seconds for generated media before continuing with the fallback.
 Late media may be shown only at a later safe transition and must never replace an image while the patient is choosing an answer.

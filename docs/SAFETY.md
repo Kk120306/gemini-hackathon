@@ -22,7 +22,8 @@ The statement `you always read before bed` is prohibited unless the caregiver ex
 
 - Require explicit caregiver confirmation before generating a trusted person's likeness.
 - Record who confirmed consent and when.
-- Require two or three reference images that the caregiver is authorized to use.
+- Require one to three reference images that the caregiver is authorized to use.
+- When only one image is supplied, require a clear portrait with one unobstructed face and fail closed when the guide cannot be validated against it.
 - Label the portrait and video as AI-generated.
 - Never imply that the guide is a live call, recording, or real-time message from the person.
 - Never infer the person's relationship from their appearance.
@@ -32,7 +33,8 @@ The statement `you always read before bed` is prohibited unless the caregiver ex
 ## Voice
 
 The MVP must not clone or imitate the trusted person's voice.
-Use a generic device or service voice for speech synthesis.
+Generated guide clips must use a neutral synthetic adult voice.
+Browser replay must use a generic device or service voice.
 Keep visible text available whenever speech plays.
 
 ## Avatar Trust Boundary
@@ -110,7 +112,7 @@ Collect only the information needed for the demo:
 - One to three room images.
 - Three to five verified objects.
 - Trusted person's name and relationship.
-- Two or three trusted-person reference images.
+- One to three trusted-person reference images.
 - Consent metadata.
 - One approved guide.
 - One approved six-question lesson.
@@ -149,6 +151,7 @@ Before presenting ANCHOR, state that:
 - [ ] Every lesson fact resolves to visual or caregiver evidence.
 - [ ] Likeness consent is recorded before guide generation.
 - [ ] The guide is labeled as AI-generated.
+- [ ] Every guide video is labeled as AI-generated, not live, and synthetic-voice media.
 - [ ] The guide uses a lightly stylized treatment or a neutral non-likeness fallback.
 - [ ] No cloned voice is used.
 - [ ] The lesson contains no clinical score or inference.

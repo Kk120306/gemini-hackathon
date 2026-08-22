@@ -50,7 +50,7 @@ Introduce the problem and boundary:
 
 > Generic exercises can feel unfamiliar. ANCHOR builds a tiny, caregiver-verified model of one real room and never invents personal memories.
 
-Enter the patient's first name and upload the bedroom images.
+Enter the patient's first name and upload the familiar-room image.
 
 ### 0:30 to 1:00
 

@@ -131,6 +131,8 @@ Test:
 Keep real-provider tests opt-in and clearly labeled because they consume quota and may be nondeterministic.
 Use `pnpm test:live` for the prepared Gemma caregiver flow.
 Use `pnpm test:live:media` for the Gemini room edit and independent two-image validation gate.
+Use `pnpm test:live:guide` for the consented guide portrait and independent likeness gate.
+Use `pnpm test:live:office` for the supplied office image and verify that at least six clear office anchors replace all bedroom fixture objects.
 
 ## Accessibility Tests
 

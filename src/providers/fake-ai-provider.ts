@@ -58,7 +58,20 @@ export class FakeAiProvider implements AiProvider {
       trustedPersonId: person.id,
       presentation: "stylized_likeness",
       imageSrc: "/fixtures/elena-guide.svg",
+      sourceReferenceImageSrcs: person.referenceImageSrcs,
       label: `AI-generated guide based on ${person.name}`,
+      validation: {
+        recognizableLikeness: true,
+        consistentWithReferences: true,
+        lightlyStylized: true,
+        singlePersonOnly: true,
+        noCallOrMessagingUi: true,
+        safeToDisplay: true,
+        conciseReason: "Prepared guide fixture passed every likeness check.",
+      },
+      generationModel: "fixture-guide-generator-v1",
+      validationModel: "fixture-guide-validator-v1",
+      generatedAt: new Date().toISOString(),
       approval: "draft",
     });
   }

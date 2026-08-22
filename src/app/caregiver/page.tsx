@@ -4,10 +4,10 @@ import { CheckIcon, ShieldIcon, SparkIcon } from "@/components/icons";
 import { StepHeading } from "@/components/step-heading";
 
 const checklist = [
-  "One synthetic bedroom image",
-  "Three visible room objects",
-  "Two synthetic guide references",
-  "Six grounded activity questions",
+  "One real familiar-room image",
+  "Gemini-detected visible objects",
+  "A consented family portrait",
+  "Six grounded cognitive challenges",
 ] as const;
 
 export default function CaregiverStartPage() {
@@ -15,8 +15,8 @@ export default function CaregiverStartPage() {
     <main>
       <StepHeading
         eyebrow="Prepared demonstration"
-        title="Create one calm, familiar activity."
-        description="You stay in control. ANCHOR will propose visible details, and nothing reaches the patient until you review and approve it."
+        title="Turn a real room into cognitive practice."
+        description="Gemini detects what is truly visible, then ANCHOR builds detailed attention, spatial recall, recognition, and association challenges. Nothing reaches the patient until you review it."
       />
 
       <div className="start-grid">

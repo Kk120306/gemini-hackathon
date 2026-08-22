@@ -27,6 +27,7 @@ export type AnchorAction =
   | { type: "approve_world_model"; confirmedAt: string }
   | { type: "save_trusted_person"; trustedPerson: TrustedPerson }
   | { type: "guide_generated"; guide: Guide }
+  | { type: "reject_guide" }
   | { type: "use_neutral_guide" }
   | { type: "approve_guide" }
   | { type: "lesson_generated"; lesson: Lesson }
@@ -132,6 +133,15 @@ export function anchorReducer(
     case "guide_generated":
       next = { ...state, guide: action.guide };
       break;
+    case "reject_guide":
+      if (!state.guide || state.guide.presentation === "neutral") {
+        return state;
+      }
+      next = {
+        ...state,
+        guide: { ...state.guide, approval: "rejected" },
+      };
+      break;
     case "use_neutral_guide":
       next = {
         ...state,
@@ -146,7 +156,7 @@ export function anchorReducer(
       };
       break;
     case "approve_guide":
-      if (!state.guide) {
+      if (!state.guide || state.guide.approval === "rejected") {
         return state;
       }
       next = { ...state, guide: { ...state.guide, approval: "approved" } };

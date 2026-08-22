@@ -43,8 +43,13 @@ function validationSummary(error: unknown) {
 
 const roomContract = `Return one JSON object with this exact shape:
 {"roomNameSuggestion":"string","objects":[{"name":"specific visible object","location":"literal visible location","description":"literal color, material, or shape only","sourceImageIndex":0,"boundingBox":{"x":0.0,"y":0.0,"width":0.0,"height":0.0},"confidence":"low|medium|high"}]}
-Return 3 to 5 distinct, useful, clearly visible objects.
-Bounding-box values are normalized from 0 through 1 and must remain inside the image.
+Detect the actual pixels in this image. Do not use example, fixture, bedroom, or placeholder objects.
+Return 6 to 10 distinct, useful objects when that many are clearly visible. If the image genuinely contains fewer, return only supported objects, with an absolute minimum of 3.
+Prefer stable, question-ready objects that a person can point to, such as furniture, electronics, containers, and strongly visible personal items. Exclude vague regions, reflections, shadows, tiny clutter, partially hidden items, and duplicates.
+Each location must name the literal visible support surface or image area, such as "on the desk below the monitor" or "in front of the window".
+Each description must contain discriminating pixel evidence, including visible color, material, form, or markings, without guessing function or ownership.
+Bounding-box values are normalized from 0 through 1. x and y mark the tight upper-left corner. width and height must tightly enclose only that object, stay inside the image, and must not describe a broad furniture region when the named object is smaller.
+Use high confidence only when the object identity and full box are unambiguous. Omit uncertain objects instead of inventing them.
 Do not infer ownership, relationships, memories, habits, routines, preferences, emotions, or significance.
 Return JSON only.`;
 
@@ -84,6 +89,7 @@ export class GoogleGenAiProvider implements AiProvider {
   constructor(
     private readonly transport: GenAiTransport,
     private readonly model: string,
+    private readonly analysisSource: RoomAnalysis["analysisSource"] = "gemma",
   ) {}
 
   private async generateValidated<T>(input: {
@@ -152,6 +158,7 @@ export class GoogleGenAiProvider implements AiProvider {
         sourceImageId: request.roomId,
         groundingRecordId,
         boundingBox: object.boundingBox,
+        detectionConfidence: object.confidence,
         approval: "draft" as const,
       };
     });
@@ -180,7 +187,7 @@ export class GoogleGenAiProvider implements AiProvider {
         approval: "draft",
       }),
       groundingRecords,
-      analysisSource: "gemma",
+      analysisSource: this.analysisSource,
     };
   }
 

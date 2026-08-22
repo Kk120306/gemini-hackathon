@@ -172,7 +172,7 @@ The complete stage flow works offline, shows the grounding proof chain, and pass
 ### Phase 2: Real Gemma Grounding
 
 - [x] Add the Google Gen AI SDK behind a server-only provider.
-- [x] Implement Gemma room analysis for three to five proposals.
+- [x] Implement validated model room analysis for six to ten proposals when supported, with three as the safe minimum.
 - [x] Validate structured output with Zod.
 - [x] Create grounding records from proposals and caregiver corrections.
 - [x] Implement Gemma six-question lesson generation.
@@ -247,22 +247,33 @@ The six activities form a varied evidence-reasoning sequence, no activity can be
 Exit condition:
 The patient can explore and answer in a labeled Gemini-generated spatial interpretation, while the app remains honest about the single-image limitation and fully usable without generation.
 
-### Deferred Phase 4: Trustworthy Family Guide
+### Phase 4: Trustworthy Family Guide
 
-This phase was deliberately excluded from the hackathon submission after the user froze scope around the spatial room, strong questions, and progressive cue loop.
-The existing neutral labeled guide remains the safe demo fallback, and these items are post-hackathon work rather than submission blockers.
-
-- [ ] Capture name, relationship, likeness permission, and caregiver confirmation.
-- [ ] Generate one lightly stylized guide portrait from two or three reference images.
-- [ ] Add caregiver approval and rejection.
-- [ ] Keep the AI-generated label visible in patient mode.
-- [ ] Add the neutral non-likeness fallback.
-- [ ] Start one short video job after static-guide approval.
-- [ ] Keep the static guide visible until the video passes validation.
-- [ ] Confirm that disabling video changes no lesson behavior.
+- [x] Capture name, relationship, likeness permission, and caregiver confirmation.
+- [x] Accept one to three authorized portrait references.
+- [x] Generate and independently validate one lightly stylized guide portrait.
+- [x] Add caregiver approval and rejection.
+- [x] Keep the AI-generated label visible in patient mode.
+- [x] Add the neutral non-likeness fallback.
+- [x] Start a short question-specific Gemini video job without blocking the activity.
+- [x] Independently validate the generated video before private storage and display.
+- [x] Keep the static guide visible until the video passes validation.
+- [x] Confirm through runtime contracts that disabled or rejected video changes no lesson behavior.
 
 Exit condition:
 The guide adds familiarity without impersonation and never blocks the patient flow.
+
+### Real-Room Grounding Correction
+
+- [x] Route every uploaded raster image to live Gemini vision when a server credential exists, even in demo mode.
+- [x] Request six to ten distinct, question-ready objects when supported by the image.
+- [x] Persist detection confidence and expose it during caregiver verification.
+- [x] Add a private ignored acceptance fixture for the supplied office photo.
+- [x] Add an opt-in live contract that rejects the unrelated bedroom fixture objects.
+- [ ] Pass the supplied-office live contract after the Gemini billing spending cap is raised or reset.
+
+Exit condition:
+The supplied office image yields literal office objects with tight normalized bounds, while provider failure remains visible and no unrelated placeholder world model is published.
 
 ### Phase 5: Demo Hardening and Submission
 

@@ -9,6 +9,7 @@ describe("server environment", () => {
     expect(environment.ANCHOR_DEMO_MODE).toBe(true);
     expect(environment.GEMINI_API_KEY).toBeUndefined();
     expect(environment.GEMINI_IMAGE_MODEL).toBe("gemini-3.1-flash-lite-image");
+    expect(environment.GEMINI_VIDEO_MODEL).toBe("gemini-omni-flash-preview");
   });
 
   it("requires an API credential in live mode", () => {

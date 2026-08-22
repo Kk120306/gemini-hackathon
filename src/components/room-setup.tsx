@@ -13,12 +13,7 @@ import {
   UploadIcon,
 } from "@/components/icons";
 
-const allowedTypes = new Set([
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "image/svg+xml",
-]);
+const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 export function RoomSetup() {
   const router = useRouter();
@@ -43,7 +38,7 @@ export function RoomSetup() {
     }
 
     if (!allowedTypes.has(file.type) || file.size > 10 * 1024 * 1024) {
-      setError("Choose a JPG, PNG, WebP, or SVG image smaller than 10 MB.");
+      setError("Choose a JPG, PNG, or WebP image smaller than 10 MB.");
       event.target.value = "";
       return;
     }
@@ -96,7 +91,7 @@ export function RoomSetup() {
               <strong>{file?.name ?? "bedroom-fixture.png"}</strong>
               <span>
                 {state.room.uploadStatus === "analyzed"
-                  ? `${state.worldModel.objects.length} ${state.room.analysisSource === "gemma" ? "live Gemma" : "fixture"} proposals ready`
+                  ? `${state.worldModel.objects.length} ${state.room.analysisSource === "fixture" ? "fixture" : `live ${state.room.analysisSource === "gemini" ? "Gemini" : "Gemma"}`} detections ready`
                   : preparedFixture
                     ? "Prepared image • No personal data"
                     : "Caregiver-selected image • Stored privately"}
@@ -110,7 +105,7 @@ export function RoomSetup() {
               id="room-image"
               name="room-image"
               type="file"
-              accept="image/jpeg,image/png,image/webp,image/svg+xml"
+              accept="image/jpeg,image/png,image/webp"
               onChange={handleFile}
             />
           </div>
@@ -120,14 +115,14 @@ export function RoomSetup() {
           <div className="upload-card__icon">
             <UploadIcon />
           </div>
-          <h2>Clear and well lit works best</h2>
+          <h2>Gemini reads the photo you provide</h2>
           <p>
-            Include the floor or furniture around each object so its location
-            can be verified.
+            It detects actual visible objects and returns tight image boxes. You
+            verify every object before it becomes a question.
           </p>
           <ul>
             <li>
-              <ImageIcon /> JPG, PNG, WebP, or fixture SVG
+              <ImageIcon /> JPG, PNG, or WebP
             </li>
             <li>
               <CheckIcon /> Up to 10 MB per image

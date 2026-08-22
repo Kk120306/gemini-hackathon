@@ -27,6 +27,7 @@ type WorldObject = {
   boundingBox: BoundingBox;
   sourceImageId: string;
   groundingRecordId: string;
+  detectionConfidence: "low" | "medium" | "high";
   approval: ApprovalState;
 };
 
@@ -64,7 +65,7 @@ Every approved lesson question must reference all grounding records needed to ju
 
 ## Object Analysis Contract
 
-Gemma receives one to three room images and a request for three to five useful, clearly visible objects.
+Gemini vision receives one uploaded room image and a request for six to ten useful, clearly visible objects when the pixels support that many.
 The response must contain only literal visual observations.
 
 Required response shape:
@@ -92,7 +93,8 @@ Required response shape:
 
 Validation rules:
 
-- Return three to five objects when the images support them.
+- Return six to ten distinct objects when the image supports them, with an absolute minimum of three.
+- Omit uncertain objects instead of filling the response with fixture, placeholder, duplicate, or broad-region labels.
 - Reject bounding boxes outside the normalized image area.
 - Reject empty or overly broad object names such as `thing`.
 - Treat model confidence as advisory only.
@@ -113,7 +115,8 @@ type TrustedPerson = {
 };
 ```
 
-Guide generation is blocked unless `likenessConsent` is true and at least two valid reference images exist.
+Guide generation is blocked unless `likenessConsent` is true and one to three valid reference images exist.
+One clear authorized portrait is sufficient, but the candidate must still pass independent likeness validation.
 The relationship is caregiver-entered and is never inferred from images.
 
 ## Guide Image Contract
@@ -326,10 +329,14 @@ The validator must fail closed when uncertain.
 
 ## Guide Video Contract
 
-The demo video should be three to five seconds and generated from the approved guide portrait.
-It should contain a small natural gesture or encouraging expression.
-It must not contain cloned speech, a claim of being live, or an invented personal statement.
-The UI should present equivalent text and a static image before the video is ready.
+Gemini Omni Flash receives only the approved generated guide portrait and the current validated lesson prompt.
+The clip should use natural blinking, a small nod, subtle breathing, direct eye contact, and a neutral synthetic adult voice.
+The spoken dialogue must match the detailed visible question and must not add a memory, relationship claim, diagnosis, treatment claim, score, urgency, or claim of live presence.
+
+The independent validator must confirm one person only, recognizable consistency with the approved guide, no call or messaging interface, and neutral safe dialogue.
+The media may be stored and displayed only when every check passes.
+The UI must label the clip as AI-generated, not live, and synthetic voice.
+The question text, room interaction, and static guide must remain available before the video is ready and whenever generation or validation fails.
 
 ## Speech Contract
 

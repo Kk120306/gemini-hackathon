@@ -2,9 +2,13 @@ import { z } from "zod";
 
 import {
   boundingBoxSchema,
+  guideSchema,
+  guideReferenceImageSrcSchema,
   groundingRecordSchema,
+  lessonQuestionSchema,
   mediaValidationSchema,
   questionTypeSchema,
+  trustedPersonSchema,
   worldModelSchema,
 } from "@/domain/anchor";
 
@@ -83,8 +87,71 @@ export const roomImageInputSchema = z
 export const roomAnalysisInputSchema = z.object({
   roomId: z.string().trim().min(1).max(100),
   roomName: z.string().trim().min(1).max(100),
+  sourceKind: z.enum(["caregiver_upload", "prepared_fixture"]),
   image: roomImageInputSchema,
 });
+
+export const guideReferenceImageInputSchema = z.intersection(
+  roomImageInputSchema,
+  z.object({
+    mimeType: z.enum(["image/jpeg", "image/png", "image/webp"]),
+  }),
+);
+
+export const guideReferenceUploadInputSchema = z.object({
+  trustedPersonId: z.string().trim().min(1).max(100),
+  images: z.array(guideReferenceImageInputSchema).min(1).max(3),
+});
+
+export const guideReferenceUploadResultSchema = z.object({
+  imageSrcs: z.array(guideReferenceImageSrcSchema).min(1).max(3),
+});
+
+export const guideQuestionVideoActionInputSchema = z.object({
+  guide: guideSchema,
+  trustedPerson: trustedPersonSchema,
+  question: lessonQuestionSchema,
+});
+
+export const guideVideoValidationSchema = z
+  .object({
+    singlePersonOnly: z.boolean(),
+    recognizableAsApprovedGuide: z.boolean(),
+    noCallOrMessagingUi: z.boolean(),
+    neutralSafeDialogue: z.boolean(),
+    safeToDisplay: z.boolean(),
+    conciseReason: z.string().trim().min(1).max(300),
+  })
+  .superRefine((validation, context) => {
+    const passed =
+      validation.singlePersonOnly &&
+      validation.recognizableAsApprovedGuide &&
+      validation.noCallOrMessagingUi &&
+      validation.neutralSafeDialogue;
+    if (validation.safeToDisplay && !passed) {
+      context.addIssue({
+        code: "custom",
+        message: "Safe guide video must pass every content check.",
+        path: ["safeToDisplay"],
+      });
+    }
+  });
+
+export const guideQuestionVideoActionResultSchema = z.discriminatedUnion(
+  "status",
+  [
+    z.object({
+      status: z.literal("completed"),
+      outputSrc: z
+        .string()
+        .regex(
+          /^\/api\/generated-guide-video\/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.mp4$/,
+        ),
+      model: z.string().trim().min(1),
+    }),
+    z.object({ status: z.literal("disabled") }),
+  ],
+);
 
 const privateRoomImageSrcSchema = z.union([
   z.literal("/fixtures/bedroom.svg"),
@@ -155,7 +222,7 @@ const unsupportedInference =
 export const roomProposalSchema = z
   .object({
     roomNameSuggestion: z.string().trim().min(1).max(100),
-    objects: z.array(modelObjectProposalSchema).min(3).max(5),
+    objects: z.array(modelObjectProposalSchema).min(3).max(10),
   })
   .superRefine((proposal, context) => {
     const names = new Set<string>();
@@ -271,6 +338,21 @@ export const lessonPlanSchema = z
   });
 
 export type LessonPlan = z.infer<typeof lessonPlanSchema>;
+export type GuideReferenceImageInput = z.infer<
+  typeof guideReferenceImageInputSchema
+>;
+export type GuideReferenceUploadInput = z.infer<
+  typeof guideReferenceUploadInputSchema
+>;
+export type GuideReferenceUploadResult = z.infer<
+  typeof guideReferenceUploadResultSchema
+>;
+export type GuideQuestionVideoActionInput = z.infer<
+  typeof guideQuestionVideoActionInputSchema
+>;
+export type GuideQuestionVideoActionResult = z.infer<
+  typeof guideQuestionVideoActionResultSchema
+>;
 export type RoomAnalysisInput = z.infer<typeof roomAnalysisInputSchema>;
 export type RoomImageInput = z.infer<typeof roomImageInputSchema>;
 export type RoomProposal = z.infer<typeof roomProposalSchema>;

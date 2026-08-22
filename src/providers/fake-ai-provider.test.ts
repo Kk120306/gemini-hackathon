@@ -24,6 +24,9 @@ describe("fake AI provider", () => {
     expect(lesson.questions[0]?.correctAnswer).toBe("Reading glasses");
     expect(lesson.questions[0]?.prompt).toContain("reading table");
     expect(lesson.questions[0]?.verbalCue).toContain("reading table");
+    expect(lesson.questions[0]?.evidenceClues).toContainEqual(
+      expect.objectContaining({ detail: "On the reading table" }),
+    );
   });
 
   it("refuses to generate a likeness without consent", async () => {

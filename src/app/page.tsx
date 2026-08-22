@@ -13,18 +13,18 @@ import { SiteHeader } from "@/components/site-header";
 const proofSteps = [
   {
     number: "01",
-    title: "Observe",
-    text: "Gemma proposes only what is visible in the room.",
+    title: "Detect",
+    text: "Gemini finds and boxes the real objects visible in one familiar room.",
   },
   {
     number: "02",
     title: "Verify",
-    text: "A caregiver confirms each object and location.",
+    text: "A caregiver confirms every object, location, and family likeness.",
   },
   {
     number: "03",
-    title: "Guide",
-    text: "Each gentle cue stays tied to approved evidence.",
+    title: "Exercise",
+    text: "Six grounded challenges practice attention, recall, and association.",
   },
 ] as const;
 
@@ -35,15 +35,16 @@ export default function HomePage() {
 
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero__copy">
-          <p className="eyebrow">Caregiver-verified engagement</p>
+          <p className="eyebrow">Room-grounded cognitive engagement</p>
           <h1 id="hero-title">
-            Familiar spaces.
-            <span>Gentle next steps.</span>
+            Train attention.
+            <span>Rehearse familiar spaces.</span>
           </h1>
           <p className="hero__lede">
-            ANCHOR turns a familiar room into one calm, six-question activity.
-            Every personal detail is visible, verified, and approved by a
-            caregiver first.
+            ANCHOR turns a real room photo into six detailed visual challenges
+            for attention, spatial recall, recognition, and association. It is
+            designed for older adults and people living with dementia, with
+            every object verified by a caregiver first.
           </p>
           <div className="hero__actions">
             <Link className="primary-button" href="/caregiver">
@@ -58,8 +59,8 @@ export default function HomePage() {
           <div className="hero__boundary">
             <ShieldIcon />
             <p>
-              A supportive engagement prototype, not a diagnosis or medical
-              assessment.
+              Cognitive engagement and familiarity support, not dementia
+              prevention, diagnosis, treatment, or assessment.
             </p>
           </div>
         </div>

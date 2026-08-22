@@ -14,7 +14,9 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:live": "playwright test --config=playwright.live.config.ts",
-    "test:live:media": "vitest run --config vitest.live-media.config.ts"
+    "test:live:media": "vitest run --config vitest.live-media.config.ts tests/live/gemini-room-media.provider.test.ts",
+    "test:live:guide": "vitest run --config vitest.live-media.config.ts tests/live/gemini-guide-media.provider.test.ts",
+    "test:live:office": "vitest run --config vitest.live-media.config.ts tests/live/gemini-office-room.provider.test.ts"
   },
   "dependencies": {
     "@fontsource-variable/figtree": "5.3.0",

@@ -36,6 +36,7 @@ export const worldObjectSchema = z.object({
   boundingBox: boundingBoxSchema,
   sourceImageId: z.string().min(1),
   groundingRecordId: z.string().min(1),
+  detectionConfidence: z.enum(["low", "medium", "high"]).default("medium"),
   approval: approvalStateSchema,
 });
 
@@ -43,16 +44,40 @@ export const worldModelSchema = z.object({
   id: z.string().min(1),
   roomName: z.string().min(1),
   revision: z.number().int().positive(),
-  objects: z.array(worldObjectSchema).min(3).max(5),
+  objects: z.array(worldObjectSchema).min(3).max(10),
   approval: approvalStateSchema,
 });
+
+export const guideReferenceImageSrcSchema = z.union([
+  z.literal("/fixtures/elena-reference-1.svg"),
+  z.literal("/fixtures/elena-reference-2.svg"),
+  z.literal("/fixtures/elena-reference-1.png"),
+  z.literal("/fixtures/elena-reference-2.png"),
+  z
+    .string()
+    .regex(
+      /^\/api\/guide-reference-media\/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.(?:jpg|png|webp)$/,
+      "Guide references must use a server-issued private path.",
+    ),
+]);
+
+export const guideImageSrcSchema = z.union([
+  z.literal("/fixtures/elena-guide.svg"),
+  z.literal("/fixtures/neutral-guide.svg"),
+  z
+    .string()
+    .regex(
+      /^\/api\/generated-guide-media\/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.(?:jpg|png|webp)$/,
+      "Generated guides must use a server-issued private path.",
+    ),
+]);
 
 export const trustedPersonSchema = z
   .object({
     id: z.string().min(1),
     name: z.string().min(1),
     relationship: z.string().min(1),
-    referenceImageSrcs: z.array(z.string().startsWith("/")).min(2).max(3),
+    referenceImageSrcs: z.array(guideReferenceImageSrcSchema).min(1).max(3),
     likenessConsent: z.boolean(),
     consentedBy: z.string().min(1).optional(),
     consentedAt: z.string().datetime().optional(),
@@ -70,14 +95,66 @@ export const trustedPersonSchema = z
     }
   });
 
-export const guideSchema = z.object({
-  id: z.string().min(1),
-  trustedPersonId: z.string().min(1),
-  presentation: z.enum(["stylized_likeness", "neutral"]),
-  imageSrc: z.string().startsWith("/"),
-  label: z.string().min(1),
-  approval: approvalStateSchema,
-});
+export const guideValidationSchema = z
+  .object({
+    recognizableLikeness: z.boolean(),
+    consistentWithReferences: z.boolean(),
+    lightlyStylized: z.boolean(),
+    singlePersonOnly: z.boolean(),
+    noCallOrMessagingUi: z.boolean(),
+    safeToDisplay: z.boolean(),
+    conciseReason: z.string().trim().min(1).max(300),
+  })
+  .superRefine((validation, context) => {
+    const passed =
+      validation.recognizableLikeness &&
+      validation.consistentWithReferences &&
+      validation.lightlyStylized &&
+      validation.singlePersonOnly &&
+      validation.noCallOrMessagingUi;
+    if (validation.safeToDisplay && !passed) {
+      context.addIssue({
+        code: "custom",
+        message: "A safe guide candidate must pass every likeness check.",
+        path: ["safeToDisplay"],
+      });
+    }
+  });
+
+export const guideSchema = z
+  .object({
+    id: z.string().min(1),
+    trustedPersonId: z.string().min(1),
+    presentation: z.enum(["stylized_likeness", "neutral"]),
+    imageSrc: guideImageSrcSchema,
+    sourceReferenceImageSrcs: z
+      .array(guideReferenceImageSrcSchema)
+      .min(1)
+      .max(3)
+      .optional(),
+    label: z.string().min(1),
+    validation: guideValidationSchema.optional(),
+    generationModel: z.string().trim().min(1).optional(),
+    validationModel: z.string().trim().min(1).optional(),
+    generatedAt: z.string().datetime().optional(),
+    approval: approvalStateSchema,
+  })
+  .superRefine((guide, context) => {
+    if (
+      guide.presentation === "stylized_likeness" &&
+      (!guide.sourceReferenceImageSrcs ||
+        !guide.validation?.safeToDisplay ||
+        !guide.generationModel ||
+        !guide.validationModel ||
+        !guide.generatedAt)
+    ) {
+      context.addIssue({
+        code: "custom",
+        message:
+          "A likeness guide requires references, validation, models, and generation time.",
+      });
+    }
+  });
 
 export const questionTypeSchema = z.enum([
   "object_recognition",
@@ -291,6 +368,7 @@ export const mediaJobSchema = z
     lessonId: z.string().min(1).optional(),
     questionId: z.string().min(1).optional(),
     targetObjectId: z.string().min(1).optional(),
+    guideId: z.string().min(1).optional(),
     fallbackSrc: z.string().startsWith("/"),
     outputSrc: z.string().startsWith("/").optional(),
     validationPassed: z.boolean(),
@@ -300,6 +378,27 @@ export const mediaJobSchema = z
     settledAt: z.string().datetime().optional(),
   })
   .superRefine((job, context) => {
+    if (job.kind === "guide_image") {
+      if (
+        job.status === "completed" &&
+        (!job.outputSrc || !job.validationPassed)
+      ) {
+        context.addIssue({
+          code: "custom",
+          message: "Completed guide-image jobs require validated output.",
+        });
+      }
+      return;
+    }
+    if (job.kind === "guide_video") {
+      if (!job.guideId) {
+        context.addIssue({
+          code: "custom",
+          message: "Guide-video jobs require an approved guide identifier.",
+        });
+      }
+      return;
+    }
     if (job.kind !== "simplified_room") {
       return;
     }
@@ -347,7 +446,7 @@ export const anchorStateSchema = z.object({
     id: z.string().min(1),
     name: z.string().min(1),
     imageSrc: z.string().startsWith("/"),
-    analysisSource: z.enum(["fixture", "gemma"]).default("fixture"),
+    analysisSource: z.enum(["fixture", "gemma", "gemini"]).default("fixture"),
     uploadStatus: z.enum(["ready", "analyzing", "analyzed", "failed"]),
   }),
   worldModel: worldModelSchema,
@@ -365,6 +464,7 @@ export type BoundingBox = z.infer<typeof boundingBoxSchema>;
 export type CueLevel = z.infer<typeof cueLevelSchema>;
 export type GroundingRecord = z.infer<typeof groundingRecordSchema>;
 export type Guide = z.infer<typeof guideSchema>;
+export type GuideValidation = z.infer<typeof guideValidationSchema>;
 export type HorizontalZone = z.infer<typeof horizontalZoneSchema>;
 export type RecallZone = z.infer<typeof recallZoneSchema>;
 export type InteractionMode = z.infer<typeof interactionModeSchema>;

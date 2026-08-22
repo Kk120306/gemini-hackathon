@@ -59,4 +59,15 @@ describe("ANCHOR state reducer", () => {
     );
     expect(next.session).toEqual(state.session);
   });
+
+  it("blocks a caregiver-rejected guide from approval", () => {
+    const state = createPreparedAnchorState();
+    const rejected = anchorReducer(state, { type: "reject_guide" });
+    const attemptedApproval = anchorReducer(rejected, {
+      type: "approve_guide",
+    });
+
+    expect(rejected.guide?.approval).toBe("rejected");
+    expect(attemptedApproval.guide?.approval).toBe("rejected");
+  });
 });

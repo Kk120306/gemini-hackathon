@@ -90,8 +90,8 @@ export function LessonReview() {
             <EyeIcon />
             <h2>Generate from approved evidence</h2>
             <p>
-              {state.room.analysisSource === "gemma"
-                ? "Gemma will plan exactly six questions from approved identifiers. ANCHOR compiles every prompt, answer, choice, and cue from approved facts."
+              {state.room.analysisSource !== "fixture"
+                ? "Gemini will plan exactly six questions from the objects it detected and you approved. ANCHOR compiles every prompt, answer, choice, and cue from those verified facts."
                 : "The fixture provider will return exactly six validated questions, including one visual recall and one association activity."}
             </p>
             <button

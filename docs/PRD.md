@@ -11,15 +11,15 @@ The demonstration must prove that verified household context and progressive vis
 
 ## Solution
 
-ANCHOR lets a caregiver upload images of one bedroom and a trusted family member.
-Gemma proposes a small personal world model containing visible objects and their locations.
+ANCHOR lets a caregiver upload an image of one familiar room and one to three authorized portraits of a trusted family member.
+Gemini vision proposes a literal world model containing six to ten useful visible objects, their locations, discriminating appearance evidence, confidence, and normalized bounds when the image supports that many objects.
 The caregiver confirms or edits every object before it can be used.
 
 ANCHOR then generates a caregiver-approved family guide and a six-question lesson based on the verified objects.
 Gemini transforms the approved room image into a realistic, perspective-preserving 2.5D spatial interpretation during caregiver review.
 A candidate becomes the primary interaction surface only after it preserves every approved visible object and its image-plane location under independent validation.
 Large touch targets remain projected from verified object regions rather than generated guesses, and the approved source image remains the complete fallback.
-The patient completes the lesson through this calm spatial interface.
+The patient completes six detailed attention, recognition, spatial orientation, short-term recall, and association activities through this calm spatial interface.
 When the patient struggles, ANCHOR gives the minimum next cue and progressively simplifies the visual scene.
 
 The demo includes live Gemini image generation and one short Gemini video-generation moment.
@@ -39,6 +39,7 @@ Deterministic overlays, static expressions, and text remain available whenever g
 - Demonstrate live image generation without making it a single point of failure.
 - Demonstrate one short generated guide or cue video.
 - Present a calm and accessible patient experience.
+- Position the experience as cognitive engagement and familiar-space support, never dementia prevention, diagnosis, treatment, or assessment.
 
 ## Hackathon Product Thesis
 
@@ -56,13 +57,13 @@ The stage promise is:
 ## User Stories
 
 1. As a caregiver, I want to create a simple patient profile, so that the lesson can address the patient appropriately.
-2. As a caregiver, I want to upload one to three bedroom images, so that ANCHOR can use the patient's real environment.
-3. As a caregiver, I want ANCHOR to suggest three to five visible objects, so that setup remains fast.
+2. As a caregiver, I want to upload one familiar-room image, so that ANCHOR can use the patient's real environment.
+3. As a caregiver, I want ANCHOR to suggest six to ten distinct visible objects when the room supports them, so that the activities reflect the actual image rather than fixture data.
 4. As a caregiver, I want to see where each detected object appears, so that I can verify the model's interpretation.
 5. As a caregiver, I want to edit an object's name and location, so that incorrect suggestions never enter the lesson.
 6. As a caregiver, I want to remove an unsuitable object, so that the lesson remains respectful and useful.
 7. As a caregiver, I want to approve the final world model, so that only verified facts are used.
-8. As a caregiver, I want to upload two or three images of a trusted person, so that ANCHOR can create a consistent guide.
+8. As a caregiver, I want to upload one to three images of a trusted person, so that one clear authorized portrait works while additional angles can improve consistency.
 9. As a caregiver, I want to enter the trusted person's name and relationship, so that the guide can be introduced accurately.
 10. As a caregiver, I want to confirm consent for likeness generation, so that image generation is explicit and accountable.
 11. As a caregiver, I want to approve or regenerate the family guide, so that an unsuitable image is never shown to the patient.
@@ -97,14 +98,16 @@ The stage promise is:
 40. As a patient, I want questions to name verified color, shape, material, location, or spatial relationships, so that each activity provides a meaningful observation task.
 41. As a patient, I want a recall activity with no timer, so that I can study the room before choosing an exact upper or lower and left, middle, or right region.
 42. As a patient, I want every activity to show the evidence path I should use, so that the lesson exercises observation and reasoning rather than guessing from a generic prompt.
+43. As a patient, I want the approved family guide to ask the current detailed question in a short generated video, so that the guide supports the activity without pretending to be a live call.
+44. As a caregiver, I want every uploaded raster image analyzed by live Gemini vision when a server credential is configured, so that demo mode cannot silently substitute bedroom fixtures for a real office or living room.
 
 ## Required Demo Flow
 
 1. The caregiver enters the patient's first name.
-2. The caregiver uploads one to three bedroom images.
-3. Gemma proposes three to five objects, locations, descriptions, normalized bounding boxes, and evidence records.
+2. The caregiver uploads one familiar-room image.
+3. Gemini vision proposes six to ten useful objects when supported, with literal locations, discriminating descriptions, confidence, normalized bounding boxes, and evidence records.
 4. The caregiver confirms or edits the proposals.
-5. The caregiver uploads two or three images of one trusted person.
+5. The caregiver uploads one to three images of one trusted person.
 6. The caregiver enters the person's name and relationship and confirms consent.
 7. Gemini generates a guide portrait and optional expression variants.
 8. The caregiver approves the guide.
@@ -121,7 +124,7 @@ The stage promise is:
 19. The patient receives a stronger highlight or close-up after another incorrect answer.
 20. The patient selects the correct object in the room.
 21. The guide celebrates and moves to the next question.
-22. One controlled lesson moment may use a short generated video after the core product is stable.
+22. The approved guide may ask each active question through a short, independently validated generated video while the static guide remains immediately available.
 23. The lesson ends with a calm completion message and no score.
 
 ## Lesson Composition
@@ -212,7 +215,7 @@ The model may recommend the next cue, but application code enforces the allowed 
 ## Success Criteria
 
 - A new caregiver can complete setup without editing raw JSON.
-- The app produces three to five caregiver-confirmed objects from the bedroom images.
+- The app produces literal caregiver-confirmed objects from the actual uploaded room pixels and never swaps in prepared fixture detections for a real upload.
 - The app produces an approved family guide from reference photos.
 - The app produces six valid, grounded questions with exactly two cognitive activities.
 - At least five questions are answered through verified spatial regions on the room image.
@@ -222,7 +225,7 @@ The model may recommend the next cue, but application code enforces the allowed 
 - An incorrect answer visibly advances the cue sequence.
 - A generated simplified scene can replace the deterministic overlay after validation.
 - A validated Gemini spatial interpretation can serve as the primary scene without changing verified hotspot coordinates.
-- One short generated video appears without blocking the remainder of the lesson.
+- A generated guide question video may appear without blocking the question, with a labeled static fallback when video is unavailable.
 - The patient can finish the lesson entirely through visible controls.
 - No generated copy invents memories, quotes, routines, or relationships.
 - The complete seeded flow passes the primary end-to-end test.

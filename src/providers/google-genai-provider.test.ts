@@ -45,6 +45,7 @@ const validRoomProposal = {
 const roomInput: RoomAnalysisInput = {
   roomId: "room-test",
   roomName: "Bedroom",
+  sourceKind: "caregiver_upload",
   image: {
     data: "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
     mimeType: "image/png",

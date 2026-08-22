@@ -40,7 +40,9 @@ export function WorldModelReview() {
             <h2>Visible objects</h2>
             <span className="muted-note">
               {state.worldModel.objects.length}{" "}
-              {state.room.analysisSource === "gemma" ? "by Gemma" : "fixture"}
+              {state.room.analysisSource === "fixture"
+                ? "fixture"
+                : `by ${state.room.analysisSource === "gemini" ? "Gemini" : "Gemma"}`}
             </span>
           </div>
           <div className="object-list">
@@ -96,6 +98,9 @@ export function WorldModelReview() {
                     <div>
                       <strong>{object.name}</strong>
                       <span>{object.location}</span>
+                      <small>
+                        {object.detectionConfidence} visual confidence
+                      </small>
                     </div>
                   )}
                   {!editing ? (
@@ -139,9 +144,9 @@ export function WorldModelReview() {
             <dl>
               <div>
                 <dt>
-                  {state.room.analysisSource === "gemma"
-                    ? "Gemma proposed"
-                    : "Fixture proposed"}
+                  {state.room.analysisSource === "fixture"
+                    ? "Fixture proposed"
+                    : `${state.room.analysisSource === "gemini" ? "Gemini" : "Gemma"} detected`}
                 </dt>
                 <dd>{evidence?.modelObservation}</dd>
               </div>

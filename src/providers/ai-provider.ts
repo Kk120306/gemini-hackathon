@@ -10,7 +10,7 @@ import type { RoomAnalysisInput } from "@/providers/provider-contracts";
 export type RoomAnalysis = {
   worldModel: WorldModel;
   groundingRecords: GroundingRecord[];
-  analysisSource: "fixture" | "gemma";
+  analysisSource: "fixture" | "gemma" | "gemini";
   imageSrc?: string;
 };
 
