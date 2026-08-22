@@ -87,10 +87,9 @@ Phase 5: Core Demo Hardening
 
 ## Next Actions
 
-1. Run the full deterministic and fallback suites against the six-question demo.
-2. Build and restore the production Tailscale preview for remote recording.
-3. Rehearse the core room-to-question-to-cue path before returning to optional guide or video work.
-4. Confirm the exact repository or environment scope of the GitHub `GEMINI_API_KEY` secret before relying on the live CI workflow.
+1. Rehearse and capture the core room-to-question-to-cue path from the production Tailscale preview.
+2. Build the separate two-to-three-minute Remotion demo only from verified product states and licensed stock references.
+3. Confirm the exact repository or environment scope of the GitHub `GEMINI_API_KEY` secret before relying on the live CI workflow.
 
 ## Open Risks
 
@@ -176,3 +175,5 @@ Phase 5: Core Demo Hardening
 - `pnpm build` compiled successfully and produced all application and private-media routes after the Gemini spatial-composition checkpoint on 2026-08-22.
 - Git tracking checks confirmed that `.env.local`, `.data`, uploads, and generated room media remain outside version control on 2026-08-22.
 - `ANCHOR_LIVE_MEDIA_IN_DEMO=false pnpm test:e2e` passed all 11 tablet Chromium scenarios after adding direct patient-entry spatial preparation on 2026-08-22.
+- The final production `/patient` route returned HTTP 200 locally and through Tailscale on 2026-08-22.
+- A fresh Tailscale patient origin started live spatial preparation, published a validated Gemini 2.5D room within the 90-second non-blocking budget, and opened Question 1 with all three evidence clues on 2026-08-22.
