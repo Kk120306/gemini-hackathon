@@ -268,13 +268,27 @@ The guide adds familiarity without impersonation and never blocks the patient fl
 - [x] Inspect every patient cue state at the target tablet viewport.
 - [x] Check keyboard access, touch-target size, contrast, focus, and reduced motion.
 - [ ] Run the prepared caregiver path with a 90-second timer.
-- [ ] Run the full presentation with a three-minute timer.
+- [x] Run the complete 2-minute 36-second rendered presentation inside the three-minute limit.
 - [ ] Run three live-provider smoke tests using the prepared assets.
 - [x] Confirm that no secret or personal media is tracked.
-- [ ] Freeze features and prepare submission material.
+- [x] Freeze features and prepare the core submission film.
 
 Exit condition:
 The presentation succeeds three times in both normal and fallback rehearsals and the submission is ready before the deadline.
+
+### Submission Film Checkpoint
+
+- [x] Source one licensed stock room and one licensed stock portrait for the presentation.
+- [x] Preserve the source-page URLs, photographers, and presentation-only usage boundary in an asset manifest.
+- [x] Capture the real patient welcome, spatial challenge, verbal cue, focus, simplified, and grounded reveal states.
+- [x] Use the matching synthetic source room for the product transformation proof.
+- [x] Build eight separate Remotion scenes around the core room-to-question-to-cue narrative.
+- [x] Add a neutral non-cloned narration track and retain the written voiceover script.
+- [x] Inspect representative 1920 by 1080 frames for cropping, legibility, truthfulness, and source labeling.
+- [x] Render the final 2-minute 36-second H.264 and AAC film.
+
+Exit condition:
+The final film stays under three minutes, demonstrates only verified core states, credits all stock inputs, and avoids clinical, impersonation, and metric-3D claims.
 
 ### Optional Phase 6: Speech Recognition
 

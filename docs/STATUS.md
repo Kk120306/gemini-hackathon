@@ -4,7 +4,7 @@ Last updated: 2026-08-22
 
 ## Current Phase
 
-Phase 5: Core Demo Hardening
+Phase 5: Submission Package Ready
 
 ## Completed
 
@@ -84,11 +84,16 @@ Phase 5: Core Demo Hardening
 - The live prepared-room path generated and validated the new spatial composition in 12.3 seconds and displayed it successfully in patient mode.
 - Direct patient entry now starts the same spatial-composition job on the patient welcome screen, so a fresh Tailscale origin cannot bypass the core feature.
 - The non-blocking spatial-preview budget is 90 seconds so a safe generation can finish across both image creation and independent validation without delaying the Start activity control.
+- A 2-minute 36-second Remotion product film now presents the complete core proof from licensed demo inputs through grounded spatial challenge and progressive support.
+- The film uses a truthfully paired synthetic source room and validated product scene for the before-and-after transformation proof.
+- The separate Pexels room and portrait are clearly labeled as licensed presentation references, with source-page credits stored beside the film project.
+- The film uses neutral system text-to-speech rather than a cloned family voice and repeats the generated-media, consent, fallback, no-score, and non-diagnostic boundaries.
+- Eight representative film states were visually inspected at 1920 by 1080 pixels before the final H.264 and AAC render.
 
 ## Next Actions
 
-1. Rehearse and capture the core room-to-question-to-cue path from the production Tailscale preview.
-2. Build the separate two-to-three-minute Remotion demo only from verified product states and licensed stock references.
+1. Review the finished 2-minute 36-second product film and rehearse the live Tailscale path as a backup presentation.
+2. Replace the neutral narration with the presenter's voice only if that improves the final submission without delaying it.
 3. Confirm the exact repository or environment scope of the GitHub `GEMINI_API_KEY` secret before relying on the live CI workflow.
 
 ## Open Risks
@@ -177,3 +182,10 @@ Phase 5: Core Demo Hardening
 - `ANCHOR_LIVE_MEDIA_IN_DEMO=false pnpm test:e2e` passed all 11 tablet Chromium scenarios after adding direct patient-entry spatial preparation on 2026-08-22.
 - The final production `/patient` route returned HTTP 200 locally and through Tailscale on 2026-08-22.
 - A fresh Tailscale patient origin started live spatial preparation, published a validated Gemini 2.5D room within the 90-second non-blocking budget, and opened Question 1 with all three evidence clues on 2026-08-22.
+- `npm run lint` passed ESLint and TypeScript checks for the Remotion project on 2026-08-22.
+- `npm audit --audit-level=high` reported zero vulnerabilities for the Remotion project on 2026-08-22.
+- The film's licensed-input, grounding, spatial-room, detailed-challenge, four progressive-support, and closing frames were visually inspected at 1920 by 1080 pixels on 2026-08-22.
+- `npm run render` produced a 156-second, 1920 by 1080 H.264 video with stereo AAC narration on 2026-08-22.
+- Final repository `pnpm format:check`, `pnpm lint`, and `pnpm typecheck` checks passed after adding the submission film on 2026-08-22.
+- Final `pnpm test` passed 47 tests across 14 files after adding the submission film on 2026-08-22.
+- Final `pnpm build` produced all application and private-media routes after adding the submission film on 2026-08-22.
