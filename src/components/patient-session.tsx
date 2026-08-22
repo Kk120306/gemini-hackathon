@@ -25,10 +25,20 @@ export function PatientSession() {
   const question = state.lesson?.questions[state.session.questionIndex];
   const target = useMemo(
     () =>
-      state.worldModel.objects.find((object) =>
-        question?.objectIds.includes(object.id),
+      state.worldModel.objects.find(
+        (object) => object.id === question?.targetObjectId,
       ),
     [question, state.worldModel.objects],
+  );
+  const mediaJob = useMemo(
+    () =>
+      state.mediaJobs.find(
+        (job) =>
+          job.kind === "simplified_room" &&
+          job.lessonId === state.lesson?.id &&
+          job.questionId === question?.id,
+      ),
+    [question?.id, state.lesson?.id, state.mediaJobs],
   );
 
   useEffect(() => {
@@ -79,6 +89,17 @@ export function PatientSession() {
   const showFocus = cueIncludes(state.session.cueLevel, "focus");
   const showSimplified = cueIncludes(state.session.cueLevel, "simplified");
   const showReveal = cueIncludes(state.session.cueLevel, "reveal");
+  const generatedSceneReady = Boolean(
+    showSimplified &&
+    mediaJob?.status === "completed" &&
+    mediaJob.validationPassed &&
+    mediaJob.validation?.safeToDisplay &&
+    mediaJob.outputSrc,
+  );
+  const generatedSceneLabel =
+    mediaJob?.generationModel === "fixture-simplifier-v1"
+      ? "Prepared simplified view"
+      : "AI-generated simplified view";
   const correct = state.session.feedback === "correct";
   const objectPositionX = target
     ? chooseHorizontalObjectPosition(target.boundingBox)
@@ -138,19 +159,32 @@ export function PatientSession() {
 
       <section className="session-stage" aria-labelledby="question-prompt">
         <div
-          className={`session-scene${showSimplified ? " session-scene--simplified" : ""}`}
+          className={`session-scene${showSimplified ? " session-scene--simplified" : ""}${generatedSceneReady ? " session-scene--generated" : ""}`}
           data-cue-level={state.session.cueLevel}
+          data-media-status={mediaJob?.status ?? "idle"}
+          data-scene-source={generatedSceneReady ? "generated" : "verified"}
         >
           <Image
+            className="session-scene__base"
             src={state.room.imageSrc}
-            alt="Synthetic bedroom with reading glasses, a blue mug, and a lamp"
+            alt={`Approved ${state.room.name.toLowerCase()} view`}
             fill
             priority
             sizes="(max-width: 900px) 100vw, 62vw"
             unoptimized
             style={{ objectPosition: `${objectPositionX * 100}% 50%` }}
           />
-          {showFocus && target ? (
+          {mediaJob?.outputSrc ? (
+            <Image
+              className="session-scene__generated"
+              src={mediaJob.outputSrc}
+              alt={`${generatedSceneLabel} of the approved ${state.room.name.toLowerCase()}`}
+              fill
+              sizes="(max-width: 900px) 100vw, 62vw"
+              unoptimized
+            />
+          ) : null}
+          {showFocus && target && !generatedSceneReady ? (
             <GroundingOverlay
               className="session-scene__focus"
               box={target.boundingBox}
@@ -159,12 +193,19 @@ export function PatientSession() {
             />
           ) : null}
           <span className="scene-label">
-            {showSimplified
-              ? "Simplified fallback view"
-              : showFocus
-                ? "Verified area highlighted"
-                : "Familiar bedroom"}
+            {generatedSceneReady
+              ? generatedSceneLabel
+              : showSimplified
+                ? "Verified simplified fallback"
+                : showFocus
+                  ? "Verified area highlighted"
+                  : "Familiar bedroom"}
           </span>
+          {mediaJob?.status === "pending" && !showSimplified ? (
+            <span className="scene-media-status" role="status">
+              Preparing next visual cue
+            </span>
+          ) : null}
         </div>
 
         <div className="session-panel">

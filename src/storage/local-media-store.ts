@@ -25,13 +25,18 @@ const safeRoomFileName =
 
 export class LocalMediaStore {
   private readonly roomDirectory: string;
+  private readonly generatedRoomDirectory: string;
 
   constructor(dataDirectory: string) {
-    this.roomDirectory = path.resolve(
-      process.cwd(),
+    const rootDirectory = path.resolve(
+      /* turbopackIgnore: true */ process.cwd(),
       dataDirectory,
-      "uploads",
-      "room",
+    );
+    this.roomDirectory = path.join(rootDirectory, "uploads", "room");
+    this.generatedRoomDirectory = path.join(
+      rootDirectory,
+      "generated",
+      "room-cues",
     );
   }
 
@@ -48,6 +53,32 @@ export class LocalMediaStore {
   }
 
   async readRoomImage(fileName: string) {
+    return this.readImage(this.roomDirectory, fileName);
+  }
+
+  async saveGeneratedRoomImage(image: RoomImageInput) {
+    const extension = extensionByMimeType[image.mimeType];
+    const fileName = `${randomUUID()}.${extension}`;
+    await mkdir(this.generatedRoomDirectory, {
+      recursive: true,
+      mode: 0o700,
+    });
+    await writeFile(
+      path.join(
+        /* turbopackIgnore: true */ this.generatedRoomDirectory,
+        fileName,
+      ),
+      Buffer.from(image.data, "base64"),
+      { flag: "wx", mode: 0o600 },
+    );
+    return `/api/generated-room-media/${fileName}`;
+  }
+
+  async readGeneratedRoomImage(fileName: string) {
+    return this.readImage(this.generatedRoomDirectory, fileName);
+  }
+
+  private async readImage(directory: string, fileName: string) {
     if (!safeRoomFileName.test(fileName)) {
       return null;
     }
@@ -60,7 +91,7 @@ export class LocalMediaStore {
     try {
       return {
         bytes: await readFile(
-          path.join(/* turbopackIgnore: true */ this.roomDirectory, fileName),
+          path.join(/* turbopackIgnore: true */ directory, fileName),
         ),
         mimeType: mimeTypeByExtension[extension],
       };

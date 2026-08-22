@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { anchorReducer } from "@/domain/anchor-reducer";
+import { createPendingSimplifiedRoomJob } from "@/domain/media-job-runner";
 import {
   createDraftAnchorState,
   createPreparedAnchorState,
@@ -37,5 +38,25 @@ describe("ANCHOR state reducer", () => {
     state = anchorReducer(state, { type: "help" });
     expect(state.session.cueLevel).toBe("focus");
     expect("score" in state.session).toBe(false);
+  });
+
+  it("upserts one grounded media job without changing lesson progress", () => {
+    const state = createPreparedAnchorState();
+    const question = state.lesson?.questions[0];
+    if (!state.lesson || !question) {
+      throw new Error("Prepared lesson is unavailable.");
+    }
+    const job = createPendingSimplifiedRoomJob({
+      lessonId: state.lesson.id,
+      questionId: question.id,
+      targetObjectId: question.targetObjectId,
+      fallbackSrc: state.room.imageSrc,
+    });
+    const next = anchorReducer(state, { type: "media_job_updated", job });
+
+    expect(next.mediaJobs.find(({ id }) => id === job.id)?.status).toBe(
+      "pending",
+    );
+    expect(next.session).toEqual(state.session);
   });
 });

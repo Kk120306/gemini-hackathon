@@ -25,7 +25,7 @@ The initial model selections are:
 
 - `GEMMA_MODEL=gemma-4-26b-a4b-it` for object analysis and lesson generation.
 - `GEMINI_VALIDATION_MODEL=gemini-3.6-flash` for generated-media validation and repair tasks.
-- `GEMINI_IMAGE_MODEL=gemini-3.1-flash-image` for guide portraits and simplified room images.
+- `GEMINI_IMAGE_MODEL=gemini-3.1-flash-lite-image` for the single-reference simplified room image.
 - `GEMINI_VIDEO_MODEL=gemini-omni-flash-preview` for one short generated video.
 
 All names are environment variables because availability and preview identifiers can change.

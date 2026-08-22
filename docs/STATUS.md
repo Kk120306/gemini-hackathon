@@ -4,7 +4,7 @@ Last updated: 2026-08-22
 
 ## Current Phase
 
-Phase 3: Progressive Cue Magic Moment
+Phase 4: Trustworthy Family Guide
 
 ## Completed
 
@@ -53,19 +53,31 @@ Phase 3: Progressive Cue Magic Moment
 - Patient activity copy was shortened without weakening the deterministic grounding compiler.
 - Design QA passed against the source patient-activity reference at the 1194 by 834 tablet viewport.
 - The final patient activity capture has zero horizontal or vertical viewport overflow and no browser console errors.
+- Progressive cue generation now starts after the first incorrect answer or explicit help request without blocking the deterministic cue sequence.
+- Simplified-room jobs record pending, completed, failed, rejected, timed-out, and disabled outcomes with grounding identifiers and generation metadata.
+- The Gemini room-media provider accepts only an approved target and compares the source and candidate images before publication.
+- Candidate media must preserve target presence, target location, room identity, and introduce no misleading content before it can appear.
+- Unsafe, malformed, failed, disabled, or timed-out media fails closed to the verified room cue.
+- The eight-second patient-stage budget no longer waits for model latency, and a safe late result is staged until the next explicit patient interaction.
+- The generated room remains hidden during verbal and focus cues and crossfades only at the simplified cue level.
+- Reduced-motion preferences eliminate the room crossfade without changing cue meaning or answer controls.
+- Generated room media is stored outside version control and served through a private no-store route.
+- Gemini 3.1 Flash Lite Image is the default interactive edit model after passing the preservation gate with lower observed latency than the full Flash Image model.
+- Live, timeout, rejection, disabled-media, late-result, and private-media browser paths are covered by automated tests.
 
 ## Next Actions
 
-1. Add the non-blocking simplified-room generation job behind the existing media state model.
-2. Validate generated room identity, target presence, location, and misleading additions before display.
-3. Preserve immediate deterministic focus cues and continue after the eight-second stage budget.
-4. Confirm the exact repository or environment scope of the GitHub `GEMINI_API_KEY` secret before relying on the live CI workflow.
+1. Implement consent-gated trusted-person reference upload and server-private storage.
+2. Generate and independently validate one lightly stylized guide portrait without voice cloning or live-call framing.
+3. Add explicit caregiver approval and rejection before any generated likeness enters patient mode.
+4. Start the optional guide video after portrait approval while preserving the static guide and lesson behavior.
+5. Confirm the exact repository or environment scope of the GitHub `GEMINI_API_KEY` secret before relying on the live CI workflow.
 
 ## Open Risks
 
 - The Gemini Omni Flash preview requires paid-tier access and may not be available to the chosen API key.
-- Generated image preservation must be validated before patient display.
-- Real-time media latency may exceed the pace of a live presentation.
+- Live simplified-room generation and validation took 11.4 seconds in the latest smoke test, so the eight-second fallback and safe late-publication path remain essential.
+- Generative preservation is nondeterministic, so every candidate must continue to pass the two-image validation gate.
 - Browser speech-recognition support varies and must remain optional.
 - Local filesystem persistence will need replacement if the demo is deployed to an ephemeral host.
 - The avatar may reduce trust if its styling or labeling feels like impersonation.
@@ -109,3 +121,13 @@ Phase 3: Progressive Cue Magic Moment
 - `pnpm test:e2e` passed all 5 tablet Chromium scenarios after the design alignment checkpoint on 2026-08-22.
 - `pnpm build` produced all 10 public application routes and the private room-media route after the design alignment checkpoint on 2026-08-22.
 - Browser-rendered design QA passed with exact 1194 by 834 viewport fit and no console errors on 2026-08-22.
+- `pnpm format:check` passed on 2026-08-22 after Phase 3.
+- `pnpm lint` passed on 2026-08-22 after Phase 3.
+- `pnpm typecheck` passed on 2026-08-22 after Phase 3.
+- `pnpm test` passed 40 tests across 12 files on 2026-08-22 after Phase 3.
+- `pnpm test:e2e` passed all 7 tablet Chromium scenarios on 2026-08-22 after Phase 3.
+- `pnpm test:live` passed the complete prepared-room Gemma flow in 29.3 seconds on 2026-08-22 after Phase 3 transport changes.
+- `pnpm test:live:media` generated and validated the simplified room through Gemini 3.1 Flash Lite Image in 11.4 seconds on 2026-08-22.
+- `pnpm build` produced all 12 routes without warnings on 2026-08-22 after Phase 3.
+- The generated cue crossfade and reduced-motion state were visually inspected at 1194 by 834 pixels with no viewport overflow or browser console errors on 2026-08-22.
+- The Phase 3 production preview returned HTTP 200 through the private Tailscale URL on 2026-08-22.

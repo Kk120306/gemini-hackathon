@@ -3,6 +3,7 @@
 import {
   analyzeRoomAction,
   generateLessonAction,
+  generateSimplifiedRoomAction,
 } from "@/app/actions/anchor-ai";
 import type {
   GroundingRecord,
@@ -15,8 +16,12 @@ import type { AiProvider, RoomAnalysis } from "@/providers/ai-provider";
 import { FakeAiProvider } from "@/providers/fake-ai-provider";
 import {
   roomAnalysisInputSchema,
+  simplifiedRoomActionInputSchema,
+  simplifiedRoomActionResultSchema,
   type RoomAnalysisInput,
   type RoomImageInput,
+  type SimplifiedRoomActionInput,
+  type SimplifiedRoomActionResult,
 } from "@/providers/provider-contracts";
 
 async function blobToImageInput(
@@ -81,5 +86,14 @@ export class BrowserAiProvider implements AiProvider {
 
   generateGuide(trustedPerson: TrustedPerson): Promise<Guide> {
     return this.fallback.generateGuide(trustedPerson);
+  }
+
+  async generateSimplifiedRoom(
+    input: SimplifiedRoomActionInput,
+  ): Promise<SimplifiedRoomActionResult> {
+    const request = simplifiedRoomActionInputSchema.parse(input);
+    return simplifiedRoomActionResultSchema.parse(
+      await generateSimplifiedRoomAction(request),
+    );
   }
 }

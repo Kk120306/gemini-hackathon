@@ -1,4 +1,4 @@
-name: Live Gemma smoke
+name: Live Gemini smoke
 
 on:
   workflow_dispatch:
@@ -13,6 +13,8 @@ jobs:
     env:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       GEMMA_MODEL: gemma-4-26b-a4b-it
+      GEMINI_IMAGE_MODEL: gemini-3.1-flash-lite-image
+      GEMINI_VALIDATION_MODEL: gemini-3.6-flash
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -26,3 +28,5 @@ jobs:
       - run: pnpm exec playwright install --with-deps chromium
       - name: Run live provider smoke
         run: pnpm test:live
+      - name: Run live room-media smoke
+        run: pnpm test:live:media

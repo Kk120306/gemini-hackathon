@@ -4,6 +4,7 @@ import {
   anchorStateSchema,
   boundingBoxSchema,
   lessonSchema,
+  mediaValidationSchema,
 } from "@/domain/anchor";
 import { validateGroundedLesson } from "@/domain/validation";
 import { createPreparedAnchorState } from "@/fixtures/demo";
@@ -50,5 +51,29 @@ describe("ANCHOR runtime contracts", () => {
         state.groundingRecords,
       ),
     ).toThrow(/unapproved grounding evidence/);
+  });
+
+  it("fails closed when a media validation claims unsafe output is safe", () => {
+    expect(() =>
+      mediaValidationSchema.parse({
+        targetObjectPresent: false,
+        targetLocationPreserved: true,
+        roomIdentityPreserved: true,
+        misleadingContentIntroduced: false,
+        safeToDisplay: true,
+        conciseReason: "The target object is missing.",
+      }),
+    ).toThrow(/preservation check/);
+
+    expect(
+      mediaValidationSchema.parse({
+        targetObjectPresent: false,
+        targetLocationPreserved: true,
+        roomIdentityPreserved: true,
+        misleadingContentIntroduced: false,
+        safeToDisplay: false,
+        conciseReason: "The target object is missing.",
+      }).safeToDisplay,
+    ).toBe(false);
   });
 });

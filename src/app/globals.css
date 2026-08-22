@@ -1795,16 +1795,35 @@ a {
   box-shadow: var(--shadow-soft);
 }
 
-.session-scene img {
+.session-scene__base,
+.session-scene__generated {
   object-fit: cover;
   transition:
+    opacity 420ms ease,
     filter 320ms ease,
     transform 420ms ease;
 }
 
-.session-scene--simplified img {
+.session-scene__base {
+  opacity: 1;
+}
+
+.session-scene__generated {
+  z-index: 2;
+  opacity: 0;
+}
+
+.session-scene--simplified:not(.session-scene--generated) .session-scene__base {
   filter: saturate(0.82) contrast(1.05) brightness(1.05);
   transform: scale(1.09);
+}
+
+.session-scene--generated .session-scene__base {
+  opacity: 0;
+}
+
+.session-scene--generated .session-scene__generated {
+  opacity: 1;
 }
 
 .session-scene__focus {
@@ -1821,12 +1840,27 @@ a {
 }
 
 .scene-label {
+  z-index: 4;
   position: absolute;
   bottom: 18px;
   left: 18px;
   border-radius: 999px;
   background: rgb(46 93 85 / 88%);
   color: white;
+  padding: 8px 13px;
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+.scene-media-status {
+  position: absolute;
+  z-index: 4;
+  top: 18px;
+  right: 18px;
+  border: 1px solid rgb(255 255 255 / 62%);
+  border-radius: 999px;
+  background: rgb(251 244 234 / 90%);
+  color: var(--ink-soft);
   padding: 8px 13px;
   font-size: 0.72rem;
   font-weight: 650;

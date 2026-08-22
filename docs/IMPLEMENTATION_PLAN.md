@@ -196,14 +196,14 @@ The core caregiver and patient screens match the selected visual direction witho
 
 ### Phase 3: Progressive Cue Magic Moment
 
-- [ ] Implement deterministic dimming, highlighting, and cropping from normalized bounding boxes.
-- [ ] Prefetch a simplified Gemini room image after the first incorrect answer.
-- [ ] Add pending, completed, failed, rejected, and timed-out media states.
-- [ ] Validate object presence, location, room identity, and misleading additions.
-- [ ] Crossfade to the generated scene only at the `simplified` cue level.
-- [ ] Continue with the deterministic visual after an eight-second stage budget.
-- [ ] Add reduced-motion behavior.
-- [ ] Test live, timeout, rejection, and disabled-media paths.
+- [x] Implement deterministic dimming, highlighting, and cropping from normalized bounding boxes.
+- [x] Prefetch a simplified Gemini room image after the first incorrect answer.
+- [x] Add pending, completed, failed, rejected, and timed-out media states.
+- [x] Validate object presence, location, room identity, and misleading additions.
+- [x] Crossfade to the generated scene only at the `simplified` cue level.
+- [x] Continue with the deterministic visual after an eight-second stage budget.
+- [x] Add reduced-motion behavior.
+- [x] Test live, timeout, rejection, and disabled-media paths.
 
 Exit condition:
 The patient receives an immediate cue and can finish the question whether live generation succeeds, arrives late, or fails.

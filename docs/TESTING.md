@@ -82,6 +82,9 @@ Each scenario must produce a visible recovery path.
 - Return a deterministic fallback immediately.
 - Represent pending, completed, failed, rejected, and timed-out states.
 - Display only media that passes validation.
+- Require target presence, target-location preservation, room-identity preservation, and no misleading additions for a safe result.
+- Keep a generated result hidden until the deterministic cue reaches `simplified`.
+- Stage a validated late result until the next explicit answer or help transition.
 - Preserve lesson progress after failure.
 
 ### Grounding Ledger
@@ -110,6 +113,8 @@ Test:
 - Guide content that implies a live message or invented memory.
 
 Keep real-provider tests opt-in and clearly labeled because they consume quota and may be nondeterministic.
+Use `pnpm test:live` for the prepared Gemma caregiver flow.
+Use `pnpm test:live:media` for the Gemini room edit and independent two-image validation gate.
 
 ## Accessibility Tests
 

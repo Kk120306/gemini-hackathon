@@ -103,6 +103,7 @@ export const lessonQuestionSchema = z
     type: questionTypeSchema,
     cognitiveSkill: cognitiveSkillSchema,
     prompt: z.string().min(1),
+    targetObjectId: z.string().min(1),
     objectIds: z.array(z.string().min(1)).min(1),
     sourceImageId: z.string().min(1),
     groundingRecordIds: z.array(z.string().min(1)).min(1),
@@ -164,21 +165,83 @@ export const cueLevelSchema = z.enum([
   "reveal",
 ]);
 
-export const mediaJobSchema = z.object({
-  id: z.string().min(1),
-  kind: z.enum(["guide_image", "simplified_room", "guide_video"]),
-  status: z.enum([
-    "pending",
-    "completed",
-    "failed",
-    "rejected",
-    "timed_out",
-    "disabled",
-  ]),
-  fallbackSrc: z.string().startsWith("/"),
-  outputSrc: z.string().startsWith("/").optional(),
-  validationPassed: z.boolean(),
-});
+export const mediaValidationSchema = z
+  .object({
+    targetObjectPresent: z.boolean(),
+    targetLocationPreserved: z.boolean(),
+    roomIdentityPreserved: z.boolean(),
+    misleadingContentIntroduced: z.boolean(),
+    safeToDisplay: z.boolean(),
+    conciseReason: z.string().trim().min(1).max(300),
+  })
+  .superRefine((validation, context) => {
+    const preservationPassed =
+      validation.targetObjectPresent &&
+      validation.targetLocationPreserved &&
+      validation.roomIdentityPreserved &&
+      !validation.misleadingContentIntroduced;
+
+    if (validation.safeToDisplay && !preservationPassed) {
+      context.addIssue({
+        code: "custom",
+        message: "Safe-to-display requires every preservation check to pass.",
+        path: ["safeToDisplay"],
+      });
+    }
+  });
+
+export const mediaJobSchema = z
+  .object({
+    id: z.string().min(1),
+    kind: z.enum(["guide_image", "simplified_room", "guide_video"]),
+    status: z.enum([
+      "pending",
+      "completed",
+      "failed",
+      "rejected",
+      "timed_out",
+      "disabled",
+    ]),
+    lessonId: z.string().min(1).optional(),
+    questionId: z.string().min(1).optional(),
+    targetObjectId: z.string().min(1).optional(),
+    fallbackSrc: z.string().startsWith("/"),
+    outputSrc: z.string().startsWith("/").optional(),
+    validationPassed: z.boolean(),
+    validation: mediaValidationSchema.optional(),
+    generationModel: z.string().trim().min(1).optional(),
+    startedAt: z.string().datetime().optional(),
+    settledAt: z.string().datetime().optional(),
+  })
+  .superRefine((job, context) => {
+    if (job.kind !== "simplified_room") {
+      return;
+    }
+    if (!job.lessonId || !job.questionId || !job.targetObjectId) {
+      context.addIssue({
+        code: "custom",
+        message: "Simplified-room jobs require lesson and grounding IDs.",
+      });
+    }
+    if (job.status === "completed") {
+      if (
+        !job.outputSrc ||
+        !job.validationPassed ||
+        !job.validation?.safeToDisplay
+      ) {
+        context.addIssue({
+          code: "custom",
+          message:
+            "Completed simplified-room media must have validated output.",
+        });
+      }
+    } else if (job.validationPassed) {
+      context.addIssue({
+        code: "custom",
+        message: "Only completed simplified-room media can pass validation.",
+      });
+    }
+  });
 
 export const lessonSessionSchema = z.object({
   lessonId: z.string().min(1),
@@ -220,6 +283,7 @@ export type Lesson = z.infer<typeof lessonSchema>;
 export type LessonQuestion = z.infer<typeof lessonQuestionSchema>;
 export type LessonSession = z.infer<typeof lessonSessionSchema>;
 export type MediaJob = z.infer<typeof mediaJobSchema>;
+export type MediaValidation = z.infer<typeof mediaValidationSchema>;
 export type TrustedPerson = z.infer<typeof trustedPersonSchema>;
 export type WorldModel = z.infer<typeof worldModelSchema>;
 export type WorldObject = z.infer<typeof worldObjectSchema>;

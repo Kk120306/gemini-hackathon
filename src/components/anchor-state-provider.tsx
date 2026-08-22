@@ -12,6 +12,10 @@ import {
 
 import type { AnchorState, TrustedPerson } from "@/domain/anchor";
 import { anchorReducer } from "@/domain/anchor-reducer";
+import {
+  createPendingSimplifiedRoomJob,
+  runSimplifiedRoomJob,
+} from "@/domain/media-job-runner";
 import { validateGroundedLesson } from "@/domain/validation";
 import { createPreparedAnchorState } from "@/fixtures/demo";
 import {
@@ -58,6 +62,10 @@ export function AnchorStateProvider({ children }: { children: ReactNode }) {
   const provider = useMemo(() => new BrowserAiProvider(), []);
   const storageReady = useRef(false);
   const skipNextSave = useRef(false);
+  const activeMediaJobs = useRef(new Set<string>());
+  const lateMediaJobs = useRef(
+    new Map<string, AnchorState["mediaJobs"][number]>(),
+  );
 
   useEffect(() => {
     const stored = storage.load();
@@ -80,8 +88,61 @@ export function AnchorStateProvider({ children }: { children: ReactNode }) {
     storage.save(state);
   }, [state, storage]);
 
-  const value = useMemo<AnchorContextValue>(
-    () => ({
+  const value = useMemo<AnchorContextValue>(() => {
+    function prefetchSimplifiedRoom() {
+      const lesson = state.lesson;
+      const question = lesson?.questions[state.session.questionIndex];
+      if (!lesson || !question || lesson.approval !== "approved") {
+        return;
+      }
+      const pendingJob = createPendingSimplifiedRoomJob({
+        lessonId: lesson.id,
+        questionId: question.id,
+        targetObjectId: question.targetObjectId,
+        fallbackSrc: state.room.imageSrc,
+      });
+      if (
+        activeMediaJobs.current.has(pendingJob.id) ||
+        state.mediaJobs.some(({ id }) => id === pendingJob.id)
+      ) {
+        return;
+      }
+      activeMediaJobs.current.add(pendingJob.id);
+      dispatch({ type: "media_job_updated", job: pendingJob });
+      void runSimplifiedRoomJob({
+        pendingJob,
+        onLateResult(job) {
+          lateMediaJobs.current.set(job.id, job);
+        },
+        generate: () =>
+          provider.generateSimplifiedRoom({
+            sourceImageSrc: state.room.imageSrc,
+            worldModel: state.worldModel,
+            groundingRecords: state.groundingRecords,
+            targetObjectId: question.targetObjectId,
+          }),
+      }).then((job) => {
+        activeMediaJobs.current.delete(pendingJob.id);
+        dispatch({ type: "media_job_updated", job });
+      });
+    }
+
+    function publishLateMediaForCurrentQuestion() {
+      const lesson = state.lesson;
+      const question = lesson?.questions[state.session.questionIndex];
+      if (!lesson || !question) {
+        return;
+      }
+      const jobId = `media-room-${lesson.id}-${question.id}`;
+      const job = lateMediaJobs.current.get(jobId);
+      if (!job) {
+        return;
+      }
+      lateMediaJobs.current.delete(jobId);
+      dispatch({ type: "media_job_updated", job });
+    }
+
+    return {
       state,
       ready,
       beginCaregiverReview() {
@@ -168,13 +229,20 @@ export function AnchorStateProvider({ children }: { children: ReactNode }) {
       answer(choice) {
         const question = state.lesson?.questions[state.session.questionIndex];
         if (question) {
+          publishLateMediaForCurrentQuestion();
+          const correct = choice === question.correctAnswer;
+          if (!correct) {
+            prefetchSimplifiedRoom();
+          }
           dispatch({
             type: "answer",
-            correct: choice === question.correctAnswer,
+            correct,
           });
         }
       },
       requestHelp() {
+        publishLateMediaForCurrentQuestion();
+        prefetchSimplifiedRoom();
         dispatch({ type: "help" });
       },
       continueSession() {
@@ -183,9 +251,8 @@ export function AnchorStateProvider({ children }: { children: ReactNode }) {
       resetSession() {
         dispatch({ type: "reset_session" });
       },
-    }),
-    [provider, ready, state],
-  );
+    };
+  }, [provider, ready, state]);
 
   return (
     <AnchorContext.Provider value={value}>{children}</AnchorContext.Provider>

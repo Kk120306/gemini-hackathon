@@ -142,6 +142,7 @@ export function compileGroundedLesson(
       type: question.type,
       cognitiveSkill: skillFor(question.type),
       prompt: promptFor(question.type, target),
+      targetObjectId: target.id,
       objectIds: groundedChoiceObjects.map(({ id }) => id),
       sourceImageId: target.sourceImageId,
       groundingRecordIds: groundedChoiceObjects.map(

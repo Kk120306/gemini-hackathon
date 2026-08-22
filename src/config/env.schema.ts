@@ -28,7 +28,7 @@ export const serverEnvSchema = z
       .string()
       .trim()
       .min(1)
-      .default("gemini-3.1-flash-image"),
+      .default("gemini-3.1-flash-lite-image"),
     GEMINI_VIDEO_MODEL: z
       .string()
       .trim()

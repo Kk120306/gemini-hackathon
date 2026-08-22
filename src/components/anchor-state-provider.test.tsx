@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("@/app/actions/anchor-ai", () => ({
   analyzeRoomAction: vi.fn(),
   generateLessonAction: vi.fn(),
+  generateSimplifiedRoomAction: vi.fn(),
 }));
 
 import {

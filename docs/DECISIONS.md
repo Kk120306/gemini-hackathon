@@ -93,6 +93,9 @@ A neutral non-likeness fallback is always available.
 Status: Accepted
 
 The simplified room image is prefetched after the first incorrect answer and displayed only at the correct cue level after validation.
+
+Gemini 3.1 Flash Lite Image is the default for the single-reference interactive room edit.
+It passed the preservation gate locally with lower end-to-end latency than Gemini 3.1 Flash Image, while the model identifier remains configurable.
 The short guide video begins after static-guide approval and runs in parallel with lesson setup.
 
 ## AD-013: Feature Freeze and Stage Time Budgets
@@ -128,3 +131,13 @@ The updated mockup supplies the warm canvas, Figtree typography, sage actions, r
 The implementation does not copy prototype-only navigation or decorative elements that compete with the verified room evidence.
 The room remains dominant on patient start and patient activity screens.
 The generated guide stays visibly labeled but remains a supporting element.
+
+## AD-017: Generated Room Media Uses an Independent Preservation Gate
+
+Status: Accepted
+
+The image generator receives only the approved room image, approved target, and literal simplification instruction.
+A separate Gemini validation call compares the source and candidate images before storage or display.
+The candidate must preserve the target object, target location, and room identity without introducing misleading content.
+Malformed or unsafe validation fails closed to the deterministic verified-room cue.
+An eight-second patient-stage budget may time out the visible job while allowing a late safe result to be staged for the next explicit interaction.

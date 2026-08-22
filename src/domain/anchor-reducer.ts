@@ -4,6 +4,7 @@ import {
   type GroundingRecord,
   type Guide,
   type Lesson,
+  type MediaJob,
   type TrustedPerson,
   type WorldModel,
 } from "@/domain/anchor";
@@ -30,6 +31,7 @@ export type AnchorAction =
   | { type: "approve_guide" }
   | { type: "lesson_generated"; lesson: Lesson }
   | { type: "approve_lesson" }
+  | { type: "media_job_updated"; job: MediaJob }
   | { type: "start_session" }
   | { type: "answer"; correct: boolean }
   | { type: "help" }
@@ -71,6 +73,9 @@ export function anchorReducer(
         groundingRecords: action.groundingRecords,
         guide: null,
         lesson: null,
+        mediaJobs: state.mediaJobs.filter(
+          ({ kind }) => kind !== "simplified_room",
+        ),
       };
       break;
     case "update_object": {
@@ -147,7 +152,13 @@ export function anchorReducer(
       next = { ...state, guide: { ...state.guide, approval: "approved" } };
       break;
     case "lesson_generated":
-      next = { ...state, lesson: action.lesson };
+      next = {
+        ...state,
+        lesson: action.lesson,
+        mediaJobs: state.mediaJobs.filter(
+          ({ kind }) => kind !== "simplified_room",
+        ),
+      };
       break;
     case "approve_lesson":
       if (!state.lesson) {
@@ -163,6 +174,15 @@ export function anchorReducer(
           status: "idle",
           feedback: "idle",
         },
+      };
+      break;
+    case "media_job_updated":
+      next = {
+        ...state,
+        mediaJobs: [
+          ...state.mediaJobs.filter(({ id }) => id !== action.job.id),
+          action.job,
+        ],
       };
       break;
     case "start_session":

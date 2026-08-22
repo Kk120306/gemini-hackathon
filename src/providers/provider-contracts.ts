@@ -1,6 +1,12 @@
 import { z } from "zod";
 
-import { boundingBoxSchema, questionTypeSchema } from "@/domain/anchor";
+import {
+  boundingBoxSchema,
+  groundingRecordSchema,
+  mediaValidationSchema,
+  questionTypeSchema,
+  worldModelSchema,
+} from "@/domain/anchor";
 
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 
@@ -79,6 +85,59 @@ export const roomAnalysisInputSchema = z.object({
   roomName: z.string().trim().min(1).max(100),
   image: roomImageInputSchema,
 });
+
+const privateRoomImageSrcSchema = z.union([
+  z.literal("/fixtures/bedroom.svg"),
+  z.literal("/fixtures/bedroom.png"),
+  z
+    .string()
+    .regex(
+      /^\/api\/room-media\/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.(?:jpg|png|svg|webp)$/,
+      "Room media must use a server-issued private path.",
+    ),
+]);
+
+export const simplifiedRoomActionInputSchema = z.object({
+  sourceImageSrc: privateRoomImageSrcSchema,
+  worldModel: worldModelSchema,
+  groundingRecords: z.array(groundingRecordSchema).min(3),
+  targetObjectId: z.string().trim().min(1),
+});
+
+export const simplifiedRoomProviderInputSchema = z.object({
+  sourceImage: roomImageInputSchema,
+  worldModel: worldModelSchema,
+  groundingRecords: z.array(groundingRecordSchema).min(3),
+  targetObjectId: z.string().trim().min(1),
+});
+
+export const simplifiedRoomActionResultSchema = z
+  .object({
+    status: z.enum(["completed", "rejected", "disabled"]),
+    outputSrc: z.string().startsWith("/").optional(),
+    validationPassed: z.boolean(),
+    validation: mediaValidationSchema.optional(),
+    generationModel: z.string().trim().min(1).optional(),
+  })
+  .superRefine((result, context) => {
+    if (
+      result.status === "completed" &&
+      (!result.outputSrc ||
+        !result.validationPassed ||
+        !result.validation?.safeToDisplay)
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "Completed room media must include validated output.",
+      });
+    }
+    if (result.status !== "completed" && result.validationPassed) {
+      context.addIssue({
+        code: "custom",
+        message: "Non-completed room media cannot pass validation.",
+      });
+    }
+  });
 
 export const modelObjectProposalSchema = z.object({
   name: z.string().trim().min(2).max(80),
@@ -192,6 +251,15 @@ export type LessonPlan = z.infer<typeof lessonPlanSchema>;
 export type RoomAnalysisInput = z.infer<typeof roomAnalysisInputSchema>;
 export type RoomImageInput = z.infer<typeof roomImageInputSchema>;
 export type RoomProposal = z.infer<typeof roomProposalSchema>;
+export type SimplifiedRoomActionInput = z.infer<
+  typeof simplifiedRoomActionInputSchema
+>;
+export type SimplifiedRoomActionResult = z.infer<
+  typeof simplifiedRoomActionResultSchema
+>;
+export type SimplifiedRoomProviderInput = z.infer<
+  typeof simplifiedRoomProviderInputSchema
+>;
 
 export function parseModelJson(text: string): unknown {
   const withoutFence = text

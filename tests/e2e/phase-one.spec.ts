@@ -98,7 +98,11 @@ test("caregiver correction persists into the complete six-question flow", async 
   await page.getByRole("button", { name: "Help me" }).click();
   await expect(page.getByText("Verified area highlighted")).toBeVisible();
   await page.getByRole("button", { name: "Help me" }).click();
-  await expect(page.getByText("Simplified fallback view")).toBeVisible();
+  await expect(
+    page.getByText(
+      /Prepared simplified view|AI-generated simplified view|Verified simplified fallback/,
+    ),
+  ).toBeVisible();
   await page.getByRole("button", { name: "Help me" }).click();
   await expect(page.getByText(/The answer is Reading glasses/)).toBeVisible();
   await page.getByRole("button", { name: "Answer Reading glasses" }).click();
