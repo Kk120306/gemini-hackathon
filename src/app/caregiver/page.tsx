@@ -1,12 +1,6 @@
 import Image from "next/image";
-import Link from "next/link";
-
-import {
-  ArrowRightIcon,
-  CheckIcon,
-  ShieldIcon,
-  SparkIcon,
-} from "@/components/icons";
+import { CaregiverStartAction } from "@/components/caregiver-start-action";
+import { CheckIcon, ShieldIcon, SparkIcon } from "@/components/icons";
 import { StepHeading } from "@/components/step-heading";
 
 const checklist = [
@@ -32,6 +26,7 @@ export default function CaregiverStartPage() {
               src="/fixtures/bedroom.svg"
               alt="Synthetic bedroom prepared for the demonstration"
               fill
+              priority
               sizes="(max-width: 800px) 100vw, 52vw"
               unoptimized
             />
@@ -46,10 +41,7 @@ export default function CaregiverStartPage() {
               Move through profile, room evidence, family guide, and lesson
               approval before opening patient mode.
             </p>
-            <Link className="primary-button" href="/caregiver/profile">
-              Begin caregiver setup
-              <ArrowRightIcon />
-            </Link>
+            <CaregiverStartAction />
           </div>
         </section>
 

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 760" role="img" aria-labelledby="title description">
+  <title id="title">Neutral ANCHOR guide</title>
+  <desc id="description">A warm abstract guide symbol with no human likeness.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dcebe2"/>
+      <stop offset="1" stop-color="#f3dfb8"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="760" rx="72" fill="url(#background)"/>
+  <circle cx="320" cy="325" r="185" fill="#fffdf8" opacity=".9"/>
+  <path d="M320 158c-66 57-99 117-99 180 0 83 43 139 99 174 56-35 99-91 99-174 0-63-33-123-99-180Z" fill="#245b52"/>
+  <path d="M320 224v226M265 309c31 0 55 23 55 54M375 309c-31 0-55 23-55 54" fill="none" stroke="#f5dfb5" stroke-width="26" stroke-linecap="round"/>
+  <circle cx="320" cy="489" r="26" fill="#e5a83f"/>
+  <text x="320" y="635" text-anchor="middle" fill="#173b37" font-family="system-ui, sans-serif" font-size="34" font-weight="700">ANCHOR GUIDE</text>
+  <text x="320" y="680" text-anchor="middle" fill="#45635f" font-family="system-ui, sans-serif" font-size="24">Neutral non-likeness fallback</text>
+</svg>

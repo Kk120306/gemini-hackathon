@@ -1,76 +1,17 @@
-import { z } from "zod";
+import {
+  anchorStateSchema,
+  type AnchorState,
+  type Lesson,
+  type WorldModel,
+} from "@/domain/anchor";
 
-const approvalSchema = z.enum(["draft", "approved", "rejected"]);
+const confirmedAt = "2026-08-22T09:00:00.000Z";
 
-const boundingBoxSchema = z.object({
-  x: z.number().min(0).max(1),
-  y: z.number().min(0).max(1),
-  width: z.number().positive().max(1),
-  height: z.number().positive().max(1),
-});
-
-const objectSchema = z.object({
-  id: z.string().min(1),
-  name: z.string().min(1),
-  location: z.string().min(1),
-  description: z.string().min(1),
-  sourceImageId: z.string().min(1),
-  groundingRecordId: z.string().min(1),
-  boundingBox: boundingBoxSchema,
-  approval: approvalSchema,
-});
-
-const groundingSchema = z.object({
-  id: z.string().min(1),
-  sourceImageId: z.string().min(1),
-  modelObservation: z.string().min(1),
-  caregiverValue: z.string().min(1),
-  approval: approvalSchema,
-});
-
-const questionSchema = z.object({
-  id: z.string().min(1),
-  type: z.enum([
-    "object_recognition",
-    "location_matching",
-    "visual_search",
-    "visual_recall",
-    "sequencing",
-    "association",
-  ]),
-  prompt: z.string().min(1),
-  correctAnswer: z.string().min(1),
-  choices: z.array(z.string().min(1)).min(2).max(3),
-  objectIds: z.array(z.string().min(1)).min(1),
-  groundingRecordIds: z.array(z.string().min(1)).min(1),
-  verbalCue: z.string().min(1),
-});
-
-const demoFixtureSchema = z.object({
-  patient: z.object({ firstName: z.string().min(1) }),
-  room: z.object({
-    id: z.string().min(1),
-    name: z.string().min(1),
-    imageSrc: z.string().startsWith("/"),
-  }),
-  objects: z.array(objectSchema).min(3).max(5),
-  groundingRecords: z.array(groundingSchema).min(3),
-  trustedPerson: z.object({
-    name: z.string().min(1),
-    relationship: z.string().min(1),
-    referenceImageSrcs: z.array(z.string().startsWith("/")).min(2).max(3),
-    guideImageSrc: z.string().startsWith("/"),
-  }),
-  questions: z.array(questionSchema).length(6),
-});
-
-export const demoFixture = demoFixtureSchema.parse({
-  patient: { firstName: "Maya" },
-  room: {
-    id: "room-bedroom-1",
-    name: "Bedroom",
-    imageSrc: "/fixtures/bedroom.svg",
-  },
+const preparedWorldModel: WorldModel = {
+  id: "world-bedroom-1",
+  roomName: "Bedroom",
+  revision: 1,
+  approval: "approved",
   objects: [
     {
       id: "object-glasses",
@@ -79,7 +20,7 @@ export const demoFixture = demoFixtureSchema.parse({
       description: "Dark blue reading glasses",
       sourceImageId: "room-bedroom-1",
       groundingRecordId: "grounding-glasses",
-      boundingBox: { x: 0.64, y: 0.55, width: 0.13, height: 0.08 },
+      boundingBox: { x: 0.76, y: 0.56, width: 0.16, height: 0.09 },
       approval: "approved",
     },
     {
@@ -89,7 +30,7 @@ export const demoFixture = demoFixtureSchema.parse({
       description: "Cream lamp with a green base",
       sourceImageId: "room-bedroom-1",
       groundingRecordId: "grounding-lamp",
-      boundingBox: { x: 0.76, y: 0.2, width: 0.14, height: 0.36 },
+      boundingBox: { x: 0.77, y: 0.2, width: 0.14, height: 0.37 },
       approval: "approved",
     },
     {
@@ -99,104 +40,254 @@ export const demoFixture = demoFixtureSchema.parse({
       description: "Small blue ceramic mug",
       sourceImageId: "room-bedroom-1",
       groundingRecordId: "grounding-mug",
-      boundingBox: { x: 0.18, y: 0.46, width: 0.1, height: 0.14 },
+      boundingBox: { x: 0.165, y: 0.5, width: 0.115, height: 0.2 },
       approval: "approved",
     },
   ],
+};
+
+const preparedLesson: Lesson = {
+  id: "lesson-bedroom-1",
+  worldModelId: preparedWorldModel.id,
+  worldModelRevision: preparedWorldModel.revision,
+  approval: "approved",
+  questions: [
+    {
+      id: "question-1",
+      type: "object_recognition",
+      cognitiveSkill: "recognition",
+      prompt: "Which item helps with reading?",
+      correctAnswer: "Reading glasses",
+      choices: ["Reading glasses", "Blue mug", "Lamp"],
+      objectIds: ["object-glasses"],
+      sourceImageId: "room-bedroom-1",
+      groundingRecordIds: ["grounding-glasses"],
+      verbalCue: "Look for something you can wear.",
+      encouragement: "Take your time. We can look together.",
+      visualCueStrategy: "focus_box",
+      requiresCaregiverVerifiedSequence: false,
+    },
+    {
+      id: "question-2",
+      type: "location_matching",
+      cognitiveSkill: "spatial_orientation",
+      prompt: "Where are the reading glasses?",
+      correctAnswer: "On the bedside table",
+      choices: ["On the bedside table", "On the bed", "On the dresser"],
+      objectIds: ["object-glasses"],
+      sourceImageId: "room-bedroom-1",
+      groundingRecordIds: ["grounding-glasses"],
+      verbalCue: "Look beside the bed.",
+      encouragement: "Take your time. We can look together.",
+      visualCueStrategy: "focus_box",
+      requiresCaregiverVerifiedSequence: false,
+    },
+    {
+      id: "question-3",
+      type: "visual_search",
+      cognitiveSkill: "attention",
+      prompt: "Can you find the blue mug?",
+      correctAnswer: "On the dresser",
+      choices: ["On the dresser", "On the bed", "By the window"],
+      objectIds: ["object-mug"],
+      sourceImageId: "room-bedroom-1",
+      groundingRecordIds: ["grounding-mug"],
+      verbalCue: "Look toward the left side of the room.",
+      encouragement: "Take your time. We can look together.",
+      visualCueStrategy: "focus_box",
+      requiresCaregiverVerifiedSequence: false,
+    },
+    {
+      id: "question-4",
+      type: "object_recognition",
+      cognitiveSkill: "recognition",
+      prompt: "Which object gives light?",
+      correctAnswer: "Lamp",
+      choices: ["Lamp", "Blue mug", "Reading glasses"],
+      objectIds: ["object-lamp"],
+      sourceImageId: "room-bedroom-1",
+      groundingRecordIds: ["grounding-lamp"],
+      verbalCue: "It is above the bedside table.",
+      encouragement: "Take your time. We can look together.",
+      visualCueStrategy: "focus_box",
+      requiresCaregiverVerifiedSequence: false,
+    },
+    {
+      id: "question-5",
+      type: "visual_recall",
+      cognitiveSkill: "short_term_memory",
+      prompt: "Which object did you see beside the bed?",
+      correctAnswer: "Reading glasses",
+      choices: ["Reading glasses", "Blue mug", "Pillow"],
+      objectIds: ["object-glasses"],
+      sourceImageId: "room-bedroom-1",
+      groundingRecordIds: ["grounding-glasses"],
+      verbalCue: "It is something you can wear.",
+      encouragement: "Take your time. We can look together.",
+      visualCueStrategy: "object_closeup",
+      requiresCaregiverVerifiedSequence: false,
+    },
+    {
+      id: "question-6",
+      type: "association",
+      cognitiveSkill: "semantic_association",
+      prompt: "Which object can hold a warm drink?",
+      correctAnswer: "Blue mug",
+      choices: ["Blue mug", "Lamp", "Reading glasses"],
+      objectIds: ["object-mug"],
+      sourceImageId: "room-bedroom-1",
+      groundingRecordIds: ["grounding-mug"],
+      verbalCue: "It has a handle.",
+      encouragement: "Take your time. We can look together.",
+      visualCueStrategy: "object_closeup",
+      requiresCaregiverVerifiedSequence: false,
+    },
+  ],
+};
+
+const preparedState = anchorStateSchema.parse({
+  version: 1,
+  patient: { id: "patient-maya", firstName: "Maya" },
+  room: {
+    id: "room-bedroom-1",
+    name: "Bedroom",
+    imageSrc: "/fixtures/bedroom.svg",
+    uploadStatus: "analyzed",
+  },
+  worldModel: preparedWorldModel,
   groundingRecords: [
     {
       id: "grounding-glasses",
+      sourceType: "visual",
       sourceImageId: "room-bedroom-1",
+      sourceCrop: preparedWorldModel.objects[0]?.boundingBox,
       modelObservation: "Dark glasses are visible on the table beside the bed.",
       caregiverValue: "Reading glasses on the bedside table",
+      caregiverConfirmedAt: confirmedAt,
+      caregiverConfirmedBy: "Demo caregiver",
       approval: "approved",
     },
     {
       id: "grounding-lamp",
+      sourceType: "visual",
       sourceImageId: "room-bedroom-1",
+      sourceCrop: preparedWorldModel.objects[1]?.boundingBox,
       modelObservation: "A lamp is visible on the table beside the bed.",
       caregiverValue: "Lamp on the bedside table",
+      caregiverConfirmedAt: confirmedAt,
+      caregiverConfirmedBy: "Demo caregiver",
       approval: "approved",
     },
     {
       id: "grounding-mug",
+      sourceType: "visual",
       sourceImageId: "room-bedroom-1",
+      sourceCrop: preparedWorldModel.objects[2]?.boundingBox,
       modelObservation: "A blue mug is visible on the dresser.",
       caregiverValue: "Blue mug on the dresser",
+      caregiverConfirmedAt: confirmedAt,
+      caregiverConfirmedBy: "Demo caregiver",
       approval: "approved",
     },
   ],
   trustedPerson: {
+    id: "trusted-elena",
     name: "Elena",
     relationship: "daughter",
     referenceImageSrcs: [
       "/fixtures/elena-reference-1.svg",
       "/fixtures/elena-reference-2.svg",
     ],
-    guideImageSrc: "/fixtures/elena-guide.svg",
+    likenessConsent: true,
+    consentedBy: "Demo caregiver",
+    consentedAt: confirmedAt,
   },
-  questions: [
+  guide: {
+    id: "guide-elena",
+    trustedPersonId: "trusted-elena",
+    presentation: "stylized_likeness",
+    imageSrc: "/fixtures/elena-guide.svg",
+    label: "AI-generated guide based on Elena",
+    approval: "approved",
+  },
+  lesson: preparedLesson,
+  mediaJobs: [
     {
-      id: "question-1",
-      type: "object_recognition",
-      prompt: "Which item helps with reading?",
-      correctAnswer: "Reading glasses",
-      choices: ["Reading glasses", "Blue mug", "Lamp"],
-      objectIds: ["object-glasses"],
-      groundingRecordIds: ["grounding-glasses"],
-      verbalCue: "Look for something you can wear.",
+      id: "media-guide-fixture",
+      kind: "guide_image",
+      status: "completed",
+      fallbackSrc: "/fixtures/neutral-guide.svg",
+      outputSrc: "/fixtures/elena-guide.svg",
+      validationPassed: true,
     },
     {
-      id: "question-2",
-      type: "location_matching",
-      prompt: "Where are the reading glasses?",
-      correctAnswer: "On the bedside table",
-      choices: ["On the bedside table", "On the bed", "On the dresser"],
-      objectIds: ["object-glasses"],
-      groundingRecordIds: ["grounding-glasses"],
-      verbalCue: "Look beside the bed.",
-    },
-    {
-      id: "question-3",
-      type: "visual_search",
-      prompt: "Can you find the blue mug?",
-      correctAnswer: "On the dresser",
-      choices: ["On the dresser", "On the bed", "By the window"],
-      objectIds: ["object-mug"],
-      groundingRecordIds: ["grounding-mug"],
-      verbalCue: "Look toward the left side of the room.",
-    },
-    {
-      id: "question-4",
-      type: "object_recognition",
-      prompt: "Which object gives light?",
-      correctAnswer: "Lamp",
-      choices: ["Lamp", "Blue mug", "Reading glasses"],
-      objectIds: ["object-lamp"],
-      groundingRecordIds: ["grounding-lamp"],
-      verbalCue: "It is above the bedside table.",
-    },
-    {
-      id: "question-5",
-      type: "visual_recall",
-      prompt: "Which object did you see beside the bed?",
-      correctAnswer: "Reading glasses",
-      choices: ["Reading glasses", "Blue mug", "Pillow"],
-      objectIds: ["object-glasses"],
-      groundingRecordIds: ["grounding-glasses"],
-      verbalCue: "It is something you can wear.",
-    },
-    {
-      id: "question-6",
-      type: "association",
-      prompt: "Which object can hold a warm drink?",
-      correctAnswer: "Blue mug",
-      choices: ["Blue mug", "Lamp", "Reading glasses"],
-      objectIds: ["object-mug"],
-      groundingRecordIds: ["grounding-mug"],
-      verbalCue: "It has a handle.",
+      id: "media-room-fixture",
+      kind: "simplified_room",
+      status: "disabled",
+      fallbackSrc: "/fixtures/bedroom.svg",
+      validationPassed: false,
     },
   ],
+  session: {
+    lessonId: preparedLesson.id,
+    questionIndex: 0,
+    cueLevel: "none",
+    status: "idle",
+    feedback: "idle",
+  },
 });
 
-export type DemoFixture = z.infer<typeof demoFixtureSchema>;
+function cloneState(state: AnchorState): AnchorState {
+  return anchorStateSchema.parse(structuredClone(state));
+}
+
+export function createPreparedAnchorState(): AnchorState {
+  return cloneState(preparedState);
+}
+
+export function createDraftAnchorState(): AnchorState {
+  const state = cloneState(preparedState);
+  state.room.uploadStatus = "ready";
+  state.worldModel.approval = "draft";
+  state.worldModel.objects = state.worldModel.objects.map((object) => ({
+    ...object,
+    approval: "draft",
+  }));
+  state.groundingRecords = state.groundingRecords.map((record) => ({
+    ...record,
+    caregiverConfirmedAt: undefined,
+    caregiverConfirmedBy: undefined,
+    approval: "draft",
+  }));
+  state.trustedPerson = {
+    ...state.trustedPerson,
+    likenessConsent: false,
+    consentedAt: undefined,
+    consentedBy: undefined,
+  };
+  state.guide = null;
+  state.lesson = null;
+  state.mediaJobs = [];
+  state.session = {
+    lessonId: preparedLesson.id,
+    questionIndex: 0,
+    cueLevel: "none",
+    status: "idle",
+    feedback: "idle",
+  };
+
+  return anchorStateSchema.parse(state);
+}
+
+export const demoFixture = {
+  patient: preparedState.patient,
+  room: preparedState.room,
+  objects: preparedState.worldModel.objects,
+  groundingRecords: preparedState.groundingRecords,
+  trustedPerson: {
+    ...preparedState.trustedPerson,
+    guideImageSrc:
+      preparedState.guide?.imageSrc ?? "/fixtures/neutral-guide.svg",
+  },
+  questions: preparedLesson.questions,
+};

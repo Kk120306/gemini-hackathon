@@ -2,6 +2,7 @@ import "@fontsource-variable/fraunces/wght.css";
 import "@fontsource-variable/nunito-sans/wght.css";
 import type { Metadata } from "next";
 
+import { AnchorStateProvider } from "@/components/anchor-state-provider";
 import { publicEnv } from "@/config/public-env";
 
 import "./globals.css";
@@ -18,7 +19,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AnchorStateProvider>{children}</AnchorStateProvider>
+      </body>
     </html>
   );
 }

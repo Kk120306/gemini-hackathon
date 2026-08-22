@@ -29,7 +29,7 @@ test("caregiver and patient route shells render in fixture mode", async ({
     page.getByRole("heading", { name: "Which item helps with reading?" }),
   ).toBeVisible();
   await expect(
-    page.getByText("AI-generated guide", { exact: true }),
+    page.getByText("AI-generated guide based on Elena", { exact: true }),
   ).toBeVisible();
 });
 

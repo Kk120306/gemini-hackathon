@@ -4,7 +4,7 @@ Last updated: 2026-08-22
 
 ## Current Phase
 
-Phase 1: Seeded Winning Flow
+Phase 2: Real Gemma Grounding
 
 ## Completed
 
@@ -26,15 +26,25 @@ Phase 1: Seeded Winning Flow
 - Synthetic bedroom, trusted-person, grounding, and six-question fixtures added.
 - All planned caregiver and patient route shells implemented with responsive, accessible layouts.
 - Patient tablet shell verified with large touch targets, persistent guide labeling, and no viewport scrolling.
+- Phase 1 runtime schemas implemented for patient, world model, grounding, trusted person, guide, lesson, media job, and session state.
+- Deterministic cue and session reducers implemented with the enforced `none`, `verbal`, `focus`, `simplified`, and `reveal` sequence.
+- Fake AI and validated browser-local storage adapters implemented for the complete offline flow.
+- Caregiver profile, room analysis, evidence correction, world-model approval, consent, guide approval, and lesson approval made interactive and persistent.
+- Corrected caregiver values now flow into the generated fixture lesson while the original Gemma observation remains auditable.
+- The complete six-question patient session now supports neutral feedback, visible help, generic browser speech synthesis, progress, replay, and completion without a score.
+- The neutral non-likeness guide and deterministic room-media fallback complete the entire flow with likeness media disabled.
+- Cover-image grounding geometry now projects source-image bounding boxes into responsive crops and keeps edge targets visible.
+- The synthetic fixture coordinates were visually corrected so the primary cue highlights the reading glasses rather than the pillow.
+- Patient routes remain gated until persisted caregiver approval has loaded, preventing prepared fixture content from flashing over a saved draft.
+- Tailscale Serve exposes the loopback production preview privately at `https://kais-mac-mini.tail4a140f.ts.net:3443/`.
 
 ## Next Actions
 
-1. Implement the validated domain types and deterministic cue state machine.
-2. Add fake AI and local storage adapters.
-3. Make the caregiver approval path interactive and persistent.
-4. Implement the complete six-question patient session with speech synthesis and help controls.
-5. Add the primary and all-media-disabled end-to-end scenarios.
-6. Add a valid Google AI Studio key only when the offline Phase 1 flow passes.
+1. Add the Google Gen AI SDK behind a server-only provider boundary.
+2. Implement structured Gemma room analysis and grounded lesson generation with one repair attempt.
+3. Add malformed, unsupported-inference, and ungrounded-output contract tests.
+4. Add a server-only live-provider smoke path that remains opt-in outside CI.
+5. Use the GitHub `GEMINI_API_KEY` secret for CI verification and request a local key only when local live smoke testing is required.
 
 ## Open Risks
 
@@ -50,7 +60,7 @@ Phase 1: Seeded Winning Flow
 
 ## Blockers
 
-- A real `GEMINI_API_KEY` is required before live provider calls can be verified.
+- The GitHub `GEMINI_API_KEY` secret is available for CI, but no local key has been provided for local live-provider smoke tests.
 
 ## Verification Log
 
@@ -62,3 +72,11 @@ Phase 1: Seeded Winning Flow
 - `pnpm test:e2e` passed 2 tablet Chromium scenarios, including accessibility and touch-target checks, on 2026-08-22.
 - `pnpm build` produced all 10 public application routes successfully on 2026-08-22.
 - Landing, grounding-evidence, and patient-session screens were visually inspected at 1194 by 834 pixels on 2026-08-22.
+- `pnpm format:check` passed on 2026-08-22 after Phase 1.
+- `pnpm lint` passed on 2026-08-22 after Phase 1.
+- `pnpm typecheck` passed on 2026-08-22 after Phase 1.
+- `pnpm test` passed 18 tests across 9 files on 2026-08-22 after Phase 1.
+- `pnpm test:e2e` passed 5 tablet Chromium scenarios on a cold isolated server on 2026-08-22 after Phase 1.
+- `pnpm build` produced all 10 public application routes successfully on 2026-08-22 after Phase 1.
+- Initial, focus, and simplified patient cue states were visually inspected at 1194 by 834 pixels on 2026-08-22.
+- The Tailscale production preview returned HTTP 200 on 2026-08-22.

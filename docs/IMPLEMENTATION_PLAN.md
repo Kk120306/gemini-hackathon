@@ -156,15 +156,15 @@ The app starts locally, the production build succeeds, and fixture mode needs no
 
 ### Phase 1: Seeded Winning Flow
 
-- [ ] Implement patient, world-model, grounding, guide, lesson, media-job, and session types.
-- [ ] Implement the deterministic cue state machine.
-- [ ] Implement fake AI and local storage adapters.
-- [ ] Build the minimum caregiver path.
-- [ ] Build object verification with source crop, original proposal, correction, and approval.
-- [ ] Build the six-question lesson preview with two cognitive activities.
-- [ ] Build the tablet patient experience.
-- [ ] Add generic text-to-speech and visible replay and help controls.
-- [ ] Add the primary and fallback end-to-end tests.
+- [x] Implement patient, world-model, grounding, guide, lesson, media-job, and session types.
+- [x] Implement the deterministic cue state machine.
+- [x] Implement fake AI and local storage adapters.
+- [x] Build the minimum caregiver path.
+- [x] Build object verification with source crop, original proposal, correction, and approval.
+- [x] Build the six-question lesson preview with two cognitive activities.
+- [x] Build the tablet patient experience.
+- [x] Add generic text-to-speech and visible replay and help controls.
+- [x] Add the primary and fallback end-to-end tests.
 
 Exit condition:
 The complete stage flow works offline, shows the grounding proof chain, and passes both end-to-end tests.

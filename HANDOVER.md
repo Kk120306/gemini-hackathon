@@ -1,10 +1,10 @@
-# ANCHOR Phase 0 Handover
+# ANCHOR Phase 1 Handover
 
 ## Handover Summary
 
-Phase 0 is complete on the `main` branch at commit `15b6bac` (`feat: complete phase 0 foundation`).
-This phase establishes the application foundation and the complete static demo shell.
-The next implementation phase has not been included in this handover.
+Phase 1 is complete in the current worktree and is ready for its dedicated commit.
+This phase turns the static shell into a complete offline caregiver-to-patient flow.
+The next implementation phase is live Gemma grounding behind the existing provider boundary.
 
 ## What Is Ready
 
@@ -13,15 +13,22 @@ The next implementation phase has not been included in this handover.
 - Synthetic bedroom, trusted-person, grounding, and six-question fixtures are included.
 - The patient tablet shell has large touch targets, persistent generated-guide labeling, and no viewport scrolling at the target tablet size.
 - Fixture mode runs without a Gemini API key.
+- Runtime schemas reject malformed domain and lesson state before it is stored or rendered.
+- The caregiver can edit a Gemma proposal, inspect its original observation, approve the evidence, and carry the correction into the lesson.
+- Consent, a stylized guide, and a neutral non-likeness fallback are available through explicit caregiver controls.
+- The patient can complete exactly six questions with deterministic progressive cues, visible help, generic speech synthesis, and no score.
+- The source-image grounding box remains aligned when the room image is responsively cropped.
+- Patient routes wait for persisted caregiver approval before rendering any lesson content.
+- Primary, neutral-guide fallback, accessibility, touch-target, persistence, and viewport-fit paths are automated.
+- The production preview is available privately through Tailscale Serve at `https://kais-mac-mini.tail4a140f.ts.net:3443/` while the local server is running on port 3001.
 - Personal uploads, generated media, local application data, and `.env.local` are excluded from Git.
 - Formatting, linting, type checking, unit tests, end-to-end tests, and the production build passed on 2026-08-22.
 
 ## What Is Not Ready
 
-- The caregiver setup and approval screens are presentation shells and are not interactive yet.
-- The six-question patient session does not advance or persist answers yet.
 - Live Gemma and Gemini provider calls are not implemented or verified.
-- A real `GEMINI_API_KEY` has not been configured.
+- The GitHub Actions secret is configured, but a local `GEMINI_API_KEY` has not been supplied for local smoke testing.
+- Generated room images, media validation, and asynchronous guide video remain Phase 3 and Phase 4 work.
 - Authentication is intentionally outside the hackathon MVP scope, so this build must not be exposed directly to the public internet.
 
 ## Move the Project to the Mac mini
