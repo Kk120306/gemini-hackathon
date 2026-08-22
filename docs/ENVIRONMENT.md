@@ -91,5 +91,6 @@ The local `GEMINI_API_KEY` was verified through the complete prepared-room Gemma
 The key value remains ignored and must never be copied into source files, client variables, logs, or screenshots.
 
 The repository includes a manually triggered live-provider GitHub Actions workflow that expects the exact repository secret name `GEMINI_API_KEY`.
-`gh secret list` reported no repository-level Actions secret names on 2026-08-22.
-Before relying on CI, confirm that the key was added to this repository under that exact name rather than to another repository, environment, or organization scope.
+The final handover audit found the user-provided secret under the Codespaces scope, which GitHub Actions cannot read through `${{ secrets.GEMINI_API_KEY }}`.
+The locally verified key was copied directly from ignored `.env.local` into the repository Actions secret without printing or storing its value elsewhere.
+`gh secret list --app actions` confirmed the repository-level `GEMINI_API_KEY` name on 2026-08-22.

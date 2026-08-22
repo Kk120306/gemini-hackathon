@@ -247,7 +247,10 @@ The six activities form a varied evidence-reasoning sequence, no activity can be
 Exit condition:
 The patient can explore and answer in a labeled Gemini-generated spatial interpretation, while the app remains honest about the single-image limitation and fully usable without generation.
 
-### Phase 4: Trustworthy Family Guide
+### Deferred Phase 4: Trustworthy Family Guide
+
+This phase was deliberately excluded from the hackathon submission after the user froze scope around the spatial room, strong questions, and progressive cue loop.
+The existing neutral labeled guide remains the safe demo fallback, and these items are post-hackathon work rather than submission blockers.
 
 - [ ] Capture name, relationship, likeness permission, and caregiver confirmation.
 - [ ] Generate one lightly stylized guide portrait from two or three reference images.

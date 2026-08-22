@@ -94,7 +94,7 @@ Phase 5: Submission Package Ready
 
 1. Review the finished 2-minute 36-second product film and rehearse the live Tailscale path as a backup presentation.
 2. Replace the neutral narration with the presenter's voice only if that improves the final submission without delaying it.
-3. Confirm the exact repository or environment scope of the GitHub `GEMINI_API_KEY` secret before relying on the live CI workflow.
+3. Push the local phase commits when the repository owner is ready to publish the completed handover.
 
 ## Open Risks
 
@@ -112,7 +112,7 @@ Phase 5: Submission Package Ready
 
 ## Blockers
 
-- `gh secret list` reports no repository-level Actions secret names, so the exact scope of the user-configured `GEMINI_API_KEY` must be confirmed before live CI can run.
+- None for the local or Tailscale hackathon demo.
 
 ## Verification Log
 
@@ -189,3 +189,5 @@ Phase 5: Submission Package Ready
 - Final repository `pnpm format:check`, `pnpm lint`, and `pnpm typecheck` checks passed after adding the submission film on 2026-08-22.
 - Final `pnpm test` passed 47 tests across 14 files after adding the submission film on 2026-08-22.
 - Final `pnpm build` produced all application and private-media routes after adding the submission film on 2026-08-22.
+- GitHub reported `GEMINI_API_KEY` under the Codespaces secret scope rather than the Actions scope during the final handover audit on 2026-08-22.
+- The locally verified key was copied directly from ignored `.env.local` into the repository Actions secret without exposing its value, and `gh secret list --app actions` confirmed the exact `GEMINI_API_KEY` name on 2026-08-22.
