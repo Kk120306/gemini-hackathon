@@ -20,13 +20,13 @@ export const InputsScene: React.FC<{ durationInFrames: number }> = ({
       background={colors.ink}
       dark
     >
-      <Audio src={staticFile("audio/03-inputs.m4a")} volume={0.95} />
+      <Audio src={staticFile("audio/03-inputs.wav")} volume={0.95} />
       <div style={{ left: 70, position: "absolute", top: 52 }}>
         <BrandMark light />
       </div>
       <div style={{ left: 110, position: "absolute", top: 155 }}>
         <div style={enter(frame, 6)}>
-          <Eyebrow light>Caregiver-verified context</Eyebrow>
+          <Eyebrow light>Gemini multimodal room analysis</Eyebrow>
         </div>
         <h2
           style={{
@@ -82,9 +82,11 @@ export const InputsScene: React.FC<{ durationInFrames: number }> = ({
           position: "absolute",
         }}
       >
-        Gemini detects what is visible • caregiver approves every detail
+        Gemini 3.6 Flash • names + bounding boxes + spatial positions
       </div>
-      <Footnote light>No guessed routines, relationships, or memories</Footnote>
+      <Footnote light>
+        Gemini proposes • caregiver verifies • ANCHOR stores only approved facts
+      </Footnote>
     </SceneShell>
   );
 };

@@ -24,7 +24,7 @@ export const OpeningScene: React.FC<{ durationInFrames: number }> = ({
         overflow: "hidden",
       }}
     >
-      <Audio src={staticFile("audio/01-opening.m4a")} volume={0.95} />
+      <Audio src={staticFile("audio/01-opening.wav")} volume={0.95} />
       <Img
         alt="ANCHOR patient welcome screen"
         src={staticFile("product/product-welcome.png")}
@@ -74,7 +74,8 @@ export const OpeningScene: React.FC<{ durationInFrames: number }> = ({
             ...enter(frame, 36),
           }}
         >
-          Simple memory and orientation practice using a familiar room photo.
+          Gemini turns one familiar room photo into personal memory and
+          orientation practice.
         </p>
       </div>
       <div
@@ -86,7 +87,7 @@ export const OpeningScene: React.FC<{ durationInFrames: number }> = ({
           right: 70,
         }}
       >
-        ANCHOR • Gemini-powered familiar-room practice
+        GEMINI MULTIMODAL • IMAGE • VIDEO • VOICE
       </div>
       <div
         style={{

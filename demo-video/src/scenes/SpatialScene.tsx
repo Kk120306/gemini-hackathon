@@ -25,7 +25,7 @@ export const SpatialScene: React.FC<{ durationInFrames: number }> = ({
         overflow: "hidden",
       }}
     >
-      <Audio src={staticFile("audio/05-spatial.m4a")} volume={0.95} />
+      <Audio src={staticFile("audio/05-spatial.wav")} volume={0.95} />
       <Img
         alt="Caregiver-provided office with a monitor and keyboard"
         src={staticFile("assets/office-room.jpg")}
@@ -47,7 +47,7 @@ export const SpatialScene: React.FC<{ durationInFrames: number }> = ({
       </div>
       <div style={{ left: 110, maxWidth: 720, position: "absolute", top: 250 }}>
         <div style={enter(frame, 8)}>
-          <Eyebrow light>Remember an object from a landmark</Eyebrow>
+          <Eyebrow light>Gemini landmark reasoning</Eyebrow>
         </div>
         <h2
           style={{
@@ -88,7 +88,7 @@ export const SpatialScene: React.FC<{ durationInFrames: number }> = ({
           ...enter(frame, 70, 18),
         }}
       >
-        Large image • high contrast • hear it again • no timer
+        Gemini-grounded cue • large image • hear it again • no timer
       </div>
     </AbsoluteFill>
   );

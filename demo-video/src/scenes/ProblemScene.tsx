@@ -19,13 +19,13 @@ export const ProblemScene: React.FC<{ durationInFrames: number }> = ({
 
   return (
     <SceneShell durationInFrames={durationInFrames}>
-      <Audio src={staticFile("audio/02-problem.m4a")} volume={0.95} />
+      <Audio src={staticFile("audio/02-problem.wav")} volume={0.95} />
       <div style={{ left: 70, position: "absolute", top: 52 }}>
         <BrandMark />
       </div>
       <div style={{ left: 110, position: "absolute", top: 196, width: 650 }}>
         <div style={enter(frame, 8)}>
-          <Eyebrow>The problem</Eyebrow>
+          <Eyebrow>Why Gemini matters</Eyebrow>
         </div>
         <h2
           style={{
@@ -49,8 +49,8 @@ export const ProblemScene: React.FC<{ durationInFrames: number }> = ({
             ...enter(frame, 34),
           }}
         >
-          ANCHOR uses a real room photo to help a person with dementia practise
-          where everyday objects are.
+          Gemini multimodal vision understands the person’s own room, not
+          generic trivia.
         </div>
       </div>
       <div
@@ -87,9 +87,9 @@ export const ProblemScene: React.FC<{ durationInFrames: number }> = ({
           ...enter(frame, 80, 24),
         }}
       >
-        ANCHOR keeps the familiar room in every question.
+        Gemini grounds every question in this familiar room.
       </div>
-      <Footnote>One familiar photo • one calm next action</Footnote>
+      <Footnote>Gemini 3.6 Flash • familiar-room visual understanding</Footnote>
     </SceneShell>
   );
 };

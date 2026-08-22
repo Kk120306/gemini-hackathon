@@ -13,12 +13,12 @@ export const FPS = 30;
 const scenes = [
   { from: 0, duration: 360, component: OpeningScene },
   { from: 360, duration: 480, component: ProblemScene },
-  { from: 840, duration: 600, component: InputsScene },
-  { from: 1440, duration: 1320, component: GroundingScene },
-  { from: 2760, duration: 510, component: SpatialScene },
-  { from: 3270, duration: 480, component: ChallengeScene },
-  { from: 3750, duration: 570, component: SupportScene },
-  { from: 4320, duration: 480, component: CloseScene },
+  { from: 840, duration: 630, component: InputsScene },
+  { from: 1470, duration: 1410, component: GroundingScene },
+  { from: 2880, duration: 510, component: SpatialScene },
+  { from: 3390, duration: 510, component: ChallengeScene },
+  { from: 3900, duration: 600, component: SupportScene },
+  { from: 4500, duration: 540, component: CloseScene },
 ] as const;
 
 export const DURATION = scenes.reduce((sum, scene) => sum + scene.duration, 0);

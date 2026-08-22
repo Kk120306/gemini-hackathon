@@ -2,49 +2,53 @@
 
 ## Opening
 
-By 2030, one in six people globally will be over 60.
-ANCHOR is made for people with dementia who may find it harder to remember where things are in a familiar room.
+ANCHOR uses Gemini to help people with dementia remember familiar rooms.
+It turns one room photo into simple, personal practice about real objects and where they are.
 
 ## The problem
 
-Most brain games ask random questions.
-ANCHOR uses a real photo of the person’s own room, so they can practise remembering the objects and places they see every day.
+Generic brain games ask random questions.
+They do not help someone remember their own desk, chair, lamp, or doorway.
+ANCHOR uses Gemini multimodal vision to understand the exact room a person with dementia sees every day.
 
 ## Caregiver review
 
 A caregiver uploads the room photo.
-Gemini finds visible objects and where they are.
-It never invents a routine or memory.
-The caregiver checks and approves everything before the lesson starts.
+Gemini 3.6 Flash looks at the image, finds visible objects, and returns their names, boxes, and positions as structured data.
+Gemini does not invent routines or memories.
+The caregiver checks every object before it is used.
 
 ## Six room questions
 
-ANCHOR creates exactly six questions about that room.
-The questions help a person with dementia recognise an object, remember where it belongs, find it from a landmark, search the room, recall a location after the image is hidden, and connect two objects that appear together.
-On screen, there is one large image, one simple question, and one clear action.
-The person can hear the question again and take as much time as they need.
+From the approved room map, Gemini creates six detailed questions: object recognition, location matching, landmark search, scene comparison, visual recall, and association.
+Every answer points back to caregiver-approved evidence.
+Gemini 3.1 Flash Lite Image then turns the flat photo into a realistic 2.5D spatial view while preserving the room layout.
+The person sees one large image, one clear question, and one action.
+Questions can be repeated, there is no timer, and support gets simpler after a wrong answer.
+Gemini provides the context.
+Deterministic safety rules stop invented facts.
 
 ## Keyboard question
 
-For example: Where is the keyboard?
-Start at the monitor and look directly below it.
-Both objects come from the caregiver-approved room photo.
+Here Gemini uses the monitor as a verified landmark and asks, Where is the keyboard?
+The person looks below the monitor and taps the keyboard.
+The question, cue, and answer all come from the same approved room photo.
 
 ## Recall question
 
-The person first studies where the keyboard is.
-Then the room is hidden and they try to remember its location.
-This is calm familiar-room practice, not a test and not a score.
+For visual recall, the person studies where an object appears.
+The room is gently hidden, and they remember its place.
+Gemini creates the room-specific prompt, while ANCHOR keeps the activity calm, unscored, and free of pressure.
 
 ## Optional family guide
 
-With caregiver consent, a family portrait can become an AI-generated guide that asks the question.
-It is always labelled AI-generated and not live.
-The voice is synthetic, not a clone of the family member.
-If video does not work, the question still appears as text and speech.
+With consent, Gemini Image creates an approved guide portrait.
+Gemini Omni Flash animates a short guide clip.
+Gemini Flash TTS provides a neutral synthetic voice.
+The clip is labelled AI-generated, not live, and never clones a family voice.
 
 ## Close
 
-ANCHOR is for gentle memory and orientation practice for people with dementia.
-It does not diagnose, score, treat, or prevent dementia.
-It helps families turn a real familiar room into simple, repeatable practice.
+ANCHOR brings Gemini vision, structured question generation, spatial image generation, video, and voice into one dementia-friendly experience.
+It does not diagnose or treat dementia.
+It helps families practise familiar surroundings.

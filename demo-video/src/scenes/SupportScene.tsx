@@ -20,7 +20,7 @@ export const SupportScene: React.FC<{ durationInFrames: number }> = ({
       background={colors.ink}
       dark
     >
-      <Audio src={staticFile("audio/07-support.m4a")} volume={0.95} />
+      <Audio src={staticFile("audio/07-support.wav")} volume={0.95} />
       <div style={{ left: 70, position: "absolute", top: 52, zIndex: 5 }}>
         <BrandMark light />
       </div>
@@ -65,7 +65,7 @@ export const SupportScene: React.FC<{ durationInFrames: number }> = ({
       </div>
       <div style={{ left: 900, position: "absolute", top: 190, width: 850 }}>
         <div style={enter(frame, 8)}>
-          <Eyebrow light>Optional family guide for dementia practice</Eyebrow>
+          <Eyebrow light>Gemini image + video + speech</Eyebrow>
         </div>
         <h2
           style={{
@@ -81,9 +81,9 @@ export const SupportScene: React.FC<{ durationInFrames: number }> = ({
         </h2>
         <div style={{ display: "grid", gap: 18 }}>
           {[
-            "Explicit caregiver consent before likeness generation",
-            "Neutral Gemini synthetic voice, never a cloned family voice",
-            "Static guide, spoken prompt, and visible text always remain",
+            "Gemini 3.1 Flash Lite Image creates the approved portrait",
+            "Gemini Omni Flash animates a short, labelled guide clip",
+            "Gemini 3.1 Flash TTS speaks with a neutral synthetic voice",
           ].map((detail, index) => (
             <div
               key={detail}

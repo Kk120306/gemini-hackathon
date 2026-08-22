@@ -25,6 +25,7 @@
   "scripts": {
     "dev": "remotion studio --no-open",
     "build": "remotion bundle",
+    "voice": "cd .. && node demo-video/scripts/generate-voiceover.mjs",
     "render": "remotion render AnchorDemo out/anchor-demo.mp4 --codec=h264 --crf=18",
     "still": "remotion still AnchorDemo out/anchor-demo-still.png --frame=2040",
     "upgrade": "remotion upgrade",

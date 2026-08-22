@@ -17,7 +17,7 @@ export const CloseScene: React.FC<{ durationInFrames: number }> = ({
         overflow: "hidden",
       }}
     >
-      <Audio src={staticFile("audio/08-close.m4a")} volume={0.95} />
+      <Audio src={staticFile("audio/08-close.wav")} volume={0.95} />
       <Img
         alt="ANCHOR patient welcome screen"
         src={staticFile("product/patient-complete.png")}
@@ -34,7 +34,7 @@ export const CloseScene: React.FC<{ durationInFrames: number }> = ({
       </div>
       <div style={{ left: 160, position: "absolute", top: 225, width: 1160 }}>
         <div style={enter(frame, 8)}>
-          <Eyebrow light>Practice complete</Eyebrow>
+          <Eyebrow light>Four Gemini capabilities • one safe experience</Eyebrow>
         </div>
         <h2
           style={{
@@ -58,7 +58,7 @@ export const CloseScene: React.FC<{ durationInFrames: number }> = ({
             ...enter(frame, 38),
           }}
         >
-          Voice-first • caregiver-verified • one clear action at a time
+          Vision • structured questions • spatial image • video + voice
         </div>
       </div>
       <div
@@ -75,7 +75,7 @@ export const CloseScene: React.FC<{ durationInFrames: number }> = ({
           ...enter(frame, 70, 18),
         }}
       >
-        ANCHOR • simple dementia-friendly room practice
+        ANCHOR • GEMINI FOR DEMENTIA-FRIENDLY ROOM PRACTICE
       </div>
       <div
         style={{

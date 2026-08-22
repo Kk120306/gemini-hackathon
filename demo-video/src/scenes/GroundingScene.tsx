@@ -10,10 +10,10 @@ import {
 import { colors, enter } from "../theme";
 
 const steps = [
-  ["01", "Detect", "Gemini finds visible objects and positions"],
-  ["02", "Approve", "The caregiver confirms every safe detail"],
-  ["03", "Generate", "Six activities use this exact approved image"],
-  ["04", "Practice", "One large image and one clear action at a time"],
+  ["01", "Understand", "Gemini 3.6 Flash maps objects and positions"],
+  ["02", "Verify", "Caregiver confirms the visible room evidence"],
+  ["03", "Generate", "Gemini creates six detailed, grounded questions"],
+  ["04", "Visualize", "Gemini Image builds a realistic 2.5D room view"],
 ] as const;
 
 export const GroundingScene: React.FC<{ durationInFrames: number }> = ({
@@ -23,13 +23,13 @@ export const GroundingScene: React.FC<{ durationInFrames: number }> = ({
 
   return (
     <SceneShell durationInFrames={durationInFrames}>
-      <Audio src={staticFile("audio/04-grounding.m4a")} volume={0.95} />
+      <Audio src={staticFile("audio/04-grounding.wav")} volume={0.95} />
       <div style={{ left: 70, position: "absolute", top: 52 }}>
         <BrandMark />
       </div>
       <div style={{ left: 110, position: "absolute", top: 150 }}>
         <div style={enter(frame, 6)}>
-          <Eyebrow>Six dementia-friendly questions</Eyebrow>
+          <Eyebrow>Gemini-grounded dementia practice</Eyebrow>
         </div>
         <h2
           style={{
@@ -40,7 +40,7 @@ export const GroundingScene: React.FC<{ durationInFrames: number }> = ({
             ...enter(frame, 18),
           }}
         >
-          Practise recognising objects and remembering where they are.
+          One room becomes six strong memory activities.
         </h2>
       </div>
       <div
@@ -120,7 +120,7 @@ export const GroundingScene: React.FC<{ durationInFrames: number }> = ({
       </div>
       <MediaCard
         alt="The same caregiver-provided familiar office"
-        label="Six activities stay grounded in this room"
+        label="Gemini 3.1 Flash Lite Image • realistic 2.5D view"
         src="assets/office-room.jpg"
         style={{
           bottom: 90,
@@ -132,7 +132,7 @@ export const GroundingScene: React.FC<{ durationInFrames: number }> = ({
         }}
       />
       <Footnote>
-        Not generic trivia • no invented memories • caregiver remains in control
+        Gemini context • deterministic safety • caregiver remains in control
       </Footnote>
     </SceneShell>
   );

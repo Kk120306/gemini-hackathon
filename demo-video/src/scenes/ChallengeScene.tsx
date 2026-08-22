@@ -26,7 +26,7 @@ export const ChallengeScene: React.FC<{ durationInFrames: number }> = ({
       background={colors.ink}
       dark
     >
-      <Audio src={staticFile("audio/06-challenge.m4a")} volume={0.95} />
+      <Audio src={staticFile("audio/06-challenge.wav")} volume={0.95} />
       <div style={{ left: 70, position: "absolute", top: 52, zIndex: 3 }}>
         <BrandMark light />
       </div>
@@ -56,7 +56,7 @@ export const ChallengeScene: React.FC<{ durationInFrames: number }> = ({
       </div>
       <div style={{ position: "absolute", right: 70, top: 155, width: 520 }}>
         <div style={enter(frame, 8)}>
-          <Eyebrow light>Remember where the object was</Eyebrow>
+          <Eyebrow light>Gemini-generated visual recall</Eyebrow>
         </div>
         <h2
           style={{
@@ -122,12 +122,12 @@ export const ChallengeScene: React.FC<{ durationInFrames: number }> = ({
             ...enter(frame, 112, 18),
           }}
         >
-          This is calm familiar-room practice for dementia, not a test or a
-          score.
+          Gemini creates the room-specific prompt. ANCHOR keeps it calm,
+          unscored, and free of pressure.
         </p>
       </div>
       <Footnote light>
-        Room-specific recall • visible association • gentle support
+        Gemini question generation • deterministic support • no clinical score
       </Footnote>
     </SceneShell>
   );
