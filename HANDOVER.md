@@ -1,10 +1,10 @@
-# ANCHOR Phase 1 Handover
+# ANCHOR Phase 2 Handover
 
 ## Handover Summary
 
-Phase 1 is complete in the current worktree and is ready for its dedicated commit.
-This phase turns the static shell into a complete offline caregiver-to-patient flow.
-The next implementation phase is live Gemma grounding behind the existing provider boundary.
+Phase 2 is complete in the current worktree and is ready for its dedicated commit.
+This phase connects the approved caregiver flow to live hosted Gemma without exposing the API key or trusting model-authored patient copy.
+The next checkpoint aligns the core screens with the updated UI reference before Phase 3 cue-generation work begins.
 
 ## What Is Ready
 
@@ -23,11 +23,17 @@ The next implementation phase is live Gemma grounding behind the existing provid
 - The production preview is available privately through Tailscale Serve at `https://kais-mac-mini.tail4a140f.ts.net:3443/` while the local server is running on port 3001.
 - Personal uploads, generated media, local application data, and `.env.local` are excluded from Git.
 - Formatting, linting, type checking, unit tests, end-to-end tests, and the production build passed on 2026-08-22.
+- Hosted Gemma proposes three to five visible objects with normalized bounding boxes through a server-only provider.
+- The caregiver's selected room image is validated, stored outside version control, and served through a private no-store media route.
+- Gemma produces an ID-only six-question plan and application code compiles all patient-facing language from approved evidence.
+- Malformed, unsupported, over-inferred, MIME-spoofed, and ungrounded responses fail closed with at most one structured repair attempt.
+- The complete prepared-room live flow passed locally against the configured Gemma model on 2026-08-22.
+- A manually triggered GitHub Actions live smoke workflow is included.
 
 ## What Is Not Ready
 
-- Live Gemma and Gemini provider calls are not implemented or verified.
-- The GitHub Actions secret is configured, but a local `GEMINI_API_KEY` has not been supplied for local smoke testing.
+- Gemini-generated simplified room media and guide media are not implemented yet.
+- Repository-level GitHub Actions secret discovery currently reports no `GEMINI_API_KEY`, so the workflow credential scope must be confirmed before CI can run.
 - Generated room images, media validation, and asynchronous guide video remain Phase 3 and Phase 4 work.
 - Authentication is intentionally outside the hackathon MVP scope, so this build must not be exposed directly to the public internet.
 
@@ -45,7 +51,7 @@ cp .env.example .env.local
 ```
 
 Fixture mode is enabled by default and does not need a credential.
-Keep `GEMINI_API_KEY` empty until the live provider phase is ready for verification.
+Set `ANCHOR_DEMO_MODE=false` only when a valid server-side `GEMINI_API_KEY` is available.
 
 Run every quality gate before starting the transferred build.
 
@@ -55,6 +61,7 @@ pnpm lint
 pnpm typecheck
 pnpm test
 pnpm test:e2e
+pnpm test:live
 pnpm build
 ```
 
@@ -167,6 +174,6 @@ The supported Next.js production-server options are documented in the [official 
 
 ## Resume Development
 
-Phase 1 should implement the validated domain model, deterministic cue engine, fake provider adapters, local persistence, caregiver approvals, and the complete six-question patient flow.
+Phase 3 should preserve the deterministic cue engine while adding validated simplified-room media as a non-blocking enhancement.
 Read `docs/STATUS.md` and `docs/IMPLEMENTATION_PLAN.md` before resuming.
 Complete, verify, document, commit, push, and hand over each future phase separately.

@@ -19,6 +19,8 @@ export type AnchorAction =
       type: "analysis_completed";
       worldModel: WorldModel;
       groundingRecords: GroundingRecord[];
+      imageSrc: string;
+      analysisSource: AnchorState["room"]["analysisSource"];
     }
   | { type: "update_object"; objectId: string; name: string; location: string }
   | { type: "approve_world_model"; confirmedAt: string }
@@ -59,7 +61,12 @@ export function anchorReducer(
     case "analysis_completed":
       next = {
         ...state,
-        room: { ...state.room, uploadStatus: "analyzed" },
+        room: {
+          ...state.room,
+          imageSrc: action.imageSrc,
+          analysisSource: action.analysisSource,
+          uploadStatus: "analyzed",
+        },
         worldModel: action.worldModel,
         groundingRecords: action.groundingRecords,
         guide: null,

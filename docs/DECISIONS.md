@@ -102,3 +102,20 @@ Status: Accepted
 The stage flow continues after eight seconds without waiting for media.
 Optional work starts only after three consecutive successful core rehearsals.
 Hackathon feature work stops at 2:30 so submission and presentation quality can be protected.
+
+## AD-014: Gemma Plans Grounded IDs, Application Code Writes Patient Copy
+
+Status: Accepted
+
+Gemma selects approved object IDs, location IDs, and question types for exactly six questions.
+Application code deterministically compiles patient prompts, choices, answers, encouragement, and cues from caregiver-approved evidence.
+This boundary prevents model-generated wording from introducing an unverified fact after the structured plan passes validation.
+
+## AD-015: Room Uploads Remain Server-Private
+
+Status: Accepted
+
+The browser sends a selected room image to a server action as validated base64 data.
+The server checks its declared MIME type, byte signature, and decoded size before a live model call.
+Accepted media is stored under the ignored local data directory and served by a private no-store route.
+No Gemini credential or personal upload path is exposed to client code.

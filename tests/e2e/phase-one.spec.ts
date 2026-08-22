@@ -17,6 +17,10 @@ async function prepareRoom(page: Page, editLocation?: string) {
   await expect(
     page.getByRole("heading", { name: "Verify what Gemma observed." }),
   ).toBeVisible();
+  await expect(page.locator(".evidence-card img")).toHaveAttribute(
+    "src",
+    /\/api\/room-media\//,
+  );
 
   if (editLocation) {
     const firstObject = page.locator(".object-row").first();
@@ -86,13 +90,11 @@ test("caregiver correction persists into the complete six-question flow", async 
   await prepareRoom(page, "reading table");
   await prepareGuide(page, false);
 
-  await expect(
-    page.getByText("On the reading table", { exact: false }),
-  ).toBeVisible();
+  await expect(page.getByText(/^Answer: On the reading table/)).toBeVisible();
   await page.getByRole("button", { name: "Start activity" }).click();
 
   await page.getByRole("button", { name: "Answer Blue mug" }).click();
-  await expect(page.getByText("Look near the reading table.")).toBeVisible();
+  await expect(page.getByText("Look on the reading table.")).toBeVisible();
   await page.getByRole("button", { name: "Help me" }).click();
   await expect(page.getByText("Verified area highlighted")).toBeVisible();
   await page.getByRole("button", { name: "Help me" }).click();

@@ -73,8 +73,9 @@ export function LessonReview() {
             <EyeIcon />
             <h2>Generate from approved evidence</h2>
             <p>
-              The fake provider will return exactly six validated questions,
-              including one visual recall and one association activity.
+              {state.room.analysisSource === "gemma"
+                ? "Gemma will plan exactly six questions from approved identifiers. ANCHOR compiles every prompt, answer, choice, and cue from approved facts."
+                : "The fixture provider will return exactly six validated questions, including one visual recall and one association activity."}
             </p>
             <button
               className="primary-button"

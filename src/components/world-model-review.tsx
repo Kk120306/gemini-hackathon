@@ -39,7 +39,8 @@ export function WorldModelReview() {
           <div className="panel__header">
             <h2>Visible objects</h2>
             <span className="muted-note">
-              {state.worldModel.objects.length} proposed
+              {state.worldModel.objects.length}{" "}
+              {state.room.analysisSource === "gemma" ? "by Gemma" : "fixture"}
             </span>
           </div>
           <div className="object-list">
@@ -137,7 +138,11 @@ export function WorldModelReview() {
             <h2>{evidence?.caregiverValue}</h2>
             <dl>
               <div>
-                <dt>Gemma proposed</dt>
+                <dt>
+                  {state.room.analysisSource === "gemma"
+                    ? "Gemma proposed"
+                    : "Fixture proposed"}
+                </dt>
                 <dd>{evidence?.modelObservation}</dd>
               </div>
               <div>

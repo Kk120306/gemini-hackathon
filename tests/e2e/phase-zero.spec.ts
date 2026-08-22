@@ -26,7 +26,9 @@ test("caregiver and patient route shells render in fixture mode", async ({
 
   await page.goto("/patient/session");
   await expect(
-    page.getByRole("heading", { name: "Which item helps with reading?" }),
+    page.getByRole("heading", {
+      name: "Which visible object matches this description: dark blue reading glasses?",
+    }),
   ).toBeVisible();
   await expect(
     page.getByText("AI-generated guide based on Elena", { exact: true }),

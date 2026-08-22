@@ -198,6 +198,7 @@ export const anchorStateSchema = z.object({
     id: z.string().min(1),
     name: z.string().min(1),
     imageSrc: z.string().startsWith("/"),
+    analysisSource: z.enum(["fixture", "gemma"]).default("fixture"),
     uploadStatus: z.enum(["ready", "analyzing", "analyzed", "failed"]),
   }),
   worldModel: worldModelSchema,

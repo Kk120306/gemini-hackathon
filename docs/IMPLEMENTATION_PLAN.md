@@ -171,15 +171,15 @@ The complete stage flow works offline, shows the grounding proof chain, and pass
 
 ### Phase 2: Real Gemma Grounding
 
-- [ ] Add the Google Gen AI SDK behind a server-only provider.
-- [ ] Implement Gemma room analysis for three to five proposals.
-- [ ] Validate structured output with Zod.
-- [ ] Create grounding records from proposals and caregiver corrections.
-- [ ] Implement Gemma six-question lesson generation.
-- [ ] Enforce exactly one visual-recall activity and one sequencing or association activity.
-- [ ] Block ungrounded prompts, answers, choices, and cues.
-- [ ] Add one structured-output repair attempt.
-- [ ] Add contract tests for malformed, ungrounded, and over-inferred output.
+- [x] Add the Google Gen AI SDK behind a server-only provider.
+- [x] Implement Gemma room analysis for three to five proposals.
+- [x] Validate structured output with Zod.
+- [x] Create grounding records from proposals and caregiver corrections.
+- [x] Implement Gemma six-question lesson generation.
+- [x] Enforce exactly one visual-recall activity and one sequencing or association activity.
+- [x] Block ungrounded prompts, answers, choices, and cues.
+- [x] Add one structured-output repair attempt.
+- [x] Add contract tests for malformed, ungrounded, and over-inferred output.
 
 Exit condition:
 The prepared room image produces an approved world model and six grounded questions through live Gemma.

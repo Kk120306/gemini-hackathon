@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { demoFixture } from "@/fixtures/demo";
+import { validateGroundedLesson } from "@/domain/validation";
+import { createPreparedAnchorState, demoFixture } from "@/fixtures/demo";
 
 describe("seeded demonstration fixture", () => {
   it("contains three grounded objects and exactly six questions", () => {
@@ -28,5 +29,16 @@ describe("seeded demonstration fixture", () => {
       "visual_recall",
       "association",
     ]);
+  });
+
+  it("keeps every prepared prompt, answer, choice, and cue grounded", () => {
+    const state = createPreparedAnchorState();
+    expect(() =>
+      validateGroundedLesson(
+        state.lesson,
+        state.worldModel,
+        state.groundingRecords,
+      ),
+    ).not.toThrow();
   });
 });

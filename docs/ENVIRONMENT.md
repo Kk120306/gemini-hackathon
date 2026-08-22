@@ -58,7 +58,7 @@ The demo must keep its static fallback if access is unavailable.
 ## Files Created
 
 `.env.example` is the committed template.
-`.env.local` is the ignored local configuration file and currently contains placeholders.
+`.env.local` is the ignored local configuration file and contains the local live-provider configuration on the current development machine.
 `.gitignore` excludes `.env.local`, `.data`, build output, test artifacts, and common local noise.
 
 ## Feature Flags
@@ -83,7 +83,11 @@ Local storage is appropriate for the hackathon laptop.
 It is not appropriate for an ephemeral serverless deployment.
 If deployment is required, add a storage adapter and its credentials only after the local end-to-end flow is stable.
 
-## Secret Setup Still Required
+## Secret Verification
 
-The repository can create the variable names and local files, but it cannot create a Google API credential on the user's behalf.
-The remaining manual action is to paste a valid Google AI Studio key into `.env.local`.
+The local `GEMINI_API_KEY` was verified through the complete prepared-room Gemma smoke path on 2026-08-22.
+The key value remains ignored and must never be copied into source files, client variables, logs, or screenshots.
+
+The repository includes a manually triggered live-provider GitHub Actions workflow that expects the exact repository secret name `GEMINI_API_KEY`.
+`gh secret list` reported no repository-level Actions secret names on 2026-08-22.
+Before relying on CI, confirm that the key was added to this repository under that exact name rather than to another repository, environment, or organization scope.

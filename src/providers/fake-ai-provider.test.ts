@@ -11,6 +11,10 @@ describe("fake AI provider", () => {
       ...state.worldModel.objects[0]!,
       location: "reading table",
     };
+    state.groundingRecords[0] = {
+      ...state.groundingRecords[0]!,
+      caregiverValue: "Reading glasses on the reading table",
+    };
 
     const lesson = await provider.generateLesson(
       state.worldModel,
@@ -18,7 +22,7 @@ describe("fake AI provider", () => {
     );
 
     expect(lesson.questions[1]?.correctAnswer).toBe("On the reading table");
-    expect(lesson.questions[1]?.verbalCue).toBe("Look near the reading table.");
+    expect(lesson.questions[1]?.verbalCue).toBe("Look on the reading table.");
   });
 
   it("refuses to generate a likeness without consent", async () => {

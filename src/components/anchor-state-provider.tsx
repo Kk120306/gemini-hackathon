@@ -14,7 +14,10 @@ import type { AnchorState, TrustedPerson } from "@/domain/anchor";
 import { anchorReducer } from "@/domain/anchor-reducer";
 import { validateGroundedLesson } from "@/domain/validation";
 import { createPreparedAnchorState } from "@/fixtures/demo";
-import { FakeAiProvider } from "@/providers/fake-ai-provider";
+import {
+  BrowserAiProvider,
+  prepareRoomAnalysisInput,
+} from "@/providers/browser-ai-provider";
 import { BrowserAnchorStorage } from "@/storage/browser-storage-adapter";
 
 type AnchorContextValue = {
@@ -22,7 +25,7 @@ type AnchorContextValue = {
   ready: boolean;
   beginCaregiverReview(): void;
   saveProfile(firstName: string, roomName: string): void;
-  analyzeRoom(): Promise<void>;
+  analyzeRoom(file?: File): Promise<void>;
   updateObject(objectId: string, name: string, location: string): void;
   approveWorldModel(): void;
   saveTrustedPerson(input: {
@@ -52,7 +55,7 @@ export function AnchorStateProvider({ children }: { children: ReactNode }) {
   );
   const [ready, markReady] = useReducer(() => true, false);
   const storage = useMemo(() => new BrowserAnchorStorage(), []);
-  const provider = useMemo(() => new FakeAiProvider(), []);
+  const provider = useMemo(() => new BrowserAiProvider(), []);
   const storageReady = useRef(false);
   const skipNextSave = useRef(false);
 
@@ -87,11 +90,23 @@ export function AnchorStateProvider({ children }: { children: ReactNode }) {
       saveProfile(firstName, roomName) {
         dispatch({ type: "save_profile", firstName, roomName });
       },
-      async analyzeRoom() {
+      async analyzeRoom(file) {
         dispatch({ type: "room_status", status: "analyzing" });
         try {
-          const analysis = await provider.analyzeRoom(state.room.name);
-          dispatch({ type: "analysis_completed", ...analysis });
+          const input = await prepareRoomAnalysisInput({
+            roomId: state.room.id,
+            roomName: state.room.name,
+            ...(file ? { file } : {}),
+          });
+          const analysis = await provider.analyzeRoom(input);
+          if (!analysis.imageSrc) {
+            throw new Error("The analyzed room image was not stored.");
+          }
+          dispatch({
+            type: "analysis_completed",
+            ...analysis,
+            imageSrc: analysis.imageSrc,
+          });
         } catch {
           dispatch({ type: "room_status", status: "failed" });
           throw new Error("The prepared room could not be analyzed.");

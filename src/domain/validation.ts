@@ -1,5 +1,7 @@
 import type { GroundingRecord, Lesson, WorldModel } from "@/domain/anchor";
 import { lessonSchema } from "@/domain/anchor";
+import { compileGroundedLesson } from "@/domain/lesson-compiler";
+import { lessonPlanSchema } from "@/providers/provider-contracts";
 
 export function validateGroundedLesson(
   candidate: unknown,
@@ -47,6 +49,20 @@ export function validateGroundedLesson(
         );
       }
     }
+  }
+
+  const plan = lessonPlanSchema.parse({
+    questions: lesson.questions.map((question) => ({
+      type: question.type,
+      targetObjectId: question.objectIds[0],
+      choiceObjectIds: question.objectIds,
+    })),
+  });
+  const expected = compileGroundedLesson(plan, worldModel, groundingRecords);
+  if (JSON.stringify(lesson.questions) !== JSON.stringify(expected.questions)) {
+    throw new Error(
+      "Lesson prompts, answers, choices, or cues contain ungrounded content.",
+    );
   }
 
   return lesson;

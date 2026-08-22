@@ -1,0 +1,213 @@
+import { z } from "zod";
+
+import { boundingBoxSchema, questionTypeSchema } from "@/domain/anchor";
+
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+
+function hasExpectedImageSignature(
+  data: string,
+  mimeType: z.infer<typeof supportedRoomImageMimeTypeSchema>,
+) {
+  try {
+    const prefix = atob(data.slice(0, Math.min(data.length, 1_368)));
+    switch (mimeType) {
+      case "image/jpeg":
+        return (
+          prefix.charCodeAt(0) === 0xff &&
+          prefix.charCodeAt(1) === 0xd8 &&
+          prefix.charCodeAt(2) === 0xff
+        );
+      case "image/png":
+        return prefix.startsWith("\u0089PNG\r\n\u001a\n");
+      case "image/webp":
+        return prefix.startsWith("RIFF") && prefix.slice(8, 12) === "WEBP";
+      case "image/svg+xml":
+        return /^\s*(?:<\?xml[^>]*>\s*)?<svg[\s>]/i.test(prefix);
+    }
+  } catch {
+    return false;
+  }
+}
+
+export const supportedRoomImageMimeTypeSchema = z.enum([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/svg+xml",
+]);
+
+export const roomImageInputSchema = z
+  .object({
+    data: z.string().min(1),
+    mimeType: supportedRoomImageMimeTypeSchema,
+    fileName: z.string().trim().min(1).max(180),
+  })
+  .superRefine((image, context) => {
+    if (!/^[A-Za-z0-9+/]+={0,2}$/.test(image.data)) {
+      context.addIssue({
+        code: "custom",
+        message: "Room image data must be valid base64.",
+        path: ["data"],
+      });
+      return;
+    }
+
+    const padding = image.data.endsWith("==")
+      ? 2
+      : image.data.endsWith("=")
+        ? 1
+        : 0;
+    const decodedBytes = (image.data.length * 3) / 4 - padding;
+    if (decodedBytes > MAX_IMAGE_BYTES) {
+      context.addIssue({
+        code: "custom",
+        message: "Room images must be 10 MB or smaller.",
+        path: ["data"],
+      });
+    }
+    if (!hasExpectedImageSignature(image.data, image.mimeType)) {
+      context.addIssue({
+        code: "custom",
+        message: "Room image bytes do not match the declared image type.",
+        path: ["data"],
+      });
+    }
+  });
+
+export const roomAnalysisInputSchema = z.object({
+  roomId: z.string().trim().min(1).max(100),
+  roomName: z.string().trim().min(1).max(100),
+  image: roomImageInputSchema,
+});
+
+export const modelObjectProposalSchema = z.object({
+  name: z.string().trim().min(2).max(80),
+  location: z.string().trim().min(2).max(120),
+  description: z.string().trim().min(2).max(180),
+  sourceImageIndex: z.literal(0),
+  boundingBox: boundingBoxSchema,
+  confidence: z.enum(["low", "medium", "high"]),
+});
+
+const broadObjectNames = new Set(["item", "object", "stuff", "thing"]);
+const unsupportedInference =
+  /\b(always|belongs? to|beloved|cherished|favorite|her|his|memory|memories|often|owner|reminds?|routine|their|usually)\b/i;
+
+export const roomProposalSchema = z
+  .object({
+    roomNameSuggestion: z.string().trim().min(1).max(100),
+    objects: z.array(modelObjectProposalSchema).min(3).max(5),
+  })
+  .superRefine((proposal, context) => {
+    const names = new Set<string>();
+    proposal.objects.forEach((object, index) => {
+      const normalizedName = object.name.toLowerCase();
+      if (broadObjectNames.has(normalizedName)) {
+        context.addIssue({
+          code: "custom",
+          message: "Object names must identify a specific visible object.",
+          path: ["objects", index, "name"],
+        });
+      }
+      if (names.has(normalizedName)) {
+        context.addIssue({
+          code: "custom",
+          message: "Object proposals must have distinct names.",
+          path: ["objects", index, "name"],
+        });
+      }
+      names.add(normalizedName);
+
+      for (const [field, value] of [
+        ["name", object.name],
+        ["location", object.location],
+        ["description", object.description],
+      ] as const) {
+        if (unsupportedInference.test(value)) {
+          context.addIssue({
+            code: "custom",
+            message: "Object proposals must contain literal visual facts only.",
+            path: ["objects", index, field],
+          });
+        }
+      }
+    });
+  });
+
+const generatedQuestionTypeSchema = questionTypeSchema.exclude(["sequencing"]);
+
+export const lessonPlanQuestionSchema = z
+  .object({
+    type: generatedQuestionTypeSchema,
+    targetObjectId: z.string().trim().min(1),
+    choiceObjectIds: z.array(z.string().trim().min(1)).min(2).max(3),
+  })
+  .superRefine((question, context) => {
+    const uniqueChoices = new Set(question.choiceObjectIds);
+    if (uniqueChoices.size !== question.choiceObjectIds.length) {
+      context.addIssue({
+        code: "custom",
+        message: "Question choice object identifiers must be unique.",
+        path: ["choiceObjectIds"],
+      });
+    }
+    if (
+      question.choiceObjectIds.filter((id) => id === question.targetObjectId)
+        .length !== 1
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "The target object must appear exactly once in the choices.",
+        path: ["choiceObjectIds"],
+      });
+    }
+  });
+
+export const lessonPlanSchema = z
+  .object({
+    questions: z.array(lessonPlanQuestionSchema).length(6),
+  })
+  .superRefine((lesson, context) => {
+    const recallCount = lesson.questions.filter(
+      ({ type }) => type === "visual_recall",
+    ).length;
+    const associationCount = lesson.questions.filter(
+      ({ type }) => type === "association",
+    ).length;
+    if (recallCount !== 1) {
+      context.addIssue({
+        code: "custom",
+        message: "A plan must contain exactly one visual recall activity.",
+      });
+    }
+    if (associationCount !== 1) {
+      context.addIssue({
+        code: "custom",
+        message: "A plan must contain exactly one association activity.",
+      });
+    }
+  });
+
+export type LessonPlan = z.infer<typeof lessonPlanSchema>;
+export type RoomAnalysisInput = z.infer<typeof roomAnalysisInputSchema>;
+export type RoomImageInput = z.infer<typeof roomImageInputSchema>;
+export type RoomProposal = z.infer<typeof roomProposalSchema>;
+
+export function parseModelJson(text: string): unknown {
+  const withoutFence = text
+    .trim()
+    .replace(/^```(?:json)?\s*/i, "")
+    .replace(/\s*```$/, "")
+    .trim();
+
+  try {
+    return JSON.parse(withoutFence);
+  } catch {
+    const firstBrace = withoutFence.indexOf("{");
+    const lastBrace = withoutFence.lastIndexOf("}");
+    if (firstBrace < 0 || lastBrace <= firstBrace) {
+      throw new Error("The model did not return a JSON object.");
+    }
+    return JSON.parse(withoutFence.slice(firstBrace, lastBrace + 1));
+  }
+}

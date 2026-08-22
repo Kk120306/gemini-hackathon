@@ -4,7 +4,7 @@ Last updated: 2026-08-22
 
 ## Current Phase
 
-Phase 2: Real Gemma Grounding
+Design alignment checkpoint before Phase 3
 
 ## Completed
 
@@ -37,14 +37,23 @@ Phase 2: Real Gemma Grounding
 - The synthetic fixture coordinates were visually corrected so the primary cue highlights the reading glasses rather than the pillow.
 - Patient routes remain gated until persisted caregiver approval has loaded, preventing prepared fixture content from flashing over a saved draft.
 - Tailscale Serve exposes the loopback production preview privately at `https://kais-mac-mini.tail4a140f.ts.net:3443/`.
+- The Google Gen AI SDK is pinned behind a server-only transport and provider boundary.
+- Live Gemma room analysis returns three to five validated visible-object proposals with normalized bounding boxes.
+- Room images are validated by MIME declaration, byte signature, and decoded size before model use.
+- Selected room media is stored outside version control and served through a private no-store route.
+- Gemma lesson generation is constrained to approved object IDs, location IDs, and question types.
+- Patient prompts, answers, choices, encouragement, and cues are compiled deterministically from caregiver-approved evidence.
+- The lesson contract enforces exactly six questions with one visual-recall activity and one association activity.
+- Structured model output receives at most one repair attempt and fails closed on malformed, unsupported, over-inferred, or ungrounded content.
+- A manually triggered live-provider GitHub Actions workflow and an opt-in local Playwright smoke path are included.
+- The complete prepared-room live Gemma flow passed locally with the configured key and model.
 
 ## Next Actions
 
-1. Add the Google Gen AI SDK behind a server-only provider boundary.
-2. Implement structured Gemma room analysis and grounded lesson generation with one repair attempt.
-3. Add malformed, unsupported-inference, and ungrounded-output contract tests.
-4. Add a server-only live-provider smoke path that remains opt-in outside CI.
-5. Use the GitHub `GEMINI_API_KEY` secret for CI verification and request a local key only when local live smoke testing is required.
+1. Align the landing, caregiver evidence, and patient activity screens with the updated mockup's quieter visual direction.
+2. Preserve the verified room-to-cue proof chain and large patient controls during the visual alignment.
+3. Begin Phase 3 simplified-room media generation only after the design checkpoint is verified and committed.
+4. Confirm the exact repository or environment scope of the GitHub `GEMINI_API_KEY` secret before relying on the live CI workflow.
 
 ## Open Risks
 
@@ -60,7 +69,7 @@ Phase 2: Real Gemma Grounding
 
 ## Blockers
 
-- The GitHub `GEMINI_API_KEY` secret is available for CI, but no local key has been provided for local live-provider smoke tests.
+- `gh secret list` reports no repository-level Actions secret names, so the exact scope of the user-configured `GEMINI_API_KEY` must be confirmed before live CI can run.
 
 ## Verification Log
 
@@ -80,3 +89,11 @@ Phase 2: Real Gemma Grounding
 - `pnpm build` produced all 10 public application routes successfully on 2026-08-22 after Phase 1.
 - Initial, focus, and simplified patient cue states were visually inspected at 1194 by 834 pixels on 2026-08-22.
 - The Tailscale production preview returned HTTP 200 on 2026-08-22.
+- `pnpm install --frozen-lockfile` passed on 2026-08-22 after Phase 2 dependency approval was pinned.
+- `pnpm test:live` passed the complete prepared-room Gemma flow in 31.5 seconds on 2026-08-22.
+- `pnpm format:check` passed on 2026-08-22 after Phase 2.
+- `pnpm lint` passed on 2026-08-22 after Phase 2.
+- `pnpm typecheck` passed on 2026-08-22 after Phase 2.
+- `pnpm test` passed 29 tests across 10 files on 2026-08-22 after Phase 2.
+- `pnpm test:e2e` passed 5 tablet Chromium scenarios on 2026-08-22 after Phase 2.
+- `pnpm build` produced all 10 public application routes and the private room-media route successfully on 2026-08-22 after Phase 2.
