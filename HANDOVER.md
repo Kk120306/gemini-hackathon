@@ -1,0 +1,166 @@
+# ANCHOR Phase 0 Handover
+
+## Handover Summary
+
+Phase 0 is complete on the `main` branch at commit `15b6bac` (`feat: complete phase 0 foundation`).
+This phase establishes the application foundation and the complete static demo shell.
+The next implementation phase has not been included in this handover.
+
+## What Is Ready
+
+- A Next.js 16 application with strict TypeScript, Tailwind CSS, Zod, Vitest, and Playwright is configured.
+- The caregiver and patient route shells are implemented with responsive, accessible layouts.
+- Synthetic bedroom, trusted-person, grounding, and six-question fixtures are included.
+- The patient tablet shell has large touch targets, persistent generated-guide labeling, and no viewport scrolling at the target tablet size.
+- Fixture mode runs without a Gemini API key.
+- Personal uploads, generated media, local application data, and `.env.local` are excluded from Git.
+- Formatting, linting, type checking, unit tests, end-to-end tests, and the production build passed on 2026-08-22.
+
+## What Is Not Ready
+
+- The caregiver setup and approval screens are presentation shells and are not interactive yet.
+- The six-question patient session does not advance or persist answers yet.
+- Live Gemma and Gemini provider calls are not implemented or verified.
+- A real `GEMINI_API_KEY` has not been configured.
+- Authentication is intentionally outside the hackathon MVP scope, so this build must not be exposed directly to the public internet.
+
+## Move the Project to the Mac mini
+
+The Mac mini should have Git, Node.js 22, and Corepack installed.
+Replace `<REPOSITORY_URL>` with the Git remote supplied with this handover.
+
+```bash
+git clone <REPOSITORY_URL> gemini-hackathon
+cd gemini-hackathon
+corepack enable
+corepack prepare pnpm@11.9.0 --activate
+pnpm install --frozen-lockfile
+cp .env.example .env.local
+```
+
+Fixture mode is enabled by default and does not need a credential.
+Keep `GEMINI_API_KEY` empty until the live provider phase is ready for verification.
+
+Run every quality gate before starting the transferred build.
+
+```bash
+pnpm format:check
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm test:e2e
+pnpm build
+```
+
+Start the production server on the Mac mini loopback interface.
+
+```bash
+pnpm exec next start --hostname 127.0.0.1 --port 3000
+```
+
+Open `http://127.0.0.1:3000` on the Mac mini to verify the application locally.
+
+## Private Remote Access with Tailscale
+
+Tailscale Serve is the recommended remote-access path because it can expose the loopback-only application privately to devices authorized by the same tailnet.
+Do not use Tailscale Funnel for this phase because Funnel would make the unauthenticated application publicly reachable.
+
+1. Install the standalone Tailscale client on the Mac mini by following the [official macOS installation guide](https://tailscale.com/docs/install/mac).
+2. Install Tailscale on the remote device and sign both devices into the same tailnet.
+3. Keep the ANCHOR production server running on `127.0.0.1:3000`.
+4. Run the following commands on the Mac mini.
+
+```bash
+tailscale serve --bg 3000
+tailscale serve status
+```
+
+5. Open the HTTPS `*.ts.net` address printed by `tailscale serve status` from the authorized remote device.
+6. Confirm that the landing page and `/patient/session` load from the remote device.
+
+The current Tailscale Serve syntax and behavior are documented in the [official Serve CLI reference](https://tailscale.com/docs/reference/tailscale-cli/serve) and [Serve guide](https://tailscale.com/docs/features/tailscale-serve).
+
+Remove the private proxy when it is no longer needed.
+
+```bash
+tailscale serve reset
+```
+
+## Keep ANCHOR Running After Login
+
+First verify the application in a foreground Terminal session.
+After that succeeds, a macOS LaunchAgent can restart it automatically whenever the Mac mini user logs in.
+
+Create `~/Library/LaunchAgents/com.anchor.app.plist` with the following content.
+Replace `/ABSOLUTE/PATH/gemini-hackathon` with the actual repository path on the Mac mini.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.anchor.app</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>-lc</string>
+    <string>cd /ABSOLUTE/PATH/gemini-hackathon &amp;&amp; pnpm exec next start --hostname 127.0.0.1 --port 3000</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/tmp/anchor.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/anchor.err.log</string>
+</dict>
+</plist>
+```
+
+Load and start the LaunchAgent.
+
+```bash
+launchctl bootstrap "gui/$(id -u)" ~/Library/LaunchAgents/com.anchor.app.plist
+launchctl kickstart -k "gui/$(id -u)/com.anchor.app"
+```
+
+Inspect its logs if the application does not start.
+
+```bash
+tail -n 100 /tmp/anchor.out.log
+tail -n 100 /tmp/anchor.err.log
+```
+
+Stop and unload the LaunchAgent with the following command.
+
+```bash
+launchctl bootout "gui/$(id -u)" ~/Library/LaunchAgents/com.anchor.app.plist
+```
+
+The production server requires a successful `pnpm build` after every pulled code change.
+The supported Next.js production-server options are documented in the [official Next.js CLI reference](https://nextjs.org/docs/app/api-reference/cli/next).
+
+## Smoke-Test Checklist
+
+- Open `/` and confirm that both caregiver and patient entry points are present.
+- Open `/caregiver/world-model` and confirm that the grounding evidence is visible.
+- Open `/patient/session` at a tablet-sized viewport and confirm that the room remains dominant and the page does not scroll.
+- Confirm that the generated-guide label remains visible.
+- Confirm that the application is reachable through the private Tailscale URL from a second authorized device.
+- Confirm that the application is not reachable from a device outside the tailnet.
+
+## Safety and Data Notes
+
+- Use only the bundled synthetic fixtures during this phase.
+- Never commit `.env.local`, `.data`, uploaded photos, generated images, or generated videos.
+- Never configure Tailscale Funnel or direct router port forwarding for this unauthenticated build.
+- Do not describe the current shell as diagnosing, scoring, monitoring, or treating dementia.
+- Do not use a real family likeness until the caregiver consent and approval flow is implemented.
+
+## Resume Development
+
+Phase 1 should implement the validated domain model, deterministic cue engine, fake provider adapters, local persistence, caregiver approvals, and the complete six-question patient flow.
+Read `docs/STATUS.md` and `docs/IMPLEMENTATION_PLAN.md` before resuming.
+Complete, verify, document, commit, push, and hand over each future phase separately.
